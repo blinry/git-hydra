@@ -17,3 +17,9 @@ vector<Commit> Commit::parents() {
     }
     return p;
 }
+
+Tree Commit::tree() {
+    git_tree *tree;
+    git_commit_tree(&tree, commit);
+    return Tree(tree);
+}

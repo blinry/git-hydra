@@ -5,8 +5,7 @@ using namespace std;
 int main(int argc, const char *argv[]) {
     Repository repo("/home/seb/projects/informaticup/.git/");
     Commit c = repo.headCommit();
-    cout << c.message();
-    cout << "\n";
-    cout << c.parents().at(0).message();
+    cout << c.message() << "\n";
+    Tree t = c.tree();
     return 0;
 }
