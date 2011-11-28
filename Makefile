@@ -1,3 +1,3 @@
 default:
-	g++ -g -lgit2 gittut.cpp $(wildcard src/*.cpp) -Iinclude -o gittut
+	g++ -g -lgit2 git-tutor.cpp $(wildcard src/*.cpp) -Iinclude -o git-tutor
 	./gittut
