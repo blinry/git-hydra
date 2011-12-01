@@ -1,0 +1,44 @@
+GraphFactory
+------------
+
+Baut aus irgendner Quelle einen Graph zusammen. Abstrakt.
+
+GitRepositoryGraphFactory
+-------------------------
+
+Baut aus einem spezifizierten Git-Repo einen Graph. Das wird bei großen Projekten unvollständig geschehen.
+
+Graph
+-----
+
+Repräsentiert momentane "Ansicht" des Repositorys. Enthält eine Menge von Knoten, die mit gerichteten, beschrifteten Kanten miteinander verbunden sind, ihre räumliche Anordnung, ob sie angezeigt werden, oder nicht, und ihren "Typ".
+
+Layout
+------
+
+Nimmt ein Graph-Objekt und layoutet es. Abstrakt.
+
+ForceDirectedLayout
+-------------------
+
+Layoutet Graph anhand von Hookes und Coulomb's law.
+
+Graph???
+-------------
+
+Nimmt Graph und gibt eine Liste von Primitives zurück, die in dieser Reihenfolge gerendert werden sollen.
+
+Display
+-------
+
+Nimmt Primitives und zeichnet die irgendwo hin. Abstrakt.
+
+SFMLDisplay
+-----------
+
+Zeichnet Primitives mit Hilfe von SFML.
+
+Git-Tutor
+---------
+
+Erzeugt eine GraphFactory, lässt diese einen Graph erzeugen. Erzeugt ein Layout. Erzeugt ein Display. Geht in eine Endlosschleife, lässt Graph layouten und anzeigen. Außerdem das Display seine Events verarbeiten. Wenn das Display meldet, dass es geschlossen wurde, Programm beenden.
