@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 using namespace std;
 
 #include <git2.h>

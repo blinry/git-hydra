@@ -1,44 +1,36 @@
-GraphFactory
-------------
+NodeFactory
+-----------
 
-Baut aus irgendner Quelle einen Graph zusammen. Abstrakt.
-
-GitRepositoryGraphFactory
--------------------------
-
-Baut aus einem spezifizierten Git-Repo einen Graph. Das wird bei großen Projekten unvollständig geschehen.
+Wird nach einem Objekt gefragt, liest aus einem Git-Repository die notwendigen Informationen zum Erzeugen eines Nodes mit seinen Verknüpfungen aus und gibt sie zurück.
 
 Graph
 -----
 
-Repräsentiert momentane "Ansicht" des Repositorys. Enthält eine Menge von Knoten, die mit gerichteten, beschrifteten Kanten miteinander verbunden sind, ihre räumliche Anordnung, ob sie angezeigt werden, oder nicht, und ihren "Typ".
+Repräsentiert momentane "Ansicht" des Repositorys. Enthält eine Menge von Knoten, die mit gerichteten, beschrifteten Kanten miteinander verbunden sind, ihre räumliche Anordnung, ob sie angezeigt werden, ob sie vollständig sind und ihren "Typ". Soll ein Knoten ausgeklappt werden, der noch nicht vollständig ist, wird die verbundene NodeFactory zu Rate gezogen.
 
-Layout
-------
+Node
+----
 
-Nimmt ein Graph-Objekt und layoutet es. Abstrakt.
+Hat eine Position, eine Beschriftung, eine ID und eine Liste von Kanten.
+
+Edge
+----
+
+Paar aus Knoten-ID und Kantenbeschriftung.
 
 ForceDirectedLayout
 -------------------
 
 Layoutet Graph anhand von Hookes und Coulomb's law.
 
-Graph???
--------------
-
-Nimmt Graph und gibt eine Liste von Primitives zurück, die in dieser Reihenfolge gerendert werden sollen.
-
-Display
--------
-
-Nimmt Primitives und zeichnet die irgendwo hin. Abstrakt.
-
 SFMLDisplay
 -----------
 
-Zeichnet Primitives mit Hilfe von SFML.
+Zeichnet einen Graphen mit Hilfe von SFML.
 
 Git-Tutor
 ---------
 
-Erzeugt eine GraphFactory, lässt diese einen Graph erzeugen. Erzeugt ein Layout. Erzeugt ein Display. Geht in eine Endlosschleife, lässt Graph layouten und anzeigen. Außerdem das Display seine Events verarbeiten. Wenn das Display meldet, dass es geschlossen wurde, Programm beenden.
+Erzeugt einen Graphen und weist ihm eine NodeFactory zu.
+Erzeugt ein Layout. Erzeugt ein Display.
+Geht in eine Endlosschleife, lässt Graph layouten und anzeigen. Außerdem das Display seine Events verarbeiten. Wenn das Display meldet, dass es geschlossen wurde, Programm beenden.
