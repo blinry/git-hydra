@@ -5,9 +5,10 @@
 using namespace std;
 
 enum NodeType {
-    FOO,
+    BLOB,
+    TREE,
     COMMIT,
-    TREE
+    TAG
 };
 
 class Vec2f {
@@ -64,7 +65,12 @@ class Node {
         vector<DirectedEdge> children;
         bool expanded;
         float mass() {
-            return 1;
+            switch(type) {
+                case COMMIT:
+                    return 10;
+                default:
+                    return 1;
+            }
         }
         float width() {
             return 5;
@@ -80,11 +86,45 @@ class Node {
 
 class NodeFactory {
     public:
-        NodeFactory(string repository_path) {
+        NodeFactory(string repository_path) : repository_path(repository_path) {
             int ret = git_repository_open(&repo, repository_path.c_str());
             //TODO: check.
         }
         Node buildNode(string oid) {
+            size_t found = oid.find("/");
+            if (found != string::npos || oid == "HEAD") { // it's a ref!
+                Node node(oid);
+                git_reference *ref;
+                git_reference_lookup(&ref, repo, oid.c_str());
+                switch(git_reference_type(ref)) {
+                    case GIT_REF_OID:
+                        {
+                            const git_oid* target_id = git_reference_oid(ref);
+
+                            char oid_str[40];
+                            git_oid_fmt(oid_str, target_id);
+                            string oid_string(oid_str,40);
+                            node.children.push_back(DirectedEdge(oid_string, "points to"));
+                            break;
+                        }
+                    case GIT_REF_SYMBOLIC:
+                        {
+                            string oid_string = git_reference_target(ref);
+                            node.children.push_back(DirectedEdge(oid_string, "points to"));
+                            break;
+                        }
+                    default:
+                        exit(0);
+                }
+
+                node.visible = true;
+                node.expanded = true;
+                node.pos.x = rand()%100+250;
+                node.pos.y = rand()%100+250;
+                node.label = oid;
+                node.type = TAG;
+                return node;
+            }
 
             git_oid id;
             git_oid_fromstr(&id, oid.c_str());
@@ -94,8 +134,9 @@ class NodeFactory {
 
             Node node(oid);
 
-            node.label = git_object_type2string(type);
+            node.label = oid.substr(0,6);
             node.visible = true;
+            node.expanded = true;
 
             switch(type) {
                 case 1: //commit
@@ -124,8 +165,8 @@ class NodeFactory {
                         git_oid_fmt(oid_str, target_id);
                         string oid_string(oid_str,40);
                         node.children.push_back(DirectedEdge(oid_string, "tree"));
-                        node.visible = true;
-                        node.expanded = false;
+                        //node.visible = true;
+                        //node.expanded = false;
                         break;
                     }
                 case 2: //tree
@@ -147,11 +188,12 @@ class NodeFactory {
                     }
             }
 
-            node.pos.x = rand()%100+1440/2;
-            node.pos.y = rand()%100+900/2;
+            node.pos.x = rand()%100+250;
+            node.pos.y = rand()%100+250;
             return node;
         }
         string get_head_commit_oid() {
+            int ret = git_repository_open(&repo, repository_path.c_str());
             git_reference *ref = 0;
             git_repository_head(&ref, repo);
             const git_oid *oid = git_reference_oid(ref);
@@ -160,17 +202,18 @@ class NodeFactory {
             string oid_string(oid_str,40);
             return oid_string;
         }
+        git_repository *repo; // TODO
     private:
-        git_repository *repo; 
+        string repository_path;
 };
 
 #include <map>
+#include <set>
 class Graph {
     public:
         string head_oid;
         Graph(NodeFactory factory) : factory(factory) {
-            head_oid = factory.get_head_commit_oid();
-            seed(head_oid);
+            reseed();
         }
         void expand(string oid) {
             Node& n = lookup(oid);
@@ -203,26 +246,40 @@ class Graph {
                 hide(iter->target_oid);
             }
         }
-        void seed(string oid, int depth=5) {
+        void seed(string oid, int depth=999) {
             map<string,Node>::iterator it = nodes.find(oid);
             if (it == nodes.end()) {
                 // map doesn't contain oid yet
                 nodes[oid] = factory.buildNode(oid);
-                if(depth>0 && nodes[oid].type == COMMIT) {
-                    for(vector<DirectedEdge>::iterator iter = nodes[oid].children.begin(); iter != nodes[oid].children.end(); iter++) {
-                        seed(iter->target_oid,depth-1);
-                    }
-                    nodes[oid].expanded = true;
-                } else {
-                    nodes[oid].expanded = false;
+                /*
+                for(vector<DirectedEdge>::iterator iter = nodes[oid].children.begin(); iter != nodes[oid].children.end(); iter++) {
+                    seed(iter->target_oid,depth-1);
                 }
+                */
+                nodes[oid].expanded = true;
             }
         }
         Node& lookup(string oid) {
-            map<string,Node>::iterator it = nodes.find(oid);
-            if (it == nodes.end())
-                seed(oid,0);
-            return nodes[oid];
+            size_t found = oid.find("/");
+            if (found != string::npos || oid == "HEAD") { // it's a ref!
+                map<string,Node>::iterator it = nodes.find(oid);
+                if (it == nodes.end()) {
+                    nodes[oid] = factory.buildNode(oid);
+                } else {
+                    // it's there, but maybe it needs an update.
+                    Node new_ref = factory.buildNode(oid);
+                    nodes[oid].children = new_ref.children;
+                }
+                return nodes[oid];
+            } else {
+                map<string,Node>::iterator it = nodes.find(oid);
+                if (it == nodes.end()) {
+                    seed(oid,0);
+                    if (nodes[oid].type != COMMIT)
+                        reduce(oid);
+                }
+                return nodes[oid];
+            }
         }
         Node& nearest_node(float x, float y) {
             if (nodes.size() == 0)
@@ -240,7 +297,21 @@ class Graph {
             }
             return *best;
         }
+        void reseed() {
+            git_strarray ref_nms;
+            git_reference_listall(&ref_nms, factory.repo, GIT_REF_LISTALL);
+            ref_names.clear();
+            for(int i=0; i<ref_nms.count; i++) {
+                ref_names.insert(ref_nms.strings[i]);
+            }
+            ref_names.insert("HEAD");
+            //string the_head_oid = factory.get_head_commit_oid();
+            //head_oid = the_head_oid;
+            //seed(the_head_oid);
+        }
         map<string,Node> nodes; // TODO: soll nicht public sein!
+        //map<string,Node> refs; // TODO: soll nicht public sein!
+        set<string> ref_names;
     private:
         NodeFactory factory;
 };
@@ -256,11 +327,11 @@ class ForceDirectedLayout {
             for(map<string,Node>::iterator it = graph.nodes.begin(); it != graph.nodes.end(); it++) {
                 Node& n1 = it->second;
                 /*
-                if (n1.type == COMMIT)
-                    n1.velocity += Vec2f(0,400-n1.pos.y);
-                else
-                    n1.velocity += Vec2f(0,500-n1.pos.y);
-                    */
+                   if (n1.type == COMMIT)
+                   1.velocity += Vec2f(0,400-n1.pos.y);
+                   else
+                   n1.velocity += Vec2f(0,500-n1.pos.y);
+                   */
                 if (!n1.visible) continue;
                 for(map<string,Node>::iterator it2 = graph.nodes.begin(); it2 != graph.nodes.end(); it2++) {
                     Node& n2 = it2->second;
@@ -307,10 +378,13 @@ class ForceDirectedLayout {
 using namespace sf;
 class SFMLDisplay {
     public:
-        SFMLDisplay() : window(VideoMode::GetDesktopMode(), "Gittut"), view(FloatRect(0,0,window.GetWidth(),window.GetHeight())) {
+        SFMLDisplay() : window(VideoMode(500,500), "Git-Tutor"), view(FloatRect(0,0,window.GetWidth(),window.GetHeight())) {
             window.SetView(view);
+            font.LoadFromFile("arial.ttf");
+            text.SetFont(font);
+            text.SetCharacterSize(10);
         }
-        void draw(Node n, Graph graph) {
+        void draw(Node n, Graph& graph) {
             if (! n.visible) return;
             Color color;
             switch(n.type) {
@@ -319,6 +393,9 @@ class SFMLDisplay {
                     break;
                 case TREE:
                     color = Color::Green;
+                    break;
+                case TAG:
+                    color = Color::Blue;
                     break;
                 default:
                     color = Color::White;
@@ -342,17 +419,26 @@ class SFMLDisplay {
                         draw(n2, graph);
                     }
                 }
-                if (!any_visible && !n.children.size() == 0)
-                    graph.reduce(n.oid);
-                else
-                    graph.expand(n.oid);
+                /*
+                   if (!any_visible && !n.children.size() == 0)
+                   graph.reduce(n.oid);
+                   else
+                   graph.expand(n.oid);
+                   */
             }
             Shape rect = Shape::Rectangle(n.pos.x-n.width()/2,n.pos.y-n.height()/2,n.width(),n.height(),color,1,border_color);
             window.Draw(rect);
+            text.SetString(n.label);
+            text.SetPosition(n.pos.x-n.width()/2,n.pos.y-n.height()/2);
+            window.Draw(text);
         }
-        void draw(Graph graph) {
+        void draw(Graph& graph) {
             window.Clear();
-            draw(graph.lookup(graph.head_oid), graph);
+            //draw(graph.lookup(graph.head_oid), graph);
+            for(set<string>::iterator it = graph.ref_names.begin(); it != graph.ref_names.end(); it++) {
+                string ref = *it;
+                draw(graph.lookup(ref), graph);
+            }
             window.Display();
         }
         void process_events(Graph& graph) {
@@ -388,20 +474,24 @@ class SFMLDisplay {
     private:
         RenderWindow window;
         View view;
+        Font font;
+        Text text;
 };
 
 int main(int argc, const char *argv[])
 {
     srand(time(NULL));
-    //NodeFactory node_factory("/home/seb/.dotfiles/.git/");
-    NodeFactory node_factory("/home/seb/projects/advent/.git/");
+    NodeFactory node_factory("/home/seb/.dotfiles/.git/");
+    //NodeFactory node_factory("/home/seb/projects/advent/.git/");
     //NodeFactory node_factory("/home/seb/projects/libgit2/.git/");
     //NodeFactory node_factory("/home/seb/projects/linux/.git/");
     //NodeFactory node_factory("/home/seb/projects/git/.git/");
+    //NodeFactory node_factory("/home/seb/tmp/test/.git/");
     Graph graph(node_factory);
     ForceDirectedLayout layout;
     SFMLDisplay display;
     while(display.open()) {
+        graph.reseed();
         layout.apply(graph);
         display.draw(graph);
         display.process_events(graph);
