@@ -1,7 +1,45 @@
 #include <git2.h>
 #include <string>
 #include <iostream>
+#include <cmath>
 using namespace std;
+
+class Vec2f {
+    public:
+        Vec2f(float x, float y) : x(x), y(y) { }
+        Vec2f() : x(0), y(0) { }
+        float distance(Vec2f other) {
+            return (other-(*this)).length();
+        }
+        float length() {
+            sqrt(x*x+y*y);
+        }
+        Vec2f normal() {
+            return (*this)*(1/length());
+        }
+        Vec2f operator+(const Vec2f &other) {
+            return Vec2f(x+other.x, y+other.y);
+        }
+        void operator+=(const Vec2f &other) {
+            x += other.x;
+            y += other.y;
+        }
+        Vec2f operator-(const Vec2f &other) {
+            return Vec2f(x-other.x, y-other.y);
+        }
+        void operator-=(const Vec2f &other) {
+            x -= other.x;
+            y -= other.y;
+        }
+        Vec2f operator *(float factor) {
+            return Vec2f(x*factor, y*factor);
+        }
+        void operator *=(float factor) {
+            x *= factor;
+            y *= factor;
+        }
+        float x, y;
+};
 
 class DirectedEdge {
     public:
@@ -13,8 +51,22 @@ class DirectedEdge {
 #include <vector>
 class Node {
     public:
+        Node() { }
+        Node(string oid) : oid(oid) { }
+        string oid;
         string label;
         vector<DirectedEdge> children;
+        float mass() {
+            return 1;
+        }
+        float width() {
+            return 1;
+        }
+        float height() {
+            return 1;
+        }
+        Vec2f pos;
+        Vec2f velocity;
 };
 
 class NodeFactory {
@@ -24,7 +76,7 @@ class NodeFactory {
             //TODO: check.
         }
         Node buildNode(string oid) {
-            Node node;
+            Node node(oid);
 
             git_oid id;
             git_oid_fromstr(&id, oid.c_str());
@@ -52,6 +104,8 @@ class NodeFactory {
                     break;
             }
 
+            node.pos.x = rand()%600;
+            node.pos.y = rand()%400;
             return node;
         }
         string get_head_commit_oid() {
@@ -83,25 +137,109 @@ class Graph {
                 }
             }
         }
-        bool contains(string oid) {
+        Node lookup(string oid) {
+            return nodes[oid];
+        }
+        map<string,Node> nodes; // TODO: soll nicht public sein!
+    private:
+        NodeFactory factory;
+};
+
+class ForceDirectedLayout {
+    public:
+        ForceDirectedLayout() {
+            spring=10;
+            charge=10;
+            damping=0.6;
+        }
+        void apply(Graph& graph) {
+            for(map<string,Node>::iterator it = graph.nodes.begin(); it != graph.nodes.end(); it++) {
+                Node& n1 = it->second;
+                for(map<string,Node>::iterator it2 = graph.nodes.begin(); it2 != graph.nodes.end(); it2++) {
+                    Node& n2 = it2->second;
+                    float distance = n1.pos.distance(n2.pos);
+                    if (n1.oid == n2.oid) continue;
+
+                    float force = 0;
+                    bool connected = false;
+
+                    for(int k=0; k<n1.children.size(); k++) {
+                        if (n1.children.at(k).target_oid == n2.oid)
+                            connected = true;
+                    }
+                    for(int k=0; k<n2.children.size(); k++) {
+                        if (n2.children.at(k).target_oid == n1.oid)
+                            connected = true;
+                    }
+
+                    if (connected) {
+                        force += (distance-spring)/2.0;
+                    } else {
+                        force += -((n1.mass()*n2.mass())/(distance*distance))*charge;
+                    }
+                    Vec2f connection(n2.pos.x-n1.pos.x, n2.pos.y-n1.pos.y);
+                    n1.velocity += connection.normal()*force;
+                }
+                if (n1.velocity.length()>10) //this is an ugly hardcoded value. TODO.
+                    n1.velocity = n1.velocity.normal()*10;
+                n1.pos += n1.velocity;
+                n1.velocity *= damping;
+            }
         }
     private:
-        map<string,Node> nodes;
-        NodeFactory factory;
+        float spring, charge, damping;
+};
+
+#include <SFML/Graphics.hpp>
+using namespace sf;
+class SFMLDisplay {
+    public:
+        SFMLDisplay() : window(VideoMode::GetDesktopMode(), "Gittut") {
+            //View view(FloatRect(0,0,window.GetWidth(),window.GetHeight()));
+            //window.SetView(view);
+        }
+        void draw(Graph graph) {
+            window.Clear();
+            for(map<string,Node>::iterator it = graph.nodes.begin(); it != graph.nodes.end(); it++) {
+                Node n = it->second;
+                Shape rect = Shape::Rectangle(n.pos.x-n.width()/2,n.pos.y-n.height()/2,n.width(),n.height(),Color::Black,1,Color::White);
+                window.Draw(rect);
+                for(int j=0; j<n.children.size(); j++) {
+                    Node n2 = graph.lookup(n.children.at(j).target_oid);
+                    Shape line = Shape::Line(n.pos.x, n.pos.y, n2.pos.x, n2.pos.y, 1, Color::White);
+                    window.Draw(line);
+                }
+            }
+            window.Display();
+        }
+        void process_events() {
+            Event event;
+            while(window.PollEvent(event)) {
+                if (event.Type == Event::Closed)
+                    window.Close();
+                if (event.Type == Event::MouseWheelMoved) {
+                    //view.Zoom(1-event.MouseWheel.Delta*0.1);
+                    //window.SetView(view);
+                }
+            }
+        }
+        bool open() {
+            return window.IsOpened();
+        }
+    private:
+        RenderWindow window;
 };
 
 int main(int argc, const char *argv[])
 {
-    NodeFactory node_factory("/home/seb/projects/informaticup/.git/");
+    NodeFactory node_factory("/home/seb/projects/advent/.git/");
     Graph graph(node_factory);
-    /*
-    ForceDirectedLayout layout();
-    SFMLDisplay display();
+    ForceDirectedLayout layout;
+    SFMLDisplay display;
     while(display.open()) {
         layout.apply(graph);
         display.draw(graph);
         display.process_events();
     }
-    */
     return 0;
 }
