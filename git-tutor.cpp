@@ -56,14 +56,15 @@ class Node {
         string oid;
         string label;
         vector<DirectedEdge> children;
+        bool expanded;
         float mass() {
             return 1;
         }
         float width() {
-            return 1;
+            return 5;
         }
         float height() {
-            return 1;
+            return 5;
         }
         Vec2f pos;
         Vec2f velocity;
@@ -104,8 +105,8 @@ class NodeFactory {
                     break;
             }
 
-            node.pos.x = rand()%600;
-            node.pos.y = rand()%400;
+            node.pos.x = rand()%100+1440/2;
+            node.pos.y = rand()%100+900/2;
             return node;
         }
         string get_head_commit_oid() {
@@ -127,13 +128,18 @@ class Graph {
         Graph(NodeFactory factory) : factory(factory) {
             seed(factory.get_head_commit_oid());
         }
-        void seed(string oid) {
+        void seed(string oid, int depth=40) {
             map<string,Node>::iterator it = nodes.find(oid);
             if (it == nodes.end()) {
                 // map doesn't contain oid yet
                 nodes[oid] = factory.buildNode(oid);
-                for(vector<DirectedEdge>::iterator iter = nodes[oid].children.begin(); iter != nodes[oid].children.end(); iter++) {
-                    seed(iter->target_oid);
+                if(depth>0) {
+                    for(vector<DirectedEdge>::iterator iter = nodes[oid].children.begin(); iter != nodes[oid].children.end(); iter++) {
+                        seed(iter->target_oid,depth-1);
+                    }
+                    nodes[oid].expanded = true;
+                } else {
+                    nodes[oid].expanded = false;
                 }
             }
         }
@@ -149,8 +155,8 @@ class ForceDirectedLayout {
     public:
         ForceDirectedLayout() {
             spring=10;
-            charge=10;
-            damping=0.6;
+            charge=1000;
+            damping=0.25;
         }
         void apply(Graph& graph) {
             for(map<string,Node>::iterator it = graph.nodes.begin(); it != graph.nodes.end(); it++) {
@@ -159,13 +165,17 @@ class ForceDirectedLayout {
                     Node& n2 = it2->second;
                     float distance = n1.pos.distance(n2.pos);
                     if (n1.oid == n2.oid) continue;
+                    if (distance == 0) continue;
 
                     float force = 0;
                     bool connected = false;
 
                     for(int k=0; k<n1.children.size(); k++) {
-                        if (n1.children.at(k).target_oid == n2.oid)
+                        if (n1.children.at(k).target_oid == n2.oid) {
                             connected = true;
+                            n1.velocity += Vec2f(10,0);
+                            n2.velocity += Vec2f(-10,0);
+                        }
                     }
                     for(int k=0; k<n2.children.size(); k++) {
                         if (n2.children.at(k).target_oid == n1.oid)
@@ -180,8 +190,9 @@ class ForceDirectedLayout {
                     Vec2f connection(n2.pos.x-n1.pos.x, n2.pos.y-n1.pos.y);
                     n1.velocity += connection.normal()*force;
                 }
-                if (n1.velocity.length()>10) //this is an ugly hardcoded value. TODO.
-                    n1.velocity = n1.velocity.normal()*10;
+                float max = 50; //this is an ugly hardcoded value. TODO.
+                if (n1.velocity.length()>max)
+                    n1.velocity = n1.velocity.normal()*max;
                 n1.pos += n1.velocity;
                 n1.velocity *= damping;
             }
@@ -194,20 +205,24 @@ class ForceDirectedLayout {
 using namespace sf;
 class SFMLDisplay {
     public:
-        SFMLDisplay() : window(VideoMode::GetDesktopMode(), "Gittut") {
-            //View view(FloatRect(0,0,window.GetWidth(),window.GetHeight()));
-            //window.SetView(view);
+        SFMLDisplay() : window(VideoMode::GetDesktopMode(), "Gittut"), view(FloatRect(0,0,window.GetWidth(),window.GetHeight())) {
+            window.SetView(view);
         }
         void draw(Graph graph) {
             window.Clear();
             for(map<string,Node>::iterator it = graph.nodes.begin(); it != graph.nodes.end(); it++) {
                 Node n = it->second;
-                Shape rect = Shape::Rectangle(n.pos.x-n.width()/2,n.pos.y-n.height()/2,n.width(),n.height(),Color::Black,1,Color::White);
+                Shape rect = Shape::Rectangle(n.pos.x-n.width()/2,n.pos.y-n.height()/2,n.width(),n.height(),Color::White,1,Color::White);
                 window.Draw(rect);
-                for(int j=0; j<n.children.size(); j++) {
-                    Node n2 = graph.lookup(n.children.at(j).target_oid);
-                    Shape line = Shape::Line(n.pos.x, n.pos.y, n2.pos.x, n2.pos.y, 1, Color::White);
-                    window.Draw(line);
+                if (n.expanded) {
+                    for(int j=0; j<n.children.size(); j++) {
+                        Node n2 = graph.lookup(n.children.at(j).target_oid);
+                        Shape line = Shape::Line(n.pos.x, n.pos.y, n2.pos.x, n2.pos.y, 1, Color::White);
+                        window.Draw(line);
+                        float dir = atan2(n.pos.x-n2.pos.x,n.pos.y-n2.pos.y);
+                        window.Draw(Shape::Line(n2.pos.x+sin(dir)*5, n2.pos.y+cos(dir)*5, n2.pos.x+sin(dir)*5+sin(dir+0.5)*5, n2.pos.y+cos(dir)*5+cos(dir+0.5)*5, 1, Color::White));
+                        window.Draw(Shape::Line(n2.pos.x+sin(dir)*5, n2.pos.y+cos(dir)*5, n2.pos.x+sin(dir)*5+sin(dir-0.5)*5, n2.pos.y+cos(dir)*5+cos(dir-0.5)*5, 1, Color::White));
+                    }
                 }
             }
             window.Display();
@@ -218,8 +233,8 @@ class SFMLDisplay {
                 if (event.Type == Event::Closed)
                     window.Close();
                 if (event.Type == Event::MouseWheelMoved) {
-                    //view.Zoom(1-event.MouseWheel.Delta*0.1);
-                    //window.SetView(view);
+                    view.Zoom(1-event.MouseWheel.Delta*0.1);
+                    window.SetView(view);
                 }
             }
         }
@@ -228,11 +243,14 @@ class SFMLDisplay {
         }
     private:
         RenderWindow window;
+        View view;
 };
 
 int main(int argc, const char *argv[])
 {
-    NodeFactory node_factory("/home/seb/projects/advent/.git/");
+    //NodeFactory node_factory("/home/seb/projects/advent/.git/");
+    NodeFactory node_factory("/home/seb/projects/libgit2/.git/");
+    //NodeFactory node_factory("/home/seb/projects/linux/.git/");
     Graph graph(node_factory);
     ForceDirectedLayout layout;
     SFMLDisplay display;
