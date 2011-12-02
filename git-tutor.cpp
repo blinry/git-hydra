@@ -5,6 +5,7 @@
 using namespace std;
 
 enum NodeType {
+    FOO,
     COMMIT,
     TREE
 };
@@ -123,6 +124,8 @@ class NodeFactory {
                         git_oid_fmt(oid_str, target_id);
                         string oid_string(oid_str,40);
                         node.children.push_back(DirectedEdge(oid_string, "tree"));
+                        node.visible = true;
+                        node.expanded = false;
                         break;
                     }
                 case 2: //tree
@@ -174,6 +177,8 @@ class Graph {
             n.expanded = true;
             for(vector<DirectedEdge>::iterator iter = n.children.begin(); iter != n.children.end(); iter++) {
                 show(iter->target_oid);
+                if (lookup(iter->target_oid).expanded)
+                    expand(iter->target_oid);
             }
         }
         void reduce(string oid) {
@@ -186,6 +191,10 @@ class Graph {
         void show(string oid) {
             Node& n = lookup(oid);
             n.visible = true;
+            for(vector<DirectedEdge>::iterator iter = n.children.begin(); iter != n.children.end(); iter++) {
+                if (lookup(iter->target_oid).expanded)
+                    expand(iter->target_oid);
+            }
         }
         void hide(string oid) {
             Node& n = lookup(oid);
@@ -194,12 +203,12 @@ class Graph {
                 hide(iter->target_oid);
             }
         }
-        void seed(string oid, int depth=7) {
+        void seed(string oid, int depth=5) {
             map<string,Node>::iterator it = nodes.find(oid);
             if (it == nodes.end()) {
                 // map doesn't contain oid yet
                 nodes[oid] = factory.buildNode(oid);
-                if(depth>0) {
+                if(depth>0 && nodes[oid].type == COMMIT) {
                     for(vector<DirectedEdge>::iterator iter = nodes[oid].children.begin(); iter != nodes[oid].children.end(); iter++) {
                         seed(iter->target_oid,depth-1);
                     }
@@ -210,6 +219,9 @@ class Graph {
             }
         }
         Node& lookup(string oid) {
+            map<string,Node>::iterator it = nodes.find(oid);
+            if (it == nodes.end())
+                seed(oid,0);
             return nodes[oid];
         }
         Node& nearest_node(float x, float y) {
@@ -219,6 +231,7 @@ class Graph {
             float best_distance = 99999999; //TODO
             Vec2f pos(x,y);
             for(map<string,Node>::iterator it = nodes.begin(); it != nodes.end(); it++) {
+                if (!it->second.visible) continue;
                 float distance = it->second.pos.distance(pos);
                 if (distance < best_distance) {
                     best_distance = distance;
@@ -242,6 +255,12 @@ class ForceDirectedLayout {
         void apply(Graph& graph) {
             for(map<string,Node>::iterator it = graph.nodes.begin(); it != graph.nodes.end(); it++) {
                 Node& n1 = it->second;
+                /*
+                if (n1.type == COMMIT)
+                    n1.velocity += Vec2f(0,400-n1.pos.y);
+                else
+                    n1.velocity += Vec2f(0,500-n1.pos.y);
+                    */
                 if (!n1.visible) continue;
                 for(map<string,Node>::iterator it2 = graph.nodes.begin(); it2 != graph.nodes.end(); it2++) {
                     Node& n2 = it2->second;
@@ -254,14 +273,14 @@ class ForceDirectedLayout {
                     bool connected = false;
 
                     for(int k=0; k<n1.children.size(); k++) {
-                        if (n1.children.at(k).target_oid == n2.oid) {
+                        if (n1.children.at(k).target_oid == n2.oid && n1.expanded) {
                             connected = true;
-                            //n1.velocity += Vec2f(10,0);
-                            //n2.velocity += Vec2f(-10,0);
+                            n1.velocity += Vec2f(10,0);
+                            n2.velocity += Vec2f(-10,0);
                         }
                     }
                     for(int k=0; k<n2.children.size(); k++) {
-                        if (n2.children.at(k).target_oid == n1.oid)
+                        if (n2.children.at(k).target_oid == n1.oid && n2.expanded)
                             connected = true;
                     }
 
@@ -310,15 +329,23 @@ class SFMLDisplay {
             else
                 border_color = Color::White;
             if (n.expanded) {
+                bool any_visible = false;
                 for(int j=0; j<n.children.size(); j++) {
                     Node n2 = graph.lookup(n.children.at(j).target_oid);
-                    Shape line = Shape::Line(n.pos.x, n.pos.y, n2.pos.x, n2.pos.y, 1, Color::White);
-                    window.Draw(line);
-                    float dir = atan2(n.pos.x-n2.pos.x,n.pos.y-n2.pos.y);
-                    window.Draw(Shape::Line(n2.pos.x+sin(dir)*5, n2.pos.y+cos(dir)*5, n2.pos.x+sin(dir)*5+sin(dir+0.5)*5, n2.pos.y+cos(dir)*5+cos(dir+0.5)*5, 1, Color::White));
-                    window.Draw(Shape::Line(n2.pos.x+sin(dir)*5, n2.pos.y+cos(dir)*5, n2.pos.x+sin(dir)*5+sin(dir-0.5)*5, n2.pos.y+cos(dir)*5+cos(dir-0.5)*5, 1, Color::White));
-                    draw(n2, graph);
+                    if (n2.visible) {
+                        any_visible = true;
+                        Shape line = Shape::Line(n.pos.x, n.pos.y, n2.pos.x, n2.pos.y, 1, Color::White);
+                        window.Draw(line);
+                        float dir = atan2(n.pos.x-n2.pos.x,n.pos.y-n2.pos.y);
+                        window.Draw(Shape::Line(n2.pos.x+sin(dir)*5, n2.pos.y+cos(dir)*5, n2.pos.x+sin(dir)*5+sin(dir+0.5)*5, n2.pos.y+cos(dir)*5+cos(dir+0.5)*5, 1, Color::White));
+                        window.Draw(Shape::Line(n2.pos.x+sin(dir)*5, n2.pos.y+cos(dir)*5, n2.pos.x+sin(dir)*5+sin(dir-0.5)*5, n2.pos.y+cos(dir)*5+cos(dir-0.5)*5, 1, Color::White));
+                        draw(n2, graph);
+                    }
                 }
+                if (!any_visible && !n.children.size() == 0)
+                    graph.reduce(n.oid);
+                else
+                    graph.expand(n.oid);
             }
             Shape rect = Shape::Rectangle(n.pos.x-n.width()/2,n.pos.y-n.height()/2,n.width(),n.height(),color,1,border_color);
             window.Draw(rect);
@@ -348,6 +375,12 @@ class SFMLDisplay {
                     }
                 }
             }
+            if (Mouse::IsButtonPressed(Mouse::Right)) {
+                Vector2f click_position = window.ConvertCoords(Mouse::GetPosition().x, Mouse::GetPosition().y);
+                Node& n = graph.nearest_node(click_position.x, click_position.y);
+                n.pos.x = click_position.x;
+                n.pos.y = click_position.y;
+            }
         }
         bool open() {
             return window.IsOpened();
@@ -360,8 +393,8 @@ class SFMLDisplay {
 int main(int argc, const char *argv[])
 {
     srand(time(NULL));
-    NodeFactory node_factory("/home/seb/.dotfiles/.git/");
-    //NodeFactory node_factory("/home/seb/projects/advent/.git/");
+    //NodeFactory node_factory("/home/seb/.dotfiles/.git/");
+    NodeFactory node_factory("/home/seb/projects/advent/.git/");
     //NodeFactory node_factory("/home/seb/projects/libgit2/.git/");
     //NodeFactory node_factory("/home/seb/projects/linux/.git/");
     //NodeFactory node_factory("/home/seb/projects/git/.git/");
