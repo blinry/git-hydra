@@ -50,7 +50,7 @@ class Vec2f {
 
 class DirectedEdge {
     public:
-        DirectedEdge(string target_oid, string label) : target_oid(target_oid), label(label) { }
+        DirectedEdge(const string& target_oid, const string& label) : target_oid(target_oid), label(label) { }
         string target_oid;
         string label;
 };
@@ -59,7 +59,7 @@ class DirectedEdge {
 class Node {
     public:
         Node() { }
-        Node(string oid) : oid(oid) { }
+        Node(const string& oid) : oid(oid) { }
         string oid;
         string label;
         vector<DirectedEdge> children;
@@ -86,11 +86,11 @@ class Node {
 
 class NodeFactory {
     public:
-        NodeFactory(string repository_path) : repository_path(repository_path) {
+        NodeFactory(const string& repository_path) : repository_path(repository_path) {
             int ret = git_repository_open(&repo, repository_path.c_str());
             //TODO: check.
         }
-        Node buildNode(string oid) {
+        Node buildNode(const string& oid) {
             size_t found = oid.find("/");
             if (found != string::npos || oid == "HEAD") { // it's a ref!
                 Node node(oid);
@@ -212,10 +212,10 @@ class NodeFactory {
 class Graph {
     public:
         string head_oid;
-        Graph(NodeFactory factory) : factory(factory) {
+        Graph(NodeFactory& factory) : factory(factory) {
             reseed();
         }
-        void expand(string oid) {
+        void expand(const string& oid) {
             Node& n = lookup(oid);
             n.expanded = true;
             for(vector<DirectedEdge>::iterator iter = n.children.begin(); iter != n.children.end(); iter++) {
@@ -224,14 +224,14 @@ class Graph {
                     expand(iter->target_oid);
             }
         }
-        void reduce(string oid) {
+        void reduce(const string& oid) {
             Node& n = lookup(oid);
             n.expanded = false;
             for(vector<DirectedEdge>::iterator iter = n.children.begin(); iter != n.children.end(); iter++) {
                 hide(iter->target_oid);
             }
         }
-        void show(string oid) {
+        void show(const string& oid) {
             Node& n = lookup(oid);
             n.visible = true;
             for(vector<DirectedEdge>::iterator iter = n.children.begin(); iter != n.children.end(); iter++) {
@@ -239,14 +239,14 @@ class Graph {
                     expand(iter->target_oid);
             }
         }
-        void hide(string oid) {
+        void hide(const string& oid) {
             Node& n = lookup(oid);
             n.visible = false;
             for(vector<DirectedEdge>::iterator iter = n.children.begin(); iter != n.children.end(); iter++) {
                 hide(iter->target_oid);
             }
         }
-        void seed(string oid, int depth=999) {
+        void seed(const string& oid, int depth=999) {
             map<string,Node>::iterator it = nodes.find(oid);
             if (it == nodes.end()) {
                 // map doesn't contain oid yet
@@ -259,7 +259,7 @@ class Graph {
                 nodes[oid].expanded = true;
             }
         }
-        Node& lookup(string oid) {
+        Node& lookup(const string& oid) {
             size_t found = oid.find("/");
             if (found != string::npos || oid == "HEAD") { // it's a ref!
                 map<string,Node>::iterator it = nodes.find(oid);
@@ -321,7 +321,7 @@ class ForceDirectedLayout {
         ForceDirectedLayout() {
             spring=20;
             charge=1000;
-            damping=0.1;
+            damping=0.3;
         }
         void apply(Graph& graph) {
             for(map<string,Node>::iterator it = graph.nodes.begin(); it != graph.nodes.end(); it++) {
@@ -346,8 +346,8 @@ class ForceDirectedLayout {
                     for(int k=0; k<n1.children.size(); k++) {
                         if (n1.children.at(k).target_oid == n2.oid && n1.expanded) {
                             connected = true;
-                            n1.velocity += Vec2f(10,0);
-                            n2.velocity += Vec2f(-10,0);
+                            n1.velocity += Vec2f(0,-10);
+                            n2.velocity += Vec2f(0,10);
                         }
                     }
                     for(int k=0; k<n2.children.size(); k++) {
@@ -429,7 +429,7 @@ class SFMLDisplay {
             Shape rect = Shape::Rectangle(n.pos.x-n.width()/2,n.pos.y-n.height()/2,n.width(),n.height(),color,1,border_color);
             window.Draw(rect);
             text.SetString(n.label);
-            text.SetPosition(n.pos.x-n.width()/2,n.pos.y-n.height()/2);
+            text.SetPosition(n.pos.x-n.width()/2+10,n.pos.y-n.height()/2);
             window.Draw(text);
         }
         void draw(Graph& graph) {
@@ -481,12 +481,14 @@ class SFMLDisplay {
 int main(int argc, const char *argv[])
 {
     srand(time(NULL));
-    NodeFactory node_factory("/home/seb/.dotfiles/.git/");
+    //NodeFactory node_factory("/home/seb/.dotfiles/.git/");
+    //NodeFactory node_factory("/home/seb/projects/audws1112/.git/");
     //NodeFactory node_factory("/home/seb/projects/advent/.git/");
     //NodeFactory node_factory("/home/seb/projects/libgit2/.git/");
     //NodeFactory node_factory("/home/seb/projects/linux/.git/");
     //NodeFactory node_factory("/home/seb/projects/git/.git/");
-    //NodeFactory node_factory("/home/seb/tmp/test/.git/");
+    NodeFactory node_factory("/home/seb/tmp/test/.git/");
+    //NodeFactory node_factory("/home/seb/projects/informaticup/.git/");
     Graph graph(node_factory);
     ForceDirectedLayout layout;
     SFMLDisplay display;
