@@ -1,5 +1,7 @@
 default: git-tutor
 	./git-tutor ~/tmp/test/
 
-git-tutor: git-tutor.cpp
-	g++ -g -lsfml-graphics -lgit2 $< -o git-tutor
+SOURCES=$(wildcard *.cpp)
+
+git-tutor: $(SOURCES)
+	g++ -g -lsfml-graphics -lgit2 git-tutor.cpp -o git-tutor
