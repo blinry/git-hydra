@@ -481,14 +481,15 @@ class SFMLDisplay {
 int main(int argc, const char *argv[])
 {
     srand(time(NULL));
-    //NodeFactory node_factory("/home/seb/.dotfiles/.git/");
-    //NodeFactory node_factory("/home/seb/projects/audws1112/.git/");
-    //NodeFactory node_factory("/home/seb/projects/advent/.git/");
-    //NodeFactory node_factory("/home/seb/projects/libgit2/.git/");
-    //NodeFactory node_factory("/home/seb/projects/linux/.git/");
-    //NodeFactory node_factory("/home/seb/projects/git/.git/");
-    NodeFactory node_factory("/home/seb/tmp/test/.git/");
-    //NodeFactory node_factory("/home/seb/projects/informaticup/.git/");
+    string working_directory;
+    if (argc>1) {
+        working_directory = argv[1];
+        working_directory += "/.git/";
+    } else {
+        working_directory = ".git/";
+    }
+
+    NodeFactory node_factory(working_directory);
     Graph graph(node_factory);
     ForceDirectedLayout layout;
     SFMLDisplay display;
