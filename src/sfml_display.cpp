@@ -77,6 +77,12 @@ class SFMLDisplay {
                             graph.expand(n.oid);
                     }
                 }
+                if (event.Type == Event::Resized) {
+                    float aspect_ratio = 1.0*event.Size.Width/event.Size.Height;
+                    float width = view.GetSize().x*(1.0*event.Size.Width/window.GetWidth());
+                    view.SetSize(width, width/aspect_ratio);
+                    window.SetView(view);
+                }
             }
             if (Mouse::IsButtonPressed(Mouse::Right)) {
                 Vector2f click_position = window.ConvertCoords(Mouse::GetPosition().x, Mouse::GetPosition().y);
