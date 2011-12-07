@@ -28,8 +28,8 @@ class ForceDirectedLayout {
                     for(int k=0; k<n1.children.size(); k++) {
                         if (n1.children.at(k).target == n2.oid && n1.expanded) {
                             connected = true;
-                            n1.velocity += Vec2f(0,-10);
-                            n2.velocity += Vec2f(0,10);
+                            //n1.velocity += Vec2f(0,-10);
+                            //n2.velocity += Vec2f(0,10);
                         }
                     }
                     for(int k=0; k<n2.children.size(); k++) {
