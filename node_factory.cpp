@@ -7,8 +7,7 @@ class NodeFactory {
             //TODO: check.
         }
         Node buildNode(const OID& oid) {
-            size_t found = oid.find("/");
-            if (found != string::npos || oid == "HEAD") { // it's a ref!
+            if (is_ref(oid)) {
                 Node node(oid);
                 git_reference *ref;
                 git_reference_lookup(&ref, repo, oid.c_str());
@@ -108,17 +107,10 @@ class NodeFactory {
             node.pos.y = rand()%100+250;
             return node;
         }
-        OID get_head_commit_oid() {
-            int ret = git_repository_open(&repo, repository_path.c_str());
-            git_reference *ref = 0;
-            git_repository_head(&ref, repo);
-            const git_oid *oid = git_reference_oid(ref);
-            char oid_str[40];
-            git_oid_fmt(oid_str, oid);
-            OID oid_string(oid_str,40);
-            return oid_string;
-        }
         git_repository *repo; // TODO
     private:
         string repository_path;
+        bool is_ref(const OID& oid) {
+            return oid == "HEAD" || oid.find("/") != string::npos;
+        }
 };

@@ -32,7 +32,7 @@ class SFMLDisplay {
             if (n.expanded) {
                 bool any_visible = false;
                 for(int j=0; j<n.children.size(); j++) {
-                    Node n2 = graph.lookup(n.children.at(j).target_oid);
+                    Node n2 = graph.lookup(n.children.at(j).target);
                     if (n2.visible) {
                         any_visible = true;
                         Shape line = Shape::Line(n.pos.x, n.pos.y, n2.pos.x, n2.pos.y, 1, Color::White);
@@ -43,12 +43,6 @@ class SFMLDisplay {
                         draw(n2, graph);
                     }
                 }
-                /*
-                   if (!any_visible && !n.children.size() == 0)
-                   graph.reduce(n.oid);
-                   else
-                   graph.expand(n.oid);
-                   */
             }
             Shape rect = Shape::Rectangle(n.pos.x-n.width()/2,n.pos.y-n.height()/2,n.width(),n.height(),color,1,border_color);
             window.Draw(rect);
@@ -58,7 +52,6 @@ class SFMLDisplay {
         }
         void draw(Graph& graph) {
             window.Clear();
-            //draw(graph.lookup(graph.head_oid), graph);
             for(set<string>::iterator it = graph.ref_names.begin(); it != graph.ref_names.end(); it++) {
                 string ref = *it;
                 draw(graph.lookup(ref), graph);

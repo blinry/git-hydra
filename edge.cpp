@@ -1,6 +1,6 @@
 class Edge {
     public:
-        Edge(const OID& target_oid, string label) : target_oid(target_oid), label(label) { }
-        OID target_oid;
+        Edge(const OID& target, string label) : target(target), label(label) { }
+        OID target;
         string label;
 };

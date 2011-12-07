@@ -2,6 +2,8 @@
 
 class Vec2f {
     public:
+        float x, y;
+
         Vec2f(float x, float y) : x(x), y(y) { }
         Vec2f() : x(0), y(0) { }
         float distance(Vec2f other) {
@@ -34,5 +36,4 @@ class Vec2f {
             x *= factor;
             y *= factor;
         }
-        float x, y;
 };

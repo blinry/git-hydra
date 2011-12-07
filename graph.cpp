@@ -2,7 +2,6 @@
 #include <set>
 class Graph {
     public:
-        OID head_oid;
         Graph(NodeFactory& factory) : factory(factory) {
             reseed();
         }
@@ -10,31 +9,31 @@ class Graph {
             Node& n = lookup(oid);
             n.expanded = true;
             for(vector<Edge>::iterator iter = n.children.begin(); iter != n.children.end(); iter++) {
-                show(iter->target_oid);
-                if (lookup(iter->target_oid).expanded)
-                    expand(iter->target_oid);
+                show(iter->target);
+                if (lookup(iter->target).expanded)
+                    expand(iter->target);
             }
         }
         void reduce(const OID& oid) {
             Node& n = lookup(oid);
             n.expanded = false;
             for(vector<Edge>::iterator iter = n.children.begin(); iter != n.children.end(); iter++) {
-                hide(iter->target_oid);
+                hide(iter->target);
             }
         }
         void show(const OID& oid) {
             Node& n = lookup(oid);
             n.visible = true;
             for(vector<Edge>::iterator iter = n.children.begin(); iter != n.children.end(); iter++) {
-                if (lookup(iter->target_oid).expanded)
-                    expand(iter->target_oid);
+                if (lookup(iter->target).expanded)
+                    expand(iter->target);
             }
         }
         void hide(const OID& oid) {
             Node& n = lookup(oid);
             n.visible = false;
             for(vector<Edge>::iterator iter = n.children.begin(); iter != n.children.end(); iter++) {
-                hide(iter->target_oid);
+                hide(iter->target);
             }
         }
         void seed(const OID& oid, int depth=999) {
@@ -44,7 +43,7 @@ class Graph {
                 nodes[oid] = factory.buildNode(oid);
                 /*
                 for(vector<Edge>::iterator iter = nodes[oid].children.begin(); iter != nodes[oid].children.end(); iter++) {
-                    seed(iter->target_oid,depth-1);
+                    seed(iter->target,depth-1);
                 }
                 */
                 nodes[oid].expanded = true;
@@ -96,12 +95,8 @@ class Graph {
                 ref_names.insert(ref_nms.strings[i]);
             }
             ref_names.insert("HEAD");
-            //string the_head_oid = factory.get_head_commit_oid();
-            //head_oid = the_head_oid;
-            //seed(the_head_oid);
         }
         map<OID,Node> nodes; // TODO: soll nicht public sein!
-        //map<string,Node> refs; // TODO: soll nicht public sein!
         set<string> ref_names;
     private:
         NodeFactory factory;
