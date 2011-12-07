@@ -1,4 +1,5 @@
 #include <git2.h>
+#include <cstring>
 
 class NodeFactory {
     public:
@@ -7,6 +8,7 @@ class NodeFactory {
             //TODO: check.
         }
         Node buildNode(const OID& oid) {
+            int ret = git_repository_open(&repo, repository_path.c_str());
             if (is_ref(oid)) {
                 Node node(oid);
                 git_reference *ref;
@@ -24,7 +26,9 @@ class NodeFactory {
                         }
                     case GIT_REF_SYMBOLIC:
                         {
-                            OID oid_string = git_reference_target(ref);
+                            const char *oid_str;
+                            oid_str = git_reference_target(ref);
+                            OID oid_string(oid_str,strlen(oid_str));
                             node.children.push_back(Edge(oid_string, "points to"));
                             break;
                         }
@@ -101,6 +105,18 @@ class NodeFactory {
                         }
                         break;
                     }
+                case 4: //tag
+                    node.type = TAG;
+                    git_tag *tag;
+                    git_tag_lookup(&tag, repo, &id);
+                    git_object *target;
+                    git_tag_target(&target, tag);
+                    const git_oid *target_id;
+                    target_id = git_object_id(target);
+                    char oid_str[40];
+                    git_oid_fmt(oid_str, target_id);
+                    OID oid_string(oid_str,40);
+                    node.children.push_back(Edge(oid_string, "target"));
             }
 
             node.pos.x = rand()%100+250;

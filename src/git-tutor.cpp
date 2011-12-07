@@ -1,3 +1,6 @@
+#include <iostream>
+using namespace std;
+
 #include "types.cpp"
 #include "vec2f.cpp"
 #include "edge.cpp"
