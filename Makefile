@@ -1,5 +1,6 @@
 default: git-tutor
 	./git-tutor ~/tmp/test/
+	#./git-tutor ~/projects/advent/
 
 SOURCES=$(wildcard src/*.cpp)
 

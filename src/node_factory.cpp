@@ -33,7 +33,7 @@ class NodeFactory {
                 }
 
                 node.visible = true;
-                node.expanded = true;
+                //node.expanded = true;
                 node.pos.x = rand()%100+250;
                 node.pos.y = rand()%100+250;
                 node.label = oid;
@@ -51,7 +51,7 @@ class NodeFactory {
 
             node.label = oid.substr(0,6);
             node.visible = true;
-            node.expanded = true;
+            //node.expanded = true;
 
             switch(type) {
                 case 1: //commit
@@ -79,7 +79,7 @@ class NodeFactory {
                         char oid_str[40];
                         git_oid_fmt(oid_str, target_id);
                         OID oid_string(oid_str,40);
-                        node.children.push_back(Edge(oid_string, "tree"));
+                        node.children.push_back(Edge(oid_string, "tree", true));
                         //node.visible = true;
                         //node.expanded = false;
                         break;

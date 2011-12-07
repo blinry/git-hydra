@@ -4,7 +4,6 @@ class Node {
         OID oid;
         string label;
         vector<Edge> children;
-        bool expanded;
         bool visible;
         Vec2f pos;
         Vec2f velocity;

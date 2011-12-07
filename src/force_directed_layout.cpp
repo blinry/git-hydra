@@ -10,7 +10,7 @@ class ForceDirectedLayout {
                 Node& n1 = it->second;
                 /*
                    if (n1.type == COMMIT)
-                       1.velocity += Vec2f(0,400-n1.pos.y);
+                       n1.velocity += Vec2f(0,400-n1.pos.y);
                    else
                        n1.velocity += Vec2f(0,500-n1.pos.y);
                    */
@@ -26,14 +26,15 @@ class ForceDirectedLayout {
                     bool connected = false;
 
                     for(int k=0; k<n1.children.size(); k++) {
-                        if (n1.children.at(k).target == n2.oid && n1.expanded) {
+                        if (n1.children.at(k).target == n2.oid) {// && n1.expanded) {
                             connected = true;
-                            //n1.velocity += Vec2f(0,-10);
-                            //n2.velocity += Vec2f(0,10);
+                            Vec2f f(0,15);//-0.5*(n2.pos.y-n1.pos.y));
+                            n1.velocity -= f;
+                            n2.velocity += f;
                         }
                     }
                     for(int k=0; k<n2.children.size(); k++) {
-                        if (n2.children.at(k).target == n1.oid && n2.expanded)
+                        if (n2.children.at(k).target == n1.oid)// && n2.expanded)
                             connected = true;
                     }
 

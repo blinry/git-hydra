@@ -5,6 +5,7 @@ class Graph {
         Graph(NodeFactory& factory) : factory(factory) {
             reseed();
         }
+        /*
         void expand(const OID& oid) {
             Node& n = lookup(oid);
             n.expanded = true;
@@ -36,6 +37,7 @@ class Graph {
                 hide(iter->target);
             }
         }
+        */
         void seed(const OID& oid, int depth=999) {
             map<OID,Node>::iterator it = nodes.find(oid);
             if (it == nodes.end()) {
@@ -46,7 +48,7 @@ class Graph {
                     seed(iter->target,depth-1);
                 }
                 */
-                nodes[oid].expanded = true;
+                //nodes[oid].expanded = true;
             }
         }
         Node& lookup(const OID& oid) {
@@ -65,8 +67,8 @@ class Graph {
                 map<OID,Node>::iterator it = nodes.find(oid);
                 if (it == nodes.end()) {
                     seed(oid,0);
-                    if (nodes[oid].type != COMMIT)
-                        reduce(oid);
+                    //if (nodes[oid].type != COMMIT)
+                        //reduce(oid);
                 }
                 return nodes[oid];
             }
@@ -96,8 +98,26 @@ class Graph {
             }
             ref_names.insert("HEAD");
         }
+        void visibility_analysis() {
+                for(map<OID,Node>::iterator it = nodes.begin(); it != nodes.end(); it++) {
+                    it->second.visible = false;
+                }
+            for(set<string>::iterator it = ref_names.begin(); it != ref_names.end(); it++) {
+                OID ref = *it;
+                recursive_set_visible(ref);
+            }
+        }
         map<OID,Node> nodes; // TODO: soll nicht public sein!
         set<string> ref_names;
     private:
+        void recursive_set_visible(OID oid) {
+            Node &n = lookup(oid);
+            n.visible = true;
+            for(int j=0; j<n.children.size(); j++) {
+                Edge edge = n.children.at(j);
+                if (!edge.folded)
+                    recursive_set_visible(edge.target);
+            }
+        }
         NodeFactory factory;
 };
