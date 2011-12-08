@@ -59,8 +59,8 @@ class Graph {
                     nodes[oid] = factory.buildNode(oid);
                 } else {
                     // it's there, but maybe it needs an update.
-                    //Node new_ref = factory.buildNode(oid);
-                    //nodes[oid].children = new_ref.children;
+                    Node new_ref = factory.buildNode(oid);
+                    nodes[oid].children.at(0).target = new_ref.children.at(0).target;
                 }
             } else {
                 map<OID,Node>::iterator it = nodes.find(oid);
@@ -89,14 +89,12 @@ class Graph {
             return *best;
         }
         void reseed() {
-            /*
             git_strarray ref_nms;
             git_reference_listall(&ref_nms, factory.repo, GIT_REF_LISTALL);
             ref_names.clear();
             for(int i=0; i<ref_nms.count; i++) {
                 ref_names.insert(ref_nms.strings[i]);
             }
-            */
             ref_names.insert("HEAD");
         }
         void visibility_analysis() {

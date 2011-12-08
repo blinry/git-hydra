@@ -62,6 +62,14 @@ class SFMLDisplay {
                 Node& n = it->second;
                 draw(n,graph);
             }
+
+            Vector2f mouse_position = window.ConvertCoords(Mouse::GetPosition().x, Mouse::GetPosition().y);
+            Node& n = graph.nearest_node(mouse_position.x, mouse_position.y);
+
+            text.SetString(n.text);
+            text.SetPosition(n.pos.x-n.width()/2+10,n.pos.y-n.height()/2+10);
+            window.Draw(text);
+
             window.Display();
         }
         void process_events(Graph& graph) {
@@ -77,6 +85,10 @@ class SFMLDisplay {
                     if (event.MouseButton.Button == 0) {
                         Vector2f click_position = window.ConvertCoords(event.MouseButton.X, event.MouseButton.Y);
                         Node& n = graph.nearest_node(click_position.x, click_position.y);
+                    } else if (event.MouseButton.Button == 2) {
+                        Vector2f click_position = window.ConvertCoords(Mouse::GetPosition().x, Mouse::GetPosition().y);
+                        view.SetCenter(click_position);
+                        window.SetView(view);
                     }
                 }
                 if (event.Type == Event::Resized) {

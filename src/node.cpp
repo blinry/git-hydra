@@ -3,6 +3,7 @@ class Node {
     public:
         OID oid;
         string label;
+        string text;
         vector<Edge> children;
         bool visible;
         Vec2f pos;
@@ -12,12 +13,7 @@ class Node {
         Node() { }
         Node(const OID& oid) : oid(oid) { }
         float mass() {
-            switch(type) {
-                case COMMIT:
-                    return 10;
-                default:
-                    return 1;
-            }
+            return 10;
         }
         float width() {
             return 5;
