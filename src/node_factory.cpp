@@ -6,6 +6,7 @@ class NodeFactory {
         NodeFactory(const string& repository_path) : repository_path(repository_path) {
             int ret = git_repository_open(&repo, repository_path.c_str());
             //TODO: check.
+            last_y = 0;
         }
         Node buildNode(const OID& oid) {
             int ret = git_repository_open(&repo, repository_path.c_str());
@@ -38,8 +39,8 @@ class NodeFactory {
 
                 node.visible = true;
                 //node.expanded = true;
-                node.pos.x = rand()%100+250;
-                node.pos.y = rand()%100+250;
+                node.pos.x = 0;//rand()%100+250;
+                node.pos.y = ++last_y;
                 node.label = oid;
                 node.type = TAG;
                 return node;
@@ -55,7 +56,6 @@ class NodeFactory {
 
             node.label = oid.substr(0,6);
             node.visible = true;
-            //node.expanded = true;
 
             switch(type) {
                 case 1: //commit
@@ -119,8 +119,9 @@ class NodeFactory {
                     node.children.push_back(Edge(oid_string, "target"));
             }
 
-            node.pos.x = rand()%100+250;
-            node.pos.y = rand()%100+250;
+            node.pos.x = rand()%100+50;
+            last_y += 20;
+                node.pos.y = last_y;
             return node;
         }
         git_repository *repo; // TODO
@@ -129,4 +130,5 @@ class NodeFactory {
         bool is_ref(const OID& oid) {
             return oid == "HEAD" || oid.find("/") != string::npos;
         }
+        int last_y;
 };

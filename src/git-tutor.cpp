@@ -26,6 +26,8 @@ int main(int argc, const char *argv[])
     ForceDirectedLayout layout;
     SFMLDisplay display;
 
+    graph.unfold_levels(20);
+
     while(display.open()) {
         graph.reseed();
         graph.visibility_analysis();
