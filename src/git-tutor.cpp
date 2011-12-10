@@ -26,10 +26,9 @@ int main(int argc, const char *argv[])
     ForceDirectedLayout layout;
     SFMLDisplay display;
 
-
     while(display.open()) {
         graph.reseed();
-        graph.unfold_levels(20);
+        graph.unfold_levels(10);
         graph.visibility_analysis();
         layout.apply(graph);
         display.draw(graph);

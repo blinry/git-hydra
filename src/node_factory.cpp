@@ -9,8 +9,8 @@ class NodeFactory {
             last_y = 0;
         }
         Node buildNode(const OID& oid) {
-            int ret = git_repository_open(&repo, repository_path.c_str());
-                Node node(oid);
+            //int ret = git_repository_open(&repo, repository_path.c_str());
+            Node node(oid);
             if (is_ref(oid)) {
                 git_reference *ref;
                 git_reference_lookup(&ref, repo, oid.c_str());
@@ -46,6 +46,7 @@ class NodeFactory {
                 git_oid id;
                 git_oid_fromstr(&id, oid.c_str());
                 git_object *object;
+                cout << "now on " << oid << "\n" << flush;
                 git_object_lookup(&object, repo, &id, GIT_OBJ_ANY);
                 git_otype type = git_object_type(object);
 
@@ -107,9 +108,12 @@ class NodeFactory {
                         git_tag *tag;
                         git_tag_lookup(&tag, repo, &id);
                         git_object *target;
-                        git_tag_target(&target, tag);
                         const git_oid *target_id;
+                        /*
+                        git_tag_target(&target, tag);
                         target_id = git_object_id(target);
+                        */
+                        target_id = git_tag_target_oid(tag);
                         char oid_str[40];
                         git_oid_fmt(oid_str, target_id);
                         OID oid_string(oid_str,40);
