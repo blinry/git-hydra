@@ -4,7 +4,7 @@ class SFMLDisplay {
     public:
         SFMLDisplay() : window(VideoMode(500,500), "Git-Tutor"), view(FloatRect(0,0,window.GetWidth(),window.GetHeight())) {
             window.SetView(view);
-            font.LoadFromFile("arial.ttf");
+            font.LoadFromFile(assets_dir()+"/arial.ttf");
             text.SetFont(font);
             text.SetCharacterSize(10);
         }
@@ -109,6 +109,13 @@ class SFMLDisplay {
             return window.IsOpened();
         }
     private:
+        string assets_dir() {
+            char path_to_program[200];
+            int length = readlink("/proc/self/exe", path_to_program, 200);
+            path_to_program[length] = '\0';
+            string assets_dir = path_to_program;
+            return string(assets_dir, 0, assets_dir.rfind("/"));
+        }
         RenderWindow window;
         View view;
         Font font;

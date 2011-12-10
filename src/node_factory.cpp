@@ -46,7 +46,6 @@ class NodeFactory {
                 git_oid id;
                 git_oid_fromstr(&id, oid.c_str());
                 git_object *object;
-                cout << "now on " << oid << "\n" << flush;
                 git_object_lookup(&object, repo, &id, GIT_OBJ_ANY);
                 git_otype type = git_object_type(object);
 
