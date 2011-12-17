@@ -5,38 +5,42 @@ class NodeFactory {
     public:
         NodeFactory(const string& repository_path) : repository_path(repository_path) {
             int ret = git_repository_open(&repo, repository_path.c_str());
-            //TODO: check.
+            if (ret != 0) {
+                cerr << repository_path << " doesn't appear to be a Git repository.\n";
+                exit(1);
+            }
             last_y = 0;
         }
         Node buildNode(const OID& oid) {
             int ret = git_repository_open(&repo, repository_path.c_str());
             Node node(oid);
             if (is_ref(oid)) {
-                git_reference *ref;
+                git_reference *ref = NULL;
                 git_reference_lookup(&ref, repo, oid.c_str());
-                switch(git_reference_type(ref)) {
-                    case GIT_REF_OID:
-                        {
-                            const git_oid* target_id = git_reference_oid(ref);
+                if (ref != NULL) {
+                    switch(git_reference_type(ref)) {
+                        case GIT_REF_OID:
+                            {
+                                const git_oid* target_id = git_reference_oid(ref);
 
-                            char oid_str[40];
-                            git_oid_fmt(oid_str, target_id);
-                            OID oid_string(oid_str,40);
-                            node.add_edge(Edge(oid_string, "points to"));
-                            break;
-                        }
-                    case GIT_REF_SYMBOLIC:
-                        {
-                            const char *oid_str;
-                            oid_str = git_reference_target(ref);
-                            OID oid_string(oid_str,strlen(oid_str));
-                            node.add_edge(Edge(oid_string, "points to"));
-                            break;
-                        }
-                    default:
-                        exit(0);
+                                char oid_str[40];
+                                git_oid_fmt(oid_str, target_id);
+                                OID oid_string(oid_str,40);
+                                node.add_edge(Edge(oid_string, "points to"));
+                                break;
+                            }
+                        case GIT_REF_SYMBOLIC:
+                            {
+                                const char *oid_str;
+                                oid_str = git_reference_target(ref);
+                                OID oid_string(oid_str,strlen(oid_str));
+                                node.add_edge(Edge(oid_string, "points to"));
+                                break;
+                            }
+                        default:
+                            exit(0);
+                    }
                 }
-
                 node.label(oid);
                 node.type(TAG);
             } else if (oid == "index") {

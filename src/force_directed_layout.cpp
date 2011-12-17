@@ -3,7 +3,7 @@ class ForceDirectedLayout {
         ForceDirectedLayout() {
             spring=20;
             charge=1000;
-            damping=0.3;
+            damping=0.1;
         }
         void apply(Graph& graph) {
             for(map<OID,Node>::iterator it = graph.nodes.begin(); it != graph.nodes.end(); it++) {
@@ -22,9 +22,9 @@ class ForceDirectedLayout {
                     for(int k=0; k<n1.degree(); k++) {
                         if (n1.edge(k).target() == n2.oid()) {
                             connected = true;
-                            Vec2f f(0,15);
-                            n1.velocity() -= f;
-                            n2.velocity() += f;
+                            //Vec2f f(0,15);
+                            //n1.velocity() -= f;
+                            //n2.velocity() += f;
                         }
                     }
                     for(int k=0; k<n2.degree(); k++) {
