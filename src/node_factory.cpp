@@ -22,7 +22,7 @@ class NodeFactory {
                             char oid_str[40];
                             git_oid_fmt(oid_str, target_id);
                             OID oid_string(oid_str,40);
-                            node.children.push_back(Edge(oid_string, "points to"));
+                            node.add_edge(Edge(oid_string, "points to"));
                             break;
                         }
                     case GIT_REF_SYMBOLIC:
@@ -30,20 +30,18 @@ class NodeFactory {
                             const char *oid_str;
                             oid_str = git_reference_target(ref);
                             OID oid_string(oid_str,strlen(oid_str));
-                            node.children.push_back(Edge(oid_string, "points to"));
+                            node.add_edge(Edge(oid_string, "points to"));
                             break;
                         }
                     default:
                         exit(0);
                 }
 
-                node.visible = true;
-                node.label = oid;
-                node.type = TAG;
+                node.label(oid);
+                node.type(TAG);
             } else if (oid == "index") {
-                node.visible = true;
-                node.label = oid;
-                node.type = TAG;
+                node.label(oid);
+                node.type(TAG);
 
                 git_index *index;
                 git_repository_index(&index, repo);
@@ -53,7 +51,7 @@ class NodeFactory {
                     char oid_str[40];
                     git_oid_fmt(oid_str, &entry->oid);
                     OID oid_string(oid_str,40);
-                    node.children.push_back(Edge(oid_string, entry->path, false));
+                    node.add_edge(Edge(oid_string, entry->path, false));
                 }
 
             } else {
@@ -64,17 +62,16 @@ class NodeFactory {
                 git_object_lookup(&object, repo, &id, GIT_OBJ_ANY);
                 git_otype type = git_object_type(object);
 
-                node.label = oid.substr(0,6);
-                node.visible = true;
+                node.label(oid.substr(0,6));
 
                 switch(type) {
                     case 1: //commit
                         {
-                            node.type = COMMIT;
+                            node.type(COMMIT);
                             git_commit *commit;
                             git_commit_lookup(&commit, repo, &id);
 
-                            node.text = git_commit_message(commit);
+                            node.text(git_commit_message(commit));
 
                             // parents
                             int parentcount = git_commit_parentcount(commit);
@@ -85,7 +82,7 @@ class NodeFactory {
                                 char oid_str[40];
                                 git_oid_fmt(oid_str, target_id);
                                 OID oid_string(oid_str,40);
-                                node.children.push_back(Edge(oid_string, "parent"));
+                                node.add_edge(Edge(oid_string, "parent"));
                             }
 
                             // tree
@@ -95,12 +92,12 @@ class NodeFactory {
                             char oid_str[40];
                             git_oid_fmt(oid_str, target_id);
                             OID oid_string(oid_str,40);
-                            node.children.push_back(Edge(oid_string, "tree", false));
+                            node.add_edge(Edge(oid_string, "tree", false));
                             break;
                         }
                     case 2: //tree
                         {
-                            node.type = TREE;
+                            node.type(TREE);
                             git_tree *tree;
                             git_tree_lookup(&tree, repo, &id);
 
@@ -111,12 +108,12 @@ class NodeFactory {
                                 char oid_str[40];
                                 git_oid_fmt(oid_str, target_id);
                                 OID oid_string(oid_str,40);
-                                node.children.push_back(Edge(oid_string, git_tree_entry_name(entry)));
+                                node.add_edge(Edge(oid_string, git_tree_entry_name(entry)));
                             }
                             break;
                         }
                     case 4: //tag
-                        node.type = TAG;
+                        node.type(TAG);
                         git_tag *tag;
                         git_tag_lookup(&tag, repo, &id);
                         git_object *target;
@@ -125,12 +122,12 @@ class NodeFactory {
                         char oid_str[40];
                         git_oid_fmt(oid_str, target_id);
                         OID oid_string(oid_str,40);
-                        node.children.push_back(Edge(oid_string, "target"));
+                        node.add_edge(Edge(oid_string, "target"));
                 }
             }
 
-            node.pos.x = (rand()%1000000)/1000000.0;
-            node.pos.y = (rand()%1000000)/1000000.0;
+            node.pos().x = (rand()%1000000)/1000000.0;
+            node.pos().y = (rand()%1000000)/1000000.0;
             return node;
         }
         git_repository *repo; // TODO

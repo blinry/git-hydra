@@ -20,8 +20,9 @@ class Graph {
                     nodes[oid] = factory.buildNode(oid);
                 } else {
                     // it's there, but maybe it needs an update.
-                    Node new_ref = factory.buildNode(oid);
-                    nodes[oid].children = new_ref.children;
+                    Vec2f old_pos = nodes[oid].pos();
+                    nodes[oid] = factory.buildNode(oid);
+                    nodes[oid].pos() = old_pos;
                 }
             } else {
                 map<OID,Node>::iterator it = nodes.find(oid);
@@ -38,8 +39,8 @@ class Graph {
             float best_distance = 99999999; //TODO
             Vec2f pos(x,y);
             for(map<OID,Node>::iterator it = nodes.begin(); it != nodes.end(); it++) {
-                if (!it->second.visible) continue;
-                float distance = it->second.pos.distance(pos);
+                if (!it->second.visible()) continue;
+                float distance = it->second.pos().distance(pos);
                 if (distance < best_distance) {
                     best_distance = distance;
                     best = &(it->second);
@@ -59,7 +60,7 @@ class Graph {
         }
         void visibility_analysis() {
             for(map<OID,Node>::iterator it = nodes.begin(); it != nodes.end(); it++) {
-                it->second.visible = false;
+                it->second.hide();
             }
             for(set<string>::iterator it = ref_names.begin(); it != ref_names.end(); it++) {
                 OID ref = *it;
@@ -78,16 +79,16 @@ class Graph {
         void recursive_unfold_levels(OID oid, int depth) {
             if (depth<0) return;
             Node &n = lookup(oid);
-            for(vector<Edge>::iterator iter = n.children.begin(); iter != n.children.end(); iter++) {
-                iter->unfold();
-                recursive_unfold_levels(iter->target(), depth-1);
+            for(int i=0; i<n.degree(); i++) {
+                n.edge(i).unfold();
+                recursive_unfold_levels(n.edge(i).target(), depth-1);
             }
         }
         void recursive_set_visible(OID oid) {
             Node &n = lookup(oid);
-            n.visible = true;
-            for(int j=0; j<n.children.size(); j++) {
-                Edge &edge = n.children.at(j);
+            n.show();
+            for(int j=0; j<n.degree(); j++) {
+                Edge &edge = n.edge(j);
                 if (!edge.folded())
                     recursive_set_visible(edge.target());
             }
