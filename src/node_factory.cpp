@@ -38,7 +38,6 @@ class NodeFactory {
                 }
 
                 node.visible = true;
-                //node.expanded = true;
                 node.label = oid;
                 node.type = TAG;
             } else if (oid == "index") {
@@ -97,8 +96,6 @@ class NodeFactory {
                             git_oid_fmt(oid_str, target_id);
                             OID oid_string(oid_str,40);
                             node.children.push_back(Edge(oid_string, "tree", false));
-                            //node.visible = true;
-                            //node.expanded = false;
                             break;
                         }
                     case 2: //tree
@@ -124,10 +121,6 @@ class NodeFactory {
                         git_tag_lookup(&tag, repo, &id);
                         git_object *target;
                         const git_oid *target_id;
-                        /*
-                           git_tag_target(&target, tag);
-                           target_id = git_object_id(target);
-                           */
                         target_id = git_tag_target_oid(tag);
                         char oid_str[40];
                         git_oid_fmt(oid_str, target_id);

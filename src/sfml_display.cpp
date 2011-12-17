@@ -25,30 +25,23 @@ class SFMLDisplay {
                     color = Color::White;
             }
             Color border_color;
-            //if (n.expanded)
-                border_color = color;
-            //else
-                //border_color = Color::White;
-            //if (n.expanded) {
-                //bool any_visible = false;
-                for(int j=0; j<n.children.size(); j++) {
-                    if (n.children.at(j).folded()) continue;
-                    Node n2 = graph.lookup(n.children.at(j).target());
-                    if (n2.visible) {
-                        //any_visible = true;
-                        Shape line = Shape::Line(n.pos.x, n.pos.y, n2.pos.x, n2.pos.y, 1, Color::White);
-                        window.Draw(line);
+            border_color = color;
+            for(int j=0; j<n.children.size(); j++) {
+                if (n.children.at(j).folded()) continue;
+                Node n2 = graph.lookup(n.children.at(j).target());
+                if (n2.visible) {
+                    Shape line = Shape::Line(n.pos.x, n.pos.y, n2.pos.x, n2.pos.y, 1, Color::White);
+                    window.Draw(line);
 
-                        text.SetString(n.children.at(j).label());
-                        text.SetPosition((n.pos.x+n2.pos.x)/2,(n.pos.y+n2.pos.y)/2);
-                        window.Draw(text);
+                    text.SetString(n.children.at(j).label());
+                    text.SetPosition((n.pos.x+n2.pos.x)/2,(n.pos.y+n2.pos.y)/2);
+                    window.Draw(text);
 
-                        float dir = atan2(n.pos.x-n2.pos.x,n.pos.y-n2.pos.y);
-                        window.Draw(Shape::Line(n2.pos.x+sin(dir)*5, n2.pos.y+cos(dir)*5, n2.pos.x+sin(dir)*5+sin(dir+0.5)*5, n2.pos.y+cos(dir)*5+cos(dir+0.5)*5, 1, Color::White));
-                        window.Draw(Shape::Line(n2.pos.x+sin(dir)*5, n2.pos.y+cos(dir)*5, n2.pos.x+sin(dir)*5+sin(dir-0.5)*5, n2.pos.y+cos(dir)*5+cos(dir-0.5)*5, 1, Color::White));
-                    }
+                    float dir = atan2(n.pos.x-n2.pos.x,n.pos.y-n2.pos.y);
+                    window.Draw(Shape::Line(n2.pos.x+sin(dir)*5, n2.pos.y+cos(dir)*5, n2.pos.x+sin(dir)*5+sin(dir+0.5)*5, n2.pos.y+cos(dir)*5+cos(dir+0.5)*5, 1, Color::White));
+                    window.Draw(Shape::Line(n2.pos.x+sin(dir)*5, n2.pos.y+cos(dir)*5, n2.pos.x+sin(dir)*5+sin(dir-0.5)*5, n2.pos.y+cos(dir)*5+cos(dir-0.5)*5, 1, Color::White));
                 }
-            //}
+            }
             Shape rect = Shape::Rectangle(n.pos.x-n.width()/2,n.pos.y-n.height()/2,n.width(),n.height(),color,1,border_color);
             window.Draw(rect);
             text.SetString(n.label);
@@ -57,12 +50,7 @@ class SFMLDisplay {
         }
         void draw(Graph& graph) {
             window.Clear();
-            /*
-            for(set<string>::iterator it = graph.ref_names.begin(); it != graph.ref_names.end(); it++) {
-                string ref = *it;
-                draw(graph.lookup(ref), graph);
-            }
-            */
+
             for(map<OID,Node>::iterator it = graph.nodes.begin(); it != graph.nodes.end(); it++) {
                 Node& n = it->second;
                 draw(n,graph);

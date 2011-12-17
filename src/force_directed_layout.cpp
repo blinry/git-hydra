@@ -8,12 +8,6 @@ class ForceDirectedLayout {
         void apply(Graph& graph) {
             for(map<OID,Node>::iterator it = graph.nodes.begin(); it != graph.nodes.end(); it++) {
                 Node& n1 = it->second;
-                /*
-                   if (n1.type == COMMIT)
-                       n1.velocity += Vec2f(0,400-n1.pos.y);
-                   else
-                       n1.velocity += Vec2f(0,500-n1.pos.y);
-                   */
                 if (!n1.visible) continue;
                 for(map<OID,Node>::iterator it2 = graph.nodes.begin(); it2 != graph.nodes.end(); it2++) {
                     Node& n2 = it2->second;
@@ -26,15 +20,15 @@ class ForceDirectedLayout {
                     bool connected = false;
 
                     for(int k=0; k<n1.children.size(); k++) {
-                        if (n1.children.at(k).target() == n2.oid) {// && n1.expanded) {
+                        if (n1.children.at(k).target() == n2.oid) {
                             connected = true;
-                            Vec2f f(0,15);//-0.5*(n2.pos.y-n1.pos.y));
+                            Vec2f f(0,15);
                             n1.velocity -= f;
                             n2.velocity += f;
                         }
                     }
                     for(int k=0; k<n2.children.size(); k++) {
-                        if (n2.children.at(k).target() == n1.oid)// && n2.expanded)
+                        if (n2.children.at(k).target() == n1.oid)
                             connected = true;
                     }
 
