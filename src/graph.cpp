@@ -53,14 +53,28 @@ class Graph {
         }
         Node& lookup(const OID& oid) {
             size_t found = oid.find("/");
-            if (found != string::npos || oid == "HEAD") { // it's a ref!
+            if (found != string::npos || oid == "HEAD" || oid == "index") { // it's a ref!
                 map<OID,Node>::iterator it = nodes.find(oid);
                 if (it == nodes.end()) {
                     nodes[oid] = factory.buildNode(oid);
                 } else {
                     // it's there, but maybe it needs an update.
                     Node new_ref = factory.buildNode(oid);
+                    /*
+                    nodes[oid].children.clear();
+                    for(int i=0; i<new_ref.children.size(); i++) {
+                        nodes[oid].children.push_back(new_ref.children.at(i));
+                        nodes[oid].children.at(i).target = new_ref.children.at(0).target;
+                        nodes[oid].children.at(i).target = new_ref.children.at(0).target;
+                        nodes[oid].children.at(i).folded = new_ref.children.at(0).folded;
+                    }
+                    */
+                    /*
                     nodes[oid].children.at(0).target = new_ref.children.at(0).target;
+                    */
+                    nodes[oid].children.clear();
+
+                    nodes[oid].children = new_ref.children;
                 }
             } else {
                 map<OID,Node>::iterator it = nodes.find(oid);
@@ -96,7 +110,26 @@ class Graph {
                 ref_names.insert(ref_nms.strings[i]);
             }
             ref_names.insert("HEAD");
+            ref_names.insert("index");
         }
+        /*
+        void update_index() {
+            git_index *index;
+            git_repository_index(&index, factory.repo);
+            Node &idx = lookup("index");
+            for(int i=0; i<git_index_entrycount(index); i++) {
+                git_index_entry *entry;
+                entry = git_index_get(index, i);
+                char oid_str[40];
+                git_oid_fmt(oid_str, &entry->oid);
+                OID oid_string(oid_str,40);
+                Node e = lookup(oid_string);
+                cout << oid_string << "\n";
+                idx.children.push_back(Edge(oid_string, "entry", false));
+            }
+            cout << idx.children.size() << flush;
+        }
+        */
         void visibility_analysis() {
             for(map<OID,Node>::iterator it = nodes.begin(); it != nodes.end(); it++) {
                 it->second.visible = false;
@@ -119,10 +152,10 @@ class Graph {
             if (depth<0) return;
             Node &n = lookup(oid);
             for(vector<Edge>::iterator iter = n.children.begin(); iter != n.children.end(); iter++) {
-                if (iter->label != "tree") {
+                //if (iter->label != "tree") {
                     iter->folded = false;
                     recursive_unfold_levels(iter->target, depth-1);
-                }
+                //}
             }
         }
         void recursive_set_visible(OID oid) {

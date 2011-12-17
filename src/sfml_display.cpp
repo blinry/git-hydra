@@ -38,6 +38,11 @@ class SFMLDisplay {
                         //any_visible = true;
                         Shape line = Shape::Line(n.pos.x, n.pos.y, n2.pos.x, n2.pos.y, 1, Color::White);
                         window.Draw(line);
+
+                        text.SetString(n.children.at(j).label);
+                        text.SetPosition((n.pos.x+n2.pos.x)/2,(n.pos.y+n2.pos.y)/2);
+                        window.Draw(text);
+
                         float dir = atan2(n.pos.x-n2.pos.x,n.pos.y-n2.pos.y);
                         window.Draw(Shape::Line(n2.pos.x+sin(dir)*5, n2.pos.y+cos(dir)*5, n2.pos.x+sin(dir)*5+sin(dir+0.5)*5, n2.pos.y+cos(dir)*5+cos(dir+0.5)*5, 1, Color::White));
                         window.Draw(Shape::Line(n2.pos.x+sin(dir)*5, n2.pos.y+cos(dir)*5, n2.pos.x+sin(dir)*5+sin(dir-0.5)*5, n2.pos.y+cos(dir)*5+cos(dir-0.5)*5, 1, Color::White));

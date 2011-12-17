@@ -11,7 +11,8 @@ class Node {
         NodeType type;
 
         Node() { }
-        Node(const OID& oid) : oid(oid) { }
+        Node(const OID& oid) : oid(oid) {
+        }
         float mass() {
             return 10;
         }

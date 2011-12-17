@@ -9,7 +9,7 @@ class NodeFactory {
             last_y = 0;
         }
         Node buildNode(const OID& oid) {
-            //int ret = git_repository_open(&repo, repository_path.c_str());
+            int ret = git_repository_open(&repo, repository_path.c_str());
             Node node(oid);
             if (is_ref(oid)) {
                 git_reference *ref;
@@ -41,6 +41,22 @@ class NodeFactory {
                 //node.expanded = true;
                 node.label = oid;
                 node.type = TAG;
+            } else if (oid == "index") {
+                node.visible = true;
+                node.label = oid;
+                node.type = TAG;
+
+                git_index *index;
+                git_repository_index(&index, repo);
+                for(int i=0; i<git_index_entrycount(index); i++) {
+                    git_index_entry *entry;
+                    entry = git_index_get(index, i);
+                    char oid_str[40];
+                    git_oid_fmt(oid_str, &entry->oid);
+                    OID oid_string(oid_str,40);
+                    node.children.push_back(Edge(oid_string, entry->path, false));
+                }
+
             } else {
 
                 git_oid id;
@@ -80,7 +96,7 @@ class NodeFactory {
                             char oid_str[40];
                             git_oid_fmt(oid_str, target_id);
                             OID oid_string(oid_str,40);
-                            node.children.push_back(Edge(oid_string, "tree", true));
+                            node.children.push_back(Edge(oid_string, "tree", false));
                             //node.visible = true;
                             //node.expanded = false;
                             break;
@@ -98,7 +114,7 @@ class NodeFactory {
                                 char oid_str[40];
                                 git_oid_fmt(oid_str, target_id);
                                 OID oid_string(oid_str,40);
-                                node.children.push_back(Edge(oid_string, "entry"));
+                                node.children.push_back(Edge(oid_string, git_tree_entry_name(entry)));
                             }
                             break;
                         }
@@ -109,9 +125,9 @@ class NodeFactory {
                         git_object *target;
                         const git_oid *target_id;
                         /*
-                        git_tag_target(&target, tag);
-                        target_id = git_object_id(target);
-                        */
+                           git_tag_target(&target, tag);
+                           target_id = git_object_id(target);
+                           */
                         target_id = git_tag_target_oid(tag);
                         char oid_str[40];
                         git_oid_fmt(oid_str, target_id);
