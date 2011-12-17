@@ -11,7 +11,7 @@ class Node {
 
         Node() { }
 
-        Node(const OID& oid) : m_oid(oid), m_visible(true) { }
+        Node(const OID& oid) : m_oid(oid), m_visible(true), m_selected(false) { }
 
         const OID &oid() {
             return m_oid;
@@ -43,6 +43,18 @@ class Node {
 
         void hide() {
             m_visible = false;
+        }
+
+        const bool selected() {
+            return m_selected;
+        }
+
+        void select() {
+            m_selected = true;
+        }
+
+        void toggle_select() {
+            m_selected = !m_selected;
         }
 
         Vec2f &pos() {
@@ -96,6 +108,7 @@ class Node {
         string m_label;
         string m_text;
         bool m_visible;
+        bool m_selected;
         Vec2f m_pos;
         Vec2f m_velocity;
         NodeType m_type;

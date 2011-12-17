@@ -38,7 +38,7 @@ class NodeFactory {
                                 break;
                             }
                         default:
-                            exit(0);
+                            exit(1);
                     }
                 }
                 node.label(oid);

@@ -21,8 +21,11 @@ class Graph {
                 } else {
                     // it's there, but maybe it needs an update.
                     Vec2f old_pos = nodes[oid].pos();
+                    bool old_selected = nodes[oid].selected();
                     nodes[oid] = factory.buildNode(oid);
                     nodes[oid].pos() = old_pos;
+                    if (old_selected)
+                        nodes[oid].select();
                 }
             } else {
                 map<OID,Node>::iterator it = nodes.find(oid);
@@ -32,7 +35,7 @@ class Graph {
             }
             return nodes[oid];
         }
-        Node& nearest_node(float x, float y) {
+        Node &nearest_node(float x, float y) {
             if (nodes.size() == 0)
                 exit(0); //TODO
             Node *best = 0;
@@ -46,7 +49,7 @@ class Graph {
                     best = &(it->second);
                 }
             }
-            return *best;
+            return (*best);
         }
         void reseed() {
             git_strarray ref_nms;

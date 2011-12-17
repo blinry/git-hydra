@@ -30,16 +30,22 @@ class SFMLDisplay {
                 if (n.edge(j).folded()) continue;
                 Node n2 = graph.lookup(n.edge(j).target());
                 if (n2.visible()) {
-                    Shape line = Shape::Line(n.pos().x, n.pos().y, n2.pos().x, n2.pos().y, 1, Color::White);
+                    Color edge_color;
+                    if (n2.selected() || n.selected()) {
+                        edge_color = Color::White;
+                        text.SetString(n.edge(j).label());
+                        text.SetPosition((n.pos().x+n2.pos().x)/2,(n.pos().y+n2.pos().y)/2);
+                        window.Draw(text);
+                    } else {
+                        edge_color = Color(50,50,50);
+                    }
+
+                    Shape line = Shape::Line(n.pos().x, n.pos().y, n2.pos().x, n2.pos().y, 1, edge_color);
                     window.Draw(line);
 
-                    text.SetString(n.edge(j).label());
-                    text.SetPosition((n.pos().x+n2.pos().x)/2,(n.pos().y+n2.pos().y)/2);
-                    window.Draw(text);
-
                     float dir = atan2(n.pos().x-n2.pos().x,n.pos().y-n2.pos().y);
-                    window.Draw(Shape::Line(n2.pos().x+sin(dir)*5, n2.pos().y+cos(dir)*5, n2.pos().x+sin(dir)*5+sin(dir+0.5)*5, n2.pos().y+cos(dir)*5+cos(dir+0.5)*5, 1, Color::White));
-                    window.Draw(Shape::Line(n2.pos().x+sin(dir)*5, n2.pos().y+cos(dir)*5, n2.pos().x+sin(dir)*5+sin(dir-0.5)*5, n2.pos().y+cos(dir)*5+cos(dir-0.5)*5, 1, Color::White));
+                    window.Draw(Shape::Line(n2.pos().x+sin(dir)*5, n2.pos().y+cos(dir)*5, n2.pos().x+sin(dir)*5+sin(dir+0.5)*5, n2.pos().y+cos(dir)*5+cos(dir+0.5)*5, 1, edge_color));
+                    window.Draw(Shape::Line(n2.pos().x+sin(dir)*5, n2.pos().y+cos(dir)*5, n2.pos().x+sin(dir)*5+sin(dir-0.5)*5, n2.pos().y+cos(dir)*5+cos(dir-0.5)*5, 1, edge_color));
                 }
             }
             Shape rect = Shape::Rectangle(n.pos().x-n.width()/2,n.pos().y-n.height()/2,n.width(),n.height(),color,1,border_color);
@@ -77,7 +83,8 @@ class SFMLDisplay {
                 if (event.Type == Event::MouseButtonPressed) {
                     if (event.MouseButton.Button == 0) {
                         Vector2f click_position = window.ConvertCoords(event.MouseButton.X, event.MouseButton.Y);
-                        Node& n = graph.nearest_node(click_position.x, click_position.y);
+                        Node &n = graph.nearest_node(click_position.x, click_position.y);
+                        n.toggle_select();
                     } else if (event.MouseButton.Button == 2) {
                         Vector2f click_position = window.ConvertCoords(Mouse::GetPosition().x, Mouse::GetPosition().y);
                         view.SetCenter(click_position);
