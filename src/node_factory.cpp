@@ -12,7 +12,6 @@ class NodeFactory {
             last_y = 0;
         }
         Node buildNode(const OID& oid) {
-            int ret = git_repository_open(&repo, repository_path.c_str());
             Node node(oid);
             if (is_ref(oid)) {
                 git_reference *ref = NULL;
@@ -44,6 +43,9 @@ class NodeFactory {
                 node.label(oid);
                 node.type(TAG);
             } else if (oid == "index") {
+
+                git_repository_free(repo);
+                int ret = git_repository_open(&repo, repository_path.c_str());
                 node.label(oid);
                 node.type(TAG);
 
@@ -57,7 +59,6 @@ class NodeFactory {
                     OID oid_string(oid_str,40);
                     node.add_edge(Edge(oid_string, entry->path, false));
                 }
-
             } else {
 
                 git_oid id;
