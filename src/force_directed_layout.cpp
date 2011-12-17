@@ -26,7 +26,7 @@ class ForceDirectedLayout {
                     bool connected = false;
 
                     for(int k=0; k<n1.children.size(); k++) {
-                        if (n1.children.at(k).target == n2.oid) {// && n1.expanded) {
+                        if (n1.children.at(k).target() == n2.oid) {// && n1.expanded) {
                             connected = true;
                             Vec2f f(0,15);//-0.5*(n2.pos.y-n1.pos.y));
                             n1.velocity -= f;
@@ -34,7 +34,7 @@ class ForceDirectedLayout {
                         }
                     }
                     for(int k=0; k<n2.children.size(); k++) {
-                        if (n2.children.at(k).target == n1.oid)// && n2.expanded)
+                        if (n2.children.at(k).target() == n1.oid)// && n2.expanded)
                             connected = true;
                     }
 

@@ -32,14 +32,14 @@ class SFMLDisplay {
             //if (n.expanded) {
                 //bool any_visible = false;
                 for(int j=0; j<n.children.size(); j++) {
-                    if (n.children.at(j).folded) continue;
-                    Node n2 = graph.lookup(n.children.at(j).target);
+                    if (n.children.at(j).folded()) continue;
+                    Node n2 = graph.lookup(n.children.at(j).target());
                     if (n2.visible) {
                         //any_visible = true;
                         Shape line = Shape::Line(n.pos.x, n.pos.y, n2.pos.x, n2.pos.y, 1, Color::White);
                         window.Draw(line);
 
-                        text.SetString(n.children.at(j).label);
+                        text.SetString(n.children.at(j).label());
                         text.SetPosition((n.pos.x+n2.pos.x)/2,(n.pos.y+n2.pos.y)/2);
                         window.Draw(text);
 

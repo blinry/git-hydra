@@ -153,8 +153,8 @@ class Graph {
             Node &n = lookup(oid);
             for(vector<Edge>::iterator iter = n.children.begin(); iter != n.children.end(); iter++) {
                 //if (iter->label != "tree") {
-                    iter->folded = false;
-                    recursive_unfold_levels(iter->target, depth-1);
+                    iter->unfold();
+                    recursive_unfold_levels(iter->target(), depth-1);
                 //}
             }
         }
@@ -163,8 +163,8 @@ class Graph {
             n.visible = true;
             for(int j=0; j<n.children.size(); j++) {
                 Edge &edge = n.children.at(j);
-                if (!edge.folded)
-                    recursive_set_visible(edge.target);
+                if (!edge.folded())
+                    recursive_set_visible(edge.target());
             }
         }
         NodeFactory factory;
