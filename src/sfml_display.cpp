@@ -57,7 +57,7 @@ class SFMLDisplay {
         void draw(Graph& graph) {
             window.Clear();
 
-            for(map<OID,Node>::iterator it = graph.nodes.begin(); it != graph.nodes.end(); it++) {
+            for(map<OID,Node>::iterator it = graph.nodes_begin(); it != graph.nodes_end(); it++) {
                 Node& n = it->second;
                 draw(n,graph);
             }

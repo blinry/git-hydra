@@ -6,10 +6,10 @@ class ForceDirectedLayout {
             damping=0.1;
         }
         void apply(Graph& graph) {
-            for(map<OID,Node>::iterator it = graph.nodes.begin(); it != graph.nodes.end(); it++) {
+            for(map<OID,Node>::iterator it = graph.nodes_begin(); it != graph.nodes_end(); it++) {
                 Node& n1 = it->second;
                 if (!n1.visible()) continue;
-                for(map<OID,Node>::iterator it2 = graph.nodes.begin(); it2 != graph.nodes.end(); it2++) {
+                for(map<OID,Node>::iterator it2 = graph.nodes_begin(); it2 != graph.nodes_end(); it2++) {
                     Node& n2 = it2->second;
                     if (!n2.visible()) continue;
                     float distance = n1.pos().distance(n2.pos());

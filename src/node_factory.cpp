@@ -1,5 +1,6 @@
 #include <git2.h>
 #include <cstring>
+#include <set>
 
 class NodeFactory {
     public:
@@ -9,7 +10,6 @@ class NodeFactory {
                 cerr << repository_path << " doesn't appear to be a Git repository.\n";
                 exit(1);
             }
-            last_y = 0;
         }
         Node buildNode(const OID& oid) {
             Node node(oid);
@@ -135,11 +135,25 @@ class NodeFactory {
             node.pos().y = (rand()%1000000)/1000000.0;
             return node;
         }
-        git_repository *repo; // TODO
+        set<string> getRoots() {
+            set<string> roots;
+
+            git_strarray ref_nms;
+            git_reference_listall(&ref_nms, repo, GIT_REF_LISTALL);
+
+            for(int i=0; i<ref_nms.count; i++) {
+                roots.insert(ref_nms.strings[i]);
+            }
+            roots.insert("HEAD");
+            roots.insert("index");
+
+            return roots;
+        }
+
     private:
+        git_repository *repo; // TODO
         string repository_path;
         bool is_ref(const OID& oid) {
             return oid == "HEAD" || oid.find("/") != string::npos;
         }
-        int last_y;
 };

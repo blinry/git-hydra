@@ -52,33 +52,33 @@ class Graph {
             return (*best);
         }
         void reseed() {
-            git_strarray ref_nms;
-            git_reference_listall(&ref_nms, factory.repo, GIT_REF_LISTALL);
-            ref_names.clear();
-            for(int i=0; i<ref_nms.count; i++) {
-                ref_names.insert(ref_nms.strings[i]);
-            }
-            ref_names.insert("HEAD");
-            ref_names.insert("index");
+            roots = factory.getRoots();
         }
         void visibility_analysis() {
             for(map<OID,Node>::iterator it = nodes.begin(); it != nodes.end(); it++) {
                 it->second.hide();
             }
-            for(set<string>::iterator it = ref_names.begin(); it != ref_names.end(); it++) {
+            for(set<string>::iterator it = roots.begin(); it != roots.end(); it++) {
                 OID ref = *it;
                 recursive_set_visible(ref);
             }
         }
         void unfold_levels(int depth) {
-            for(set<string>::iterator it = ref_names.begin(); it != ref_names.end(); it++) {
+            for(set<string>::iterator it = roots.begin(); it != roots.end(); it++) {
                 OID ref = *it;
                 recursive_unfold_levels(ref, depth-1);
             }
         }
-        map<OID,Node> nodes; // TODO: soll nicht public sein!
-        set<string> ref_names;
+        map<OID,Node>::iterator nodes_begin() {
+            return nodes.begin();
+        }
+        map<OID,Node>::iterator nodes_end() {
+            return nodes.end();
+        }
     private:
+        NodeFactory factory;
+        set<string> roots;
+        map<OID,Node> nodes;
         void recursive_unfold_levels(OID oid, int depth) {
             if (depth<0) return;
             Node &n = lookup(oid);
@@ -96,5 +96,4 @@ class Graph {
                     recursive_set_visible(edge.target());
             }
         }
-        NodeFactory factory;
 };
