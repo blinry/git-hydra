@@ -83,17 +83,31 @@ class Graph {
             if (depth<0) return;
             Node &n = lookup(oid);
             for(int i=0; i<n.degree(); i++) {
-                n.edge(i).unfold();
-                recursive_unfold_levels(n.edge(i).target(), depth-1);
+                //cout << n.edge(i).label() << " " << flush;
+                if (n.edge(i).label() != "tree") {
+                cout << "set!";
+                    n.edge(i).unfold();
+                    recursive_unfold_levels(n.edge(i).target(), depth-1);
+                }
+            }
+            for(int i=0; i<n.degree(); i++) {
+                //cout << n.edge(i).label() << " " << flush;
+                    cout << n.edge(i).folded();
+                if (n.edge(i).label() != "tree") {
+                }
             }
         }
         void recursive_set_visible(OID oid) {
             Node &n = lookup(oid);
             n.show();
+            cout << n.label() << " " << n.degree() << flush;
             for(int j=0; j<n.degree(); j++) {
+                cout << "?" << flush;
                 Edge &edge = n.edge(j);
-                if (!edge.folded())
+                if (!edge.folded()) {
+                cout << "!" << flush;
                     recursive_set_visible(edge.target());
+                }
             }
         }
 };

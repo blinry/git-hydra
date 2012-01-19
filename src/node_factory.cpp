@@ -25,7 +25,7 @@ class NodeFactory {
                                 char oid_str[40];
                                 git_oid_fmt(oid_str, target_id);
                                 OID oid_string(oid_str,40);
-                                node.add_edge(Edge(oid_string, "points to"));
+                                node.add_edge(Edge(oid_string, "points to", false));
                                 break;
                             }
                         case GIT_REF_SYMBOLIC:
@@ -33,7 +33,7 @@ class NodeFactory {
                                 const char *oid_str;
                                 oid_str = git_reference_target(ref);
                                 OID oid_string(oid_str,strlen(oid_str));
-                                node.add_edge(Edge(oid_string, "points to"));
+                                node.add_edge(Edge(oid_string, "points to", false));
                                 break;
                             }
                         default:
@@ -87,7 +87,7 @@ class NodeFactory {
                                 char oid_str[40];
                                 git_oid_fmt(oid_str, target_id);
                                 OID oid_string(oid_str,40);
-                                node.add_edge(Edge(oid_string, "parent"));
+                                node.add_edge(Edge(oid_string, "parent", false));
                             }
 
                             // tree
@@ -97,7 +97,7 @@ class NodeFactory {
                             char oid_str[40];
                             git_oid_fmt(oid_str, target_id);
                             OID oid_string(oid_str,40);
-                            node.add_edge(Edge(oid_string, "tree", false));
+                            node.add_edge(Edge(oid_string, "tree"));
                             break;
                         }
                     case 2: //tree
@@ -127,7 +127,7 @@ class NodeFactory {
                         char oid_str[40];
                         git_oid_fmt(oid_str, target_id);
                         OID oid_string(oid_str,40);
-                        node.add_edge(Edge(oid_string, "target"));
+                        node.add_edge(Edge(oid_string, "target", false));
                 }
             }
 
@@ -138,14 +138,17 @@ class NodeFactory {
         set<string> getRoots() {
             set<string> roots;
 
+            /*
             git_strarray ref_nms;
             git_reference_listall(&ref_nms, repo, GIT_REF_LISTALL);
 
             for(int i=0; i<ref_nms.count; i++) {
                 roots.insert(ref_nms.strings[i]);
             }
+            */
+
             roots.insert("HEAD");
-            roots.insert("index");
+            //roots.insert("index");
 
             return roots;
         }

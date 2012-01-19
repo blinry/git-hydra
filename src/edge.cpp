@@ -8,6 +8,13 @@ class Edge {
 
     public:
 
+        Edge(const Edge &other) {
+            m_target = other.m_target;
+            m_label = other.m_label;
+            m_folded = other.m_folded;
+            cout << "copied!";
+        }
+
         Edge(const OID &target, string label, bool folded=false) : m_target(target), m_label(label), m_folded(folded) { }
 
         const OID &target() {
