@@ -138,17 +138,15 @@ class NodeFactory {
         set<string> getRoots() {
             set<string> roots;
 
-            /*
             git_strarray ref_nms;
             git_reference_listall(&ref_nms, repo, GIT_REF_LISTALL);
 
             for(int i=0; i<ref_nms.count; i++) {
                 roots.insert(ref_nms.strings[i]);
             }
-            */
 
             roots.insert("HEAD");
-            //roots.insert("index");
+            roots.insert("index");
 
             return roots;
         }
