@@ -9,6 +9,13 @@ class ForceDirectedLayout {
             for(map<OID,Node>::iterator it = graph.nodes_begin(); it != graph.nodes_end(); it++) {
                 Node& n1 = it->second;
                 if (!n1.visible()) continue;
+
+                if (n1.type() == COMMIT)
+                    n1.velocity().y -= n1.pos().y;
+                if (n1.type() == TAG) {
+                    n1.velocity().y -= n1.pos().y-(graph.lookup(n1.edge(0).target()).pos().y-100);
+                }
+
                 for(map<OID,Node>::iterator it2 = graph.nodes_begin(); it2 != graph.nodes_end(); it2++) {
                     Node& n2 = it2->second;
                     if (!n2.visible()) continue;
@@ -22,9 +29,11 @@ class ForceDirectedLayout {
                     for(int k=0; k<n1.degree(); k++) {
                         if (n1.edge(k).target() == n2.oid()) {
                             connected = true;
-                            //Vec2f f(0,15);
-                            //n1.velocity() -= f;
-                            //n2.velocity() += f;
+                            if (n1.type() == COMMIT && n2.type() == COMMIT) {
+                                Vec2f f(-20,0);
+                                n1.velocity() -= f;
+                                n2.velocity() += f;
+                            }
                         }
                     }
                     for(int k=0; k<n2.degree(); k++) {
