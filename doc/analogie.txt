@@ -1,0 +1,15 @@
+- Ein Blob ist eine Zutat, ein Bestandteil eines Gerichts.
+- Ein Tree ist eine Sammlung von Essen, in einem Behälter. Ausnahme: Ein Tree, der von einem Commit referenziert wird, ist ein Schwein
+- Ein Commit ist ein Schwein in einer Schlange.
+- Ein Tag ist ein Schild, das irgendwo drin steckt. Annotated Tags sind einfach dunkler. Ausnahme: Ein Branch-Tag ist ein Schlangenkopf.
+
+- Der HEAD ist ein Vogel, der auf einem Stück Schlange oder auf einem Schlangenkopf sitzt.
+- Der Index ist ein Menü, das Zutaten auflistet.
+
+Ein leeres Repo ist eine Schlange ohne Inhalt, deren Kopf "master" heißt und auf dem ein Vogel sitzt. Das Menü ist leer.
+
+Fügt man Dateien und Ordner (physikalisch) hinzu, tauchen die im unteren Bildschirmdrittel (als Baum von Zutaten und Behältern) auf. Ein "git add" fügt die Dateien (!) mit vollständigem Pfad dem Menü hinzu UND überführt sie in den Object Space! Vielleicht kann man das Working Directory ebenfalls jederzeit als "aktuelles Menü" danebenalten und die Unterschiede markieren?
+
+Bei "git commit" wird das Menü zunächst dem Menü entsprechend zusammengefügt, und zwar wieder verschachtelt! Dann kommt ein kleines Schweinchen angelaufen und frisst alles auf. Anschließend wird das Schweinchen von der Schlange gefressen. Das Menü bleibt, wie es ist.
+
+Bei "git co HEAD^" springt der Vogel ein Schlangensegment weiter nach hinten. Das Menü, das das (gefressene) Schweinchen an dieser Stelle gefressen hat, wird nach unten kopiert UND die Inhalte des WDs werden entsprechend aktualisiert.

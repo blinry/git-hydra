@@ -1,0 +1,7 @@
+Sun Jan 29 21:24:47 CET 2012
+
+Heyho. Mal ausprobieren, wie so ein Projekt-Logbuch funktioniert.
+
+Am 10.2. ist Abgabe. Bis dahin brauche ich eine präsentable Version des Git-Tutors. In den anderen Dateien in diesem Verzeichnis sind ein paar Überlegungen verstreut.
+
+Als erstes brauche ich einen Plan, eine Klassenstruktur.
