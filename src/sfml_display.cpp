@@ -40,16 +40,29 @@ class SFMLDisplay {
                         edge_color = Color(50,50,50);
                     }
 
-                    Shape line = Shape::Line(n.pos().x, n.pos().y, n2.pos().x, n2.pos().y, 1, edge_color);
+                    VertexArray line(Lines, 2);
+                    line[0].Position = Vector2f(n.pos().x, n.pos().y);
+                    line[1].Position = Vector2f(n2.pos().x, n2.pos().y);
+                    //Shape line = Shape::Line(, , 1, edge_color);
                     window.Draw(line);
 
                     float dir = atan2(n.pos().x-n2.pos().x,n.pos().y-n2.pos().y);
-                    window.Draw(Shape::Line(n2.pos().x+sin(dir)*5, n2.pos().y+cos(dir)*5, n2.pos().x+sin(dir)*5+sin(dir+0.5)*5, n2.pos().y+cos(dir)*5+cos(dir+0.5)*5, 1, edge_color));
-                    window.Draw(Shape::Line(n2.pos().x+sin(dir)*5, n2.pos().y+cos(dir)*5, n2.pos().x+sin(dir)*5+sin(dir-0.5)*5, n2.pos().y+cos(dir)*5+cos(dir-0.5)*5, 1, edge_color));
+
+                    line[0].Position = Vector2f(n2.pos().x+sin(dir)*5, n2.pos().y+cos(dir)*5);
+                    line[1].Position = Vector2f(n2.pos().x+sin(dir)*5+sin(dir+0.5)*5, n2.pos().y+cos(dir)*5+cos(dir+0.5)*5);
+                    window.Draw(line);
+
+                    line[0].Position = Vector2f(n2.pos().x+sin(dir)*5, n2.pos().y+cos(dir)*5);
+                    line[1].Position = Vector2f(n2.pos().x+sin(dir)*5+sin(dir-0.5)*5, n2.pos().y+cos(dir)*5+cos(dir-0.5)*5);
+                    window.Draw(line);
                 }
             }
-            Shape rect = Shape::Rectangle(n.pos().x-n.width()/2,n.pos().y-n.height()/2,n.width(),n.height(),color,1,border_color);
+            RectangleShape rect = RectangleShape(Vector2f(n.width(),n.height()));
+            rect.SetFillColor(color);
+            rect.SetOutlineColor(border_color);
+            rect.SetPosition(Vector2f(n.pos().x-n.width()/2,n.pos().y-n.height()/2));
             window.Draw(rect);
+
             text.SetString(n.label());
             text.SetPosition(n.pos().x+5, n.pos().y);
             window.Draw(text);
@@ -112,7 +125,7 @@ class SFMLDisplay {
             }
         }
         bool open() {
-            return window.IsOpened();
+            return window.IsOpen();
         }
     private:
         string assets_dir() {
