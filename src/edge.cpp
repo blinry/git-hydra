@@ -14,7 +14,7 @@ class Edge {
             m_folded = other.m_folded;
         }
 
-        Edge(const OID &target, string label, bool folded=false) : m_target(target), m_label(label), m_folded(folded) { }
+        Edge(const OID &target, string label, bool folded=true) : m_target(target), m_label(label), m_folded(folded) { }
 
         const OID &target() {
             return m_target;
@@ -30,6 +30,10 @@ class Edge {
 
         void unfold() {
             m_folded = false;
+        }
+
+        void fold() {
+            m_folded = true;
         }
 
     private:

@@ -5,6 +5,11 @@ class Graph {
         Graph(NodeFactory& factory) : factory(factory) {
             reseed();
         }
+        void update() {
+            reseed();
+            unfold_levels(3);
+            visibility_analysis();
+        }
         void seed(const OID& oid, int depth=999) {
             map<OID,Node>::iterator it = nodes.find(oid);
             if (it == nodes.end()) {
@@ -22,10 +27,16 @@ class Graph {
                     // it's there, but maybe it needs an update.
                     Vec2f old_pos = nodes[oid].pos();
                     bool old_selected = nodes[oid].selected();
+                    bool edge_folded = nodes[oid].edge(0).folded();
+                    bool visible = nodes[oid].visible();
                     nodes[oid] = factory.buildNode(oid);
                     nodes[oid].pos() = old_pos;
                     if (old_selected)
                         nodes[oid].select();
+                    if (!edge_folded)
+                        nodes[oid].edge(0).unfold();
+                    if (visible)
+                        nodes[oid].show();
                 }
             } else {
                 map<OID,Node>::iterator it = nodes.find(oid);
@@ -62,6 +73,13 @@ class Graph {
             }
         }
         void unfold_levels(int depth) {
+            for(map<OID,Node>::iterator it = nodes.begin(); it != nodes.end(); it++) {
+                Node &n = it->second;
+                for(int i=0; i<n.degree(); i++) {
+                    if (!n.edge(i).folded())
+                        n.edge(i).fold();
+                }
+            }
             for(set<string>::iterator it = roots.begin(); it != roots.end(); it++) {
                 OID ref = *it;
                 recursive_unfold_levels(ref, depth-1);
@@ -84,15 +102,11 @@ class Graph {
             if (depth<0) return;
             Node &n = lookup(oid);
             for(int i=0; i<n.degree(); i++) {
-                //cout << n.edge(i).label() << " " << flush;
                 if (n.edge(i).label() != "tree") {
-                    n.edge(i).unfold();
+                    if (n.edge(i).folded()) {
+                        n.edge(i).unfold();
+                    }
                     recursive_unfold_levels(n.edge(i).target(), depth-1);
-                }
-            }
-            for(int i=0; i<n.degree(); i++) {
-                //cout << n.edge(i).label() << " " << flush;
-                if (n.edge(i).label() != "tree") {
                 }
             }
         }

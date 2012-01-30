@@ -28,9 +28,7 @@ int main(int argc, const char *argv[])
     SFMLDisplay display(graph);
 
     while(display.open()) {
-        graph.reseed();
-        graph.unfold_levels(5);
-        graph.visibility_analysis();
+        graph.update();
         layout.apply();
         display.draw();
         display.process_events();

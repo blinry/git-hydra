@@ -25,7 +25,7 @@ class NodeFactory {
                                 char oid_str[40];
                                 git_oid_fmt(oid_str, target_id);
                                 OID oid_string(oid_str,40);
-                                node.add_edge(Edge(oid_string, "points to", false));
+                                node.add_edge(Edge(oid_string, "points to"));
                                 break;
                             }
                         case GIT_REF_SYMBOLIC:
@@ -33,7 +33,7 @@ class NodeFactory {
                                 const char *oid_str;
                                 oid_str = git_reference_target(ref);
                                 OID oid_string(oid_str,strlen(oid_str));
-                                node.add_edge(Edge(oid_string, "points to", false));
+                                node.add_edge(Edge(oid_string, "points to"));
                                 break;
                             }
                         default:
@@ -57,7 +57,7 @@ class NodeFactory {
                     char oid_str[40];
                     git_oid_fmt(oid_str, &entry->oid);
                     OID oid_string(oid_str,40);
-                    node.add_edge(Edge(oid_string, entry->path, false));
+                    node.add_edge(Edge(oid_string, entry->path));
                 }
             } else {
 
@@ -87,7 +87,7 @@ class NodeFactory {
                                 char oid_str[40];
                                 git_oid_fmt(oid_str, target_id);
                                 OID oid_string(oid_str,40);
-                                node.add_edge(Edge(oid_string, "parent", false));
+                                node.add_edge(Edge(oid_string, "parent"));
                             }
 
                             /*
@@ -129,7 +129,7 @@ class NodeFactory {
                         char oid_str[40];
                         git_oid_fmt(oid_str, target_id);
                         OID oid_string(oid_str,40);
-                        node.add_edge(Edge(oid_string, "target", false));
+                        node.add_edge(Edge(oid_string, "target"));
                 }
             }
 

@@ -11,7 +11,7 @@ class Node {
 
         Node() { }
 
-        Node(const OID& oid) : m_oid(oid), m_visible(true), m_selected(false) { }
+        Node(const OID& oid) : m_oid(oid), m_visible(false), m_selected(false) { }
 
         const OID &oid() {
             return m_oid;
