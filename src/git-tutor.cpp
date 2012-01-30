@@ -27,6 +27,7 @@ int main(int argc, const char *argv[])
     ForceDirectedLayout layout(graph);
     SFMLDisplay display(graph);
 
+
     while(display.open()) {
         graph.update();
         layout.apply();

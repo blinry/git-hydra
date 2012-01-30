@@ -13,7 +13,8 @@ class ForceDirectedLayout {
                 if (n1.type() == COMMIT)
                     n1.velocity().y -= n1.pos().y;
                 if (n1.type() == TAG) {
-                    n1.velocity().y -= n1.pos().y-(graph.lookup(n1.edge(0).target()).pos().y-100);
+                    if (n1.degree() > 0)
+                        n1.velocity().y -= n1.pos().y-(graph.lookup(n1.edge(0).target()).pos().y-100);
                 }
 
                 for(map<OID,Node>::iterator it2 = graph.nodes_begin(); it2 != graph.nodes_end(); it2++) {
@@ -27,7 +28,7 @@ class ForceDirectedLayout {
                     bool connected = false;
 
                     for(int k=0; k<n1.degree(); k++) {
-                        if (n1.edge(k).target() == n2.oid()) {
+                        if (n1.edge(k).target() == n2.oid() && !n1.edge(k).folded()) {
                             connected = true;
                             if (n1.type() == COMMIT && n2.type() == COMMIT) {
                                 Vec2f f(-20,0);
@@ -37,7 +38,7 @@ class ForceDirectedLayout {
                         }
                     }
                     for(int k=0; k<n2.degree(); k++) {
-                        if (n2.edge(k).target() == n1.oid())
+                        if (n2.edge(k).target() == n1.oid() && !n2.edge(k).folded())
                             connected = true;
                     }
 

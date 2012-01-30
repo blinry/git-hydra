@@ -7,7 +7,7 @@ class Graph {
         }
         void update() {
             reseed();
-            unfold_levels(3);
+            unfold_levels(10);
             visibility_analysis();
         }
         void seed(const OID& oid, int depth=999) {
@@ -27,14 +27,15 @@ class Graph {
                     // it's there, but maybe it needs an update.
                     Vec2f old_pos = nodes[oid].pos();
                     bool old_selected = nodes[oid].selected();
-                    bool edge_folded = nodes[oid].edge(0).folded();
+                    bool edge_folded;
                     bool visible = nodes[oid].visible();
                     nodes[oid] = factory.buildNode(oid);
                     nodes[oid].pos() = old_pos;
                     if (old_selected)
                         nodes[oid].select();
-                    if (!edge_folded)
-                        nodes[oid].edge(0).unfold();
+                    for(int i=0; i<nodes[oid].degree(); i++) {
+                        nodes[oid].edge(i).unfold();
+                    }
                     if (visible)
                         nodes[oid].show();
                 }
@@ -102,12 +103,12 @@ class Graph {
             if (depth<0) return;
             Node &n = lookup(oid);
             for(int i=0; i<n.degree(); i++) {
-                if (n.edge(i).label() != "tree") {
+                //if (n.edge(i).label() != "tree") {
                     if (n.edge(i).folded()) {
                         n.edge(i).unfold();
                     }
                     recursive_unfold_levels(n.edge(i).target(), depth-1);
-                }
+                //}
             }
         }
         void recursive_set_visible(OID oid) {
