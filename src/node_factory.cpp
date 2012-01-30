@@ -2,6 +2,9 @@
 #include <cstring>
 #include <set>
 
+#include <stdio.h>
+#include <stdlib.h>
+
 class NodeFactory {
     public:
         NodeFactory(const string& repository_path) : repository_path(repository_path) {
@@ -145,6 +148,27 @@ class NodeFactory {
                 roots.insert(ref_nms.strings[i]);
             }
 
+            if (true) {
+                FILE *fp;
+                int status;
+                char path[1035];
+
+                string prog = assets_dir();
+                prog += "/list-all-object-ids";
+                fp = popen(prog.c_str(), "r");
+                if (fp == NULL) {
+                    printf("Failed to run command\n" );
+                    exit;
+                }
+
+                while (fgets(path, sizeof(path)-1, fp) != NULL) {
+                    path[strcspn ( path, "\n" )] = '\0';
+                    roots.insert(path);
+                }
+
+                pclose(fp);
+            }
+
             roots.insert("HEAD");
             roots.insert("index");
 
@@ -156,5 +180,12 @@ class NodeFactory {
         string repository_path;
         bool is_ref(const OID& oid) {
             return oid == "HEAD" || oid.find("/") != string::npos;
+        }
+        string assets_dir() {
+            char path_to_program[200];
+            int length = readlink("/proc/self/exe", path_to_program, 200);
+            path_to_program[length] = '\0';
+            string assets_dir = path_to_program;
+            return string(assets_dir, 0, assets_dir.rfind("/"));
         }
 };

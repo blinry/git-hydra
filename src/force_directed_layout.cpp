@@ -8,6 +8,7 @@ class ForceDirectedLayout {
         void apply() {
             for(map<OID,Node>::iterator it = graph.nodes_begin(); it != graph.nodes_end(); it++) {
                 Node& n1 = it->second;
+
                 if (!n1.visible()) continue;
 
                 if (n1.type() == COMMIT)
