@@ -5,7 +5,8 @@ enum NodeType {
     BLOB,
     TREE,
     COMMIT,
-    TAG
+    TAG,
+    INDEX
 };
 
 typedef string OID;

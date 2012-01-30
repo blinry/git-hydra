@@ -47,7 +47,7 @@ class NodeFactory {
                 git_repository_free(repo);
                 int ret = git_repository_open(&repo, repository_path.c_str());
                 node.label(oid);
-                node.type(TAG);
+                node.type(INDEX);
 
                 git_index *index;
                 git_repository_index(&index, repo);
