@@ -2,13 +2,13 @@
 using namespace sf;
 class SFMLDisplay {
     public:
-        SFMLDisplay() : window(VideoMode(500,500), "Git-Tutor"), view(FloatRect(0,0,window.GetWidth(),window.GetHeight())) {
+        SFMLDisplay(Graph& graph) : graph(graph), window(VideoMode(500,500), "Git-Tutor"), view(FloatRect(0,0,window.GetWidth(),window.GetHeight())) {
             window.SetView(view);
             font.LoadFromFile(assets_dir()+"/arial.ttf");
             text.SetFont(font);
             text.SetCharacterSize(10);
         }
-        void draw(Node n, Graph& graph) {
+        void draw(Node n) {
             if (!n.visible()) return;
             Color color;
             switch(n.type()) {
@@ -54,24 +54,26 @@ class SFMLDisplay {
             text.SetPosition(n.pos().x+5, n.pos().y);
             window.Draw(text);
         }
-        void draw(Graph& graph) {
+        void draw() {
             window.Clear();
 
             for(map<OID,Node>::iterator it = graph.nodes_begin(); it != graph.nodes_end(); it++) {
                 Node& n = it->second;
-                draw(n,graph);
+                draw(n);
             }
 
-            Vector2f mouse_position = window.ConvertCoords(Mouse::GetPosition().x, Mouse::GetPosition().y);
-            Node& n = graph.nearest_node(mouse_position.x, mouse_position.y);
+            if (!graph.empty()) {
+                Vector2f mouse_position = window.ConvertCoords(Mouse::GetPosition().x, Mouse::GetPosition().y);
+                Node& n = graph.nearest_node(mouse_position.x, mouse_position.y);
 
-            text.SetString(n.text());
-            text.SetPosition(n.pos().x+5, n.pos().y+10);
+                text.SetString(n.text());
+                text.SetPosition(n.pos().x+5, n.pos().y+10);
+            }
             window.Draw(text);
 
             window.Display();
         }
-        void process_events(Graph& graph) {
+        void process_events() {
             Event event;
             while(window.PollEvent(event)) {
                 if (event.Type == Event::Closed)
@@ -81,14 +83,17 @@ class SFMLDisplay {
                     window.SetView(view);
                 }
                 if (event.Type == Event::MouseButtonPressed) {
-                    if (event.MouseButton.Button == 0) {
-                        Vector2f click_position = window.ConvertCoords(event.MouseButton.X, event.MouseButton.Y);
-                        Node &n = graph.nearest_node(click_position.x, click_position.y);
-                        n.toggle_select();
-                    } else if (event.MouseButton.Button == 2) {
-                        Vector2f click_position = window.ConvertCoords(Mouse::GetPosition().x, Mouse::GetPosition().y);
-                        view.SetCenter(click_position);
-                        window.SetView(view);
+                    if (!graph.empty()) {
+                        if (event.MouseButton.Button == 0) {
+                            Vector2f click_position = window.ConvertCoords(event.MouseButton.X, event.MouseButton.Y);
+                            Node &n = graph.nearest_node(click_position.x, click_position.y);
+
+                            n.toggle_select();
+                        } else if (event.MouseButton.Button == 2) {
+                            Vector2f click_position = window.ConvertCoords(Mouse::GetPosition().x, Mouse::GetPosition().y);
+                            view.SetCenter(click_position);
+                            window.SetView(view);
+                        }
                     }
                 }
                 if (event.Type == Event::Resized) {
@@ -99,9 +104,11 @@ class SFMLDisplay {
                 }
             }
             if (Mouse::IsButtonPressed(Mouse::Right)) {
-                Vector2f click_position = window.ConvertCoords(Mouse::GetPosition().x, Mouse::GetPosition().y);
-                Node& n = graph.nearest_node(click_position.x, click_position.y);
-                n.pos(click_position.x, click_position.y);
+                if (!graph.empty()) {
+                    Vector2f click_position = window.ConvertCoords(Mouse::GetPosition().x, Mouse::GetPosition().y);
+                    Node& n = graph.nearest_node(click_position.x, click_position.y);
+                    n.pos(click_position.x, click_position.y);
+                }
             }
         }
         bool open() {
@@ -119,4 +126,5 @@ class SFMLDisplay {
         View view;
         Font font;
         Text text;
+        Graph &graph;
 };

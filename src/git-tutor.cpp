@@ -13,26 +13,27 @@ using namespace std;
 int main(int argc, const char *argv[])
 {
     srand(time(NULL));
-    string working_directory;
+
+    string git_directory;
     if (argc>1) {
-        working_directory = argv[1];
-        working_directory += "/.git/";
+        git_directory = argv[1];
+        git_directory += "/.git/";
     } else {
-        working_directory = ".git/";
+        git_directory = ".git/";
     }
 
-    NodeFactory node_factory(working_directory);
+    NodeFactory node_factory(git_directory);
     Graph graph(node_factory);
-    ForceDirectedLayout layout;
-    SFMLDisplay display;
+    ForceDirectedLayout layout(graph);
+    SFMLDisplay display(graph);
 
     while(display.open()) {
         graph.reseed();
         graph.unfold_levels(5);
         graph.visibility_analysis();
-        layout.apply(graph);
-        display.draw(graph);
-        display.process_events(graph);
+        layout.apply();
+        display.draw();
+        display.process_events();
     }
 
     return 0;

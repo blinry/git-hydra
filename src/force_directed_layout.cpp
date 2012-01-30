@@ -1,11 +1,11 @@
 class ForceDirectedLayout {
     public:
-        ForceDirectedLayout() {
+        ForceDirectedLayout(Graph& graph) : graph(graph) {
             spring=20;
             charge=1000;
             damping=0.1;
         }
-        void apply(Graph& graph) {
+        void apply() {
             for(map<OID,Node>::iterator it = graph.nodes_begin(); it != graph.nodes_end(); it++) {
                 Node& n1 = it->second;
                 if (!n1.visible()) continue;
@@ -58,4 +58,5 @@ class ForceDirectedLayout {
         }
     private:
         float spring, charge, damping;
+        Graph &graph;
 };

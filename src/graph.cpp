@@ -36,8 +36,6 @@ class Graph {
             return nodes[oid];
         }
         Node &nearest_node(float x, float y) {
-            if (nodes.size() == 0)
-                exit(0); //TODO
             Node *best = 0;
             float best_distance = 99999999; //TODO
             Vec2f pos(x,y);
@@ -74,6 +72,9 @@ class Graph {
         }
         map<OID,Node>::iterator nodes_end() {
             return nodes.end();
+        }
+        bool empty() {
+            return nodes.size() == 0;
         }
     private:
         NodeFactory factory;
