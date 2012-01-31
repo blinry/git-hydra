@@ -3,8 +3,9 @@ using namespace sf;
 
 class SFMLDisplay {
     public:
-        SFMLDisplay(Graph& graph) : graph(graph), window(VideoMode(500,500), "Git-Tutor"), view(FloatRect(0,0,window.GetWidth(),window.GetHeight())) {
+        SFMLDisplay(Graph& graph) : graph(graph), window(VideoMode(500,500), "Git-Tutor", Style::Default, ContextSettings(0,0,4,3,0)), view(FloatRect(0,0,window.GetWidth(),window.GetHeight())) {
             window.SetView(view);
+            cout << window.GetSettings().AntialiasingLevel << flush;
             font.LoadFromFile(assets_dir()+"/arial.ttf");
             text.SetFont(font);
             text.SetCharacterSize(10);
@@ -14,7 +15,7 @@ class SFMLDisplay {
             Color color;
             switch(n.type()) {
                 case COMMIT:
-                    color = Color::Red;
+                    color = Color(20,155,20);
                     break;
                 case TREE:
                     color = Color::Green;
@@ -49,13 +50,13 @@ class SFMLDisplay {
 
                     Vector2f offset(sin(dir+M_PI/2)*width, cos(dir+M_PI/2)*width);
 
-                    VertexArray line(Quads, 4);
-                    line[0].Position = Vector2f(n.pos().x, n.pos().y)+offset;
-                    line[1].Position = Vector2f(n2.pos().x, n2.pos().y)+offset;
+                    ConvexShape line(4);
+                    line.SetFillColor(color);
+                    line.SetPoint(0, Vector2f(n.pos().x, n.pos().y)+offset);
+                    line.SetPoint(1, Vector2f(n2.pos().x, n2.pos().y)+offset);
 
-
-                    line[2].Position = line[1].Position - offset - offset;
-                    line[3].Position = line[0].Position - offset - offset;
+                    line.SetPoint(2, line.GetPoint(1) - offset - offset);
+                    line.SetPoint(3, line.GetPoint(0) - offset - offset);
                     window.Draw(line);
 
                     /*
@@ -76,8 +77,8 @@ class SFMLDisplay {
 
             switch (n.type()) {
                 case COMMIT:
-                    circ = CircleShape(n.width()/2, 20);
-                    circ.SetFillColor(Color(50,255,50));
+                    circ = CircleShape(n.width()/2, 64);
+                    circ.SetFillColor(color);
                     circ.SetPosition(Vector2f(n.pos().x-n.width()/2,n.pos().y-n.height()/2));
                     window.Draw(circ);
                     break;

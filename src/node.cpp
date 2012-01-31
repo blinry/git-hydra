@@ -91,13 +91,13 @@ class Node {
         }
 
         float mass() {
-            return 10;
+            return width();
         }
 
         float width() {
             switch(type()) {
                 case COMMIT:
-                    return 20;
+                    return 30;
                 default:
                     return 10;
             }
