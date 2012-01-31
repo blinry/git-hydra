@@ -5,7 +5,7 @@ class SFMLDisplay {
     public:
         SFMLDisplay(Graph& graph) : graph(graph), window(VideoMode(500,500), "Git-Tutor", Style::Default, ContextSettings(0,0,4,3,0)), view(FloatRect(0,0,window.GetWidth(),window.GetHeight())) {
             window.SetView(view);
-            cout << window.GetSettings().AntialiasingLevel << flush;
+            //cout << window.GetSettings().AntialiasingLevel << flush;
             font.LoadFromFile(assets_dir()+"/arial.ttf");
             text.SetFont(font);
             text.SetCharacterSize(10);
