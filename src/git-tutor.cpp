@@ -1,4 +1,7 @@
 #include <iostream>
+#include <set>
+#include <map>
+#include <vector>
 using namespace std;
 
 #include <stdio.h>
@@ -8,6 +11,7 @@ using namespace std;
 #include "vec2f.cpp"
 #include "edge.cpp"
 #include "node.cpp"
+#include "index_entry.cpp"
 #include "node_factory.cpp"
 #include "graph.cpp"
 #include "index.cpp"
@@ -31,11 +35,11 @@ int main(int argc, const char *argv[])
     Index index(node_factory);
 
     ForceDirectedLayout layout(graph);
-    SFMLDisplay display(graph);
+    SFMLDisplay display(graph, index);
 
     int i = 0;
     while(display.open()) {
-        if (i%100 == 0) {
+        if (i%10 == 0) {
             graph.update();
             index.update();
         }

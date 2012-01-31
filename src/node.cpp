@@ -1,5 +1,3 @@
-#include <vector>
-
 /**
  * A node in a directed graph. Points to some children and contains information
  * about physical simulation.

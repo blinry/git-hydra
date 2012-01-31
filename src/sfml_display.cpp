@@ -3,7 +3,7 @@ using namespace sf;
 
 class SFMLDisplay {
     public:
-        SFMLDisplay(Graph& graph) : graph(graph), window(VideoMode(500,500), "Git-Tutor", Style::Default, ContextSettings(0,0,4,3,0)), view(FloatRect(0,0,window.GetWidth(),window.GetHeight())) {
+        SFMLDisplay(Graph& graph, Index& index) : graph(graph), index(index), window(VideoMode(500,500), "Git-Tutor", Style::Default, ContextSettings(0,0,4,3,0)), view(FloatRect(0,0,window.GetWidth(),window.GetHeight())) {
             window.SetView(view);
             //cout << window.GetSettings().AntialiasingLevel << flush;
             font.LoadFromFile(assets_dir()+"/arial.ttf");
@@ -98,10 +98,14 @@ class SFMLDisplay {
         void draw() {
             window.Clear();
 
+            // Draw Nodes
+
             for(map<OID,Node>::iterator it = graph.nodes_begin(); it != graph.nodes_end(); it++) {
                 Node& n = it->second;
                 draw(n);
             }
+
+            // Draw Node descriptions
 
             if (!graph.empty()) {
                 Vector2f mouse_position = window.ConvertCoords(Mouse::GetPosition().x, Mouse::GetPosition().y);
@@ -111,6 +115,18 @@ class SFMLDisplay {
                 text.SetPosition(n.pos().x+5, n.pos().y+10);
             }
             window.Draw(text);
+
+            // Draw Index
+
+            int line = 0;
+            for(int i=0; i<index.entries().size(); i++) {
+                IndexEntry e = index.entries().at(i);
+                char s[100];
+                sprintf(s, "%s (%d)", e.path().c_str(), e.stage());
+                text.SetString(s);
+                text.SetPosition(0, i*10);
+                window.Draw(text);
+            }
 
             window.Display();
         }
@@ -168,4 +184,5 @@ class SFMLDisplay {
         Font font;
         Text text;
         Graph &graph;
+        Index &index;
 };

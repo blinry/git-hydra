@@ -1,6 +1,5 @@
 #include <git2.h>
 #include <cstring>
-#include <set>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -175,6 +174,26 @@ class NodeFactory {
             //roots.insert("index");
 
             return roots;
+        }
+
+        vector<IndexEntry> getIndexEntries() {
+            vector<IndexEntry> entries;
+
+            git_repository_free(repo);
+            int ret = git_repository_open(&repo, repository_path.c_str());
+
+            git_index *index;
+            git_repository_index(&index, repo);
+            for(int i=0; i<git_index_entrycount(index); i++) {
+                git_index_entry *entry;
+                entry = git_index_get(index, i);
+                char oid_str[40];
+                git_oid_fmt(oid_str, &entry->oid);
+                OID oid_string(oid_str,40);
+
+                entries.push_back(IndexEntry(oid_string, entry->path, git_index_entry_stage(entry)));
+            }
+            return entries;
         }
 
     private:
