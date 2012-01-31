@@ -95,11 +95,16 @@ class Node {
         }
 
         float width() {
-            return 5;
+            switch(type()) {
+                case COMMIT:
+                    return 20;
+                default:
+                    return 10;
+            }
         }
 
         float height() {
-            return 5;
+            return width();
         }
 
     private:

@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 using namespace sf;
+
 class SFMLDisplay {
     public:
         SFMLDisplay(Graph& graph) : graph(graph), window(VideoMode(500,500), "Git-Tutor"), view(FloatRect(0,0,window.GetWidth(),window.GetHeight())) {
@@ -40,13 +41,24 @@ class SFMLDisplay {
                         edge_color = Color(50,50,50);
                     }
 
-                    VertexArray line(Lines, 2);
-                    line[0].Position = Vector2f(n.pos().x, n.pos().y);
-                    line[1].Position = Vector2f(n2.pos().x, n2.pos().y);
-                    //Shape line = Shape::Line(, , 1, edge_color);
+                    float dir = atan2(n.pos().x-n2.pos().x,n.pos().y-n2.pos().y);
+
+                    float width = 1;
+                    if (n.type() == COMMIT && n2.type() == COMMIT)
+                        width = 5;
+
+                    Vector2f offset(sin(dir+M_PI/2)*width, cos(dir+M_PI/2)*width);
+
+                    VertexArray line(Quads, 4);
+                    line[0].Position = Vector2f(n.pos().x, n.pos().y)+offset;
+                    line[1].Position = Vector2f(n2.pos().x, n2.pos().y)+offset;
+
+
+                    line[2].Position = line[1].Position - offset - offset;
+                    line[3].Position = line[0].Position - offset - offset;
                     window.Draw(line);
 
-                    float dir = atan2(n.pos().x-n2.pos().x,n.pos().y-n2.pos().y);
+                    /*
 
                     line[0].Position = Vector2f(n2.pos().x+sin(dir)*5, n2.pos().y+cos(dir)*5);
                     line[1].Position = Vector2f(n2.pos().x+sin(dir)*5+sin(dir+0.5)*5, n2.pos().y+cos(dir)*5+cos(dir+0.5)*5);
@@ -55,13 +67,28 @@ class SFMLDisplay {
                     line[0].Position = Vector2f(n2.pos().x+sin(dir)*5, n2.pos().y+cos(dir)*5);
                     line[1].Position = Vector2f(n2.pos().x+sin(dir)*5+sin(dir-0.5)*5, n2.pos().y+cos(dir)*5+cos(dir-0.5)*5);
                     window.Draw(line);
+                    */
                 }
             }
-            RectangleShape rect = RectangleShape(Vector2f(n.width(),n.height()));
-            rect.SetFillColor(color);
-            rect.SetOutlineColor(border_color);
-            rect.SetPosition(Vector2f(n.pos().x-n.width()/2,n.pos().y-n.height()/2));
-            window.Draw(rect);
+
+            CircleShape circ;
+            RectangleShape rect;
+
+            switch (n.type()) {
+                case COMMIT:
+                    circ = CircleShape(n.width()/2, 20);
+                    circ.SetFillColor(Color(50,255,50));
+                    circ.SetPosition(Vector2f(n.pos().x-n.width()/2,n.pos().y-n.height()/2));
+                    window.Draw(circ);
+                    break;
+                default:
+                    rect = RectangleShape(Vector2f(n.width(),n.height()));
+                    rect.SetFillColor(color);
+                    rect.SetOutlineColor(border_color);
+                    rect.SetPosition(Vector2f(n.pos().x-n.width()/2,n.pos().y-n.height()/2));
+                    window.Draw(rect);
+                    break;
+            }
 
             text.SetString(n.label());
             text.SetPosition(n.pos().x+5, n.pos().y);
