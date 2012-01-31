@@ -1,0 +1,6 @@
+[submodule "deps/libgit2"]
+	path = deps/libgit2
+	url = git://github.com/libgit2/libgit2.git
+[submodule "deps/SFML"]
+	path = deps/SFML
+	url = git://github.com/LaurentGomila/SFML.git
