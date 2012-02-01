@@ -15,6 +15,10 @@ class NodeFactory {
         }
         Node buildNode(const OID& oid) {
             Node node(oid);
+
+            node.pos().x = (rand()%1000000)/1000000.0;
+            node.pos().y = (rand()%1000000)/1000000.0;
+
             if (is_ref(oid)) {
                 git_reference *ref = NULL;
                 git_reference_lookup(&ref, repo, oid.c_str());
@@ -135,8 +139,6 @@ class NodeFactory {
                 }
             }
 
-            node.pos().x = (rand()%1000000)/1000000.0;
-            node.pos().y = (rand()%1000000)/1000000.0;
             return node;
         }
         set<string> getRoots() {

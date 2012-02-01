@@ -12,7 +12,7 @@ class ForceDirectedLayout {
                 if (!n1.visible()) continue;
 
                 if (n1.type() == COMMIT)
-                    n1.velocity().x -= 0.001*pow(n1.pos().x,3);
+                    n1.velocity().x -= 0.0001*pow(n1.pos().x,3);
                 /*
                 else if (n1.type() == INDEX)
                     n1.velocity().y -= (-200+n1.pos().y);
@@ -38,8 +38,14 @@ class ForceDirectedLayout {
                         if (n1.edge(k).target() == n2.oid() && !n1.edge(k).folded()) {
                             connected = true;
                             if (n1.type() == COMMIT && n2.type() == COMMIT) {
-                                float distance = n1.pos().y+50-(n2.pos().y-50);
-                                n1.velocity().y -= 0.00000005*pow(distance,5);
+                                /*
+                                float distance = n1.pos().y - n2.pos().y;
+                                n1.velocity().y -= 0.00000001*exp(distance);
+                                */
+                                float distance = n1.pos().y+50-(n2.pos().y);
+                                float force = 0.02*exp(distance);
+                                if (force < 1000)
+                                    n1.velocity().y -= force;
                             }
                         }
                     }
@@ -47,8 +53,14 @@ class ForceDirectedLayout {
                         if (n2.edge(k).target() == n1.oid() && !n2.edge(k).folded()) {
                             connected = true;
                             if (n1.type() == COMMIT && n2.type() == COMMIT) {
-                                float distance = n2.pos().y+50-(n1.pos().y-50);
-                                n1.velocity().y += 0.00000005*pow(distance,5);
+                                /*
+                                float distance = n2.pos().y - n1.pos().y;
+                                n1.velocity().y += 0.00000001*exp(distance);
+                                */
+                                float distance = n2.pos().y+50-(n1.pos().y);
+                                float force = 0.02*exp(distance);
+                                if (force < 1000)
+                                    n1.velocity().y += force;
                             }
                         }
                     }
