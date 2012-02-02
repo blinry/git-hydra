@@ -11,6 +11,13 @@ enum NodeType {
     OBJECT
 };
 
+enum NodeDisplayType {
+    RECT,
+    SIGN,
+    SNAKE,
+    HEAD
+};
+
 class NodeID {
 
     public:

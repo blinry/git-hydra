@@ -174,7 +174,7 @@ class NodeFactory {
             }
 
             roots.insert(NodeID(REF,"HEAD"));
-            roots.insert(NodeID(INDEX,"index"));
+            //roots.insert(NodeID(INDEX,"index"));
 
             return roots;
         }

@@ -98,13 +98,14 @@ class Node {
         }
 
         float mass() {
-            return width();
+            return 5;
         }
 
         float width() {
-            switch(type()) {
-                case COMMIT:
-                    return 30;
+            switch(display_type()) {
+                case SNAKE:
+                case HEAD:
+                    return 20;
                 default:
                     return 10;
             }
@@ -125,6 +126,17 @@ class Node {
 
         float dir_to(Node n2) {
             return atan2(pos().x-n2.pos().x,pos().y-n2.pos().y);
+        }
+
+        NodeDisplayType display_type() {
+            if (type() == COMMIT)
+                return SNAKE;
+            else if ((type() == TAG && label().find("refs/heads/") == 0))
+                return HEAD;
+            else if (type() == TAG)
+                return SIGN;
+            else
+                return RECT;
         }
 
     private:

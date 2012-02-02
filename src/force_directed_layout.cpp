@@ -82,15 +82,15 @@ class ForceDirectedLayout {
 
         void turn(Node& n1, Node& n2) {
             float direction = 0;
-            if (n1.type() == COMMIT) {
-                if (n2.type() == COMMIT)
+            if (n1.display_type() == SNAKE || n1.display_type() == HEAD) {
+                if (n2.display_type() == SNAKE)
                     direction = M_PI;
-                else if (n2.type() == TREE)
+                else
                     direction = -M_PI*1/2;
             }
-            else if (n1.type() == TAG)
+            else if (n1.display_type() == SIGN)
                 direction = -M_PI*1/2;
-            else if (n1.type() == TREE)
+            else if (n1.display_type() == RECT)
                 direction = -M_PI*1/2;
 
             float correction = small_angle(n1.dir_to(n2),direction);

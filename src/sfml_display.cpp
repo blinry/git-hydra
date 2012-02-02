@@ -14,103 +14,135 @@ class SFMLDisplay {
             //cout << window.GetSettings().AntialiasingLevel << flush;
             font.LoadFromFile(assets_dir()+"/arial.ttf");
             text.SetFont(font);
-            text.SetCharacterSize(20);
+            text.SetCharacterSize(10);
         }
 
         void draw(Node n) {
-            if (!n.visible()) return;
-            Color color;
-            switch(n.type()) {
-                case COMMIT:
-                    color = Color(20,155,20);
+            switch (n.display_type()) {
+                case SNAKE:
+                    draw_snake(n);
                     break;
-                case TREE:
-                    color = Color::Green;
+                case HEAD:
+                    draw_snake(n, true);
                     break;
-                case TAG:
-                    color = Color::Blue;
+                    /*
+                case SIGN:
+                    draw_sign(n);
                     break;
+                    */
                 default:
-                    color = Color::White;
+                    draw_rect(n);
+                    break;
             }
-            Color border_color;
-            border_color = color;
+        }
+
+        void draw_snake(Node n, bool head = false) {
+            Color color(20,155,20);
+            CircleShape circ(n.width()/2.0, 64);
+            circ.SetFillColor(color);
+            circ.SetPosition(Vector2f(n.pos().x-n.width()/2,n.pos().y-n.height()/2));
+
+            if (head) {
+                ConvexShape tongue(7);
+                tongue.SetFillColor(Color::Red);
+
+                tongue.SetPoint(0, Vector2f(n.pos().x-1, n.pos().y));
+                tongue.SetPoint(1, Vector2f(n.pos().x-1, n.pos().y-15));
+                tongue.SetPoint(2, Vector2f(n.pos().x-7, n.pos().y-25));
+                tongue.SetPoint(3, Vector2f(n.pos().x, n.pos().y-17));
+                tongue.SetPoint(4, Vector2f(n.pos().x+7, n.pos().y-25));
+                tongue.SetPoint(5, Vector2f(n.pos().x+1, n.pos().y-15));
+                tongue.SetPoint(6, Vector2f(n.pos().x+1, n.pos().y));
+                window.Draw(tongue);
+            }
+
+            window.Draw(circ);
+
+            if (head) {
+                double eye_radius = n.width()/8.0;
+                CircleShape eye(eye_radius, 32);
+                eye.SetFillColor(Color::White);
+
+                CircleShape pupil(eye_radius/2, 16);
+                pupil.SetFillColor(Color::Black);
+
+                Vector2f leye(n.pos().x-3.5*eye_radius,n.pos().y-eye_radius);
+                Vector2f reye(n.pos().x+1.5*eye_radius,n.pos().y-eye_radius);
+
+                eye.SetPosition(leye);
+                pupil.SetPosition(leye);
+                window.Draw(eye);
+                window.Draw(pupil);
+
+                eye.SetPosition(reye);
+                pupil.SetPosition(reye);
+                window.Draw(eye);
+                window.Draw(pupil);
+
+            }
+
+            text.SetString(n.label());
+            text.SetPosition(n.pos().x+10, n.pos().y);
+            window.Draw(text);
+        }
+
+        void draw_rect(Node n) {
+            Color color = Color::Blue;
+            RectangleShape rect(Vector2f(n.width(),n.height()));
+            rect.SetFillColor(color);
+            rect.SetPosition(Vector2f(n.pos().x-n.width()/2,n.pos().y-n.height()/2));
+            window.Draw(rect);
+
+            text.SetString(n.label());
+            text.SetPosition(n.pos().x+10, n.pos().y);
+            window.Draw(text);
+        }
+
+        void draw_edges(Node n) {
             for(int j=0; j<n.degree(); j++) {
                 if (n.edge(j).folded()) continue;
                 Node n2 = graph.lookup(n.edge(j).target());
-                if (n2.visible()) {
-                    Color edge_color;
-                    if (n2.selected() || n.selected()) {
-                        edge_color = Color::White;
-                        text.SetString(n.edge(j).label());
-                        text.SetPosition((n.pos().x+n2.pos().x)/2,(n.pos().y+n2.pos().y)/2);
-                        window.Draw(text);
-                    } else {
-                        edge_color = Color(50,50,50);
-                    }
+                if (!n2.visible())
+                    continue;
+                    Color edge_color = Color::White;
 
                     float dir = n.dir_to(n2);
+                    float width = 3;
+                    if ((n.display_type() == SNAKE || n.display_type() == HEAD) && n2.display_type() == SNAKE) {
+                        width = 10;
+                        edge_color = Color(20,155,20);
+                    }
 
-                    float width = 1;
-                    if (n.type() == COMMIT && n2.type() == COMMIT)
-                        width = 5;
-
-                    Vector2f offset(sin(dir+M_PI/2)*width, cos(dir+M_PI/2)*width);
+                    Vector2f offset(sin(dir+M_PI/2)*width/2, cos(dir+M_PI/2)*width/2);
 
                     ConvexShape line(4);
-                    line.SetFillColor(color);
+                    line.SetFillColor(edge_color);
                     line.SetPoint(0, Vector2f(n.pos().x, n.pos().y)+offset);
                     line.SetPoint(1, Vector2f(n2.pos().x, n2.pos().y)+offset);
 
                     line.SetPoint(2, line.GetPoint(1) - offset - offset);
                     line.SetPoint(3, line.GetPoint(0) - offset - offset);
                     window.Draw(line);
-
-                    /*
-
-                    line[0].Position = Vector2f(n2.pos().x+sin(dir)*5, n2.pos().y+cos(dir)*5);
-                    line[1].Position = Vector2f(n2.pos().x+sin(dir)*5+sin(dir+0.5)*5, n2.pos().y+cos(dir)*5+cos(dir+0.5)*5);
-                    window.Draw(line);
-
-                    line[0].Position = Vector2f(n2.pos().x+sin(dir)*5, n2.pos().y+cos(dir)*5);
-                    line[1].Position = Vector2f(n2.pos().x+sin(dir)*5+sin(dir-0.5)*5, n2.pos().y+cos(dir)*5+cos(dir-0.5)*5);
-                    window.Draw(line);
-                    */
-                }
             }
-
-            CircleShape circ;
-            RectangleShape rect;
-
-            switch (n.type()) {
-                case COMMIT:
-                    circ = CircleShape(n.width()/2, 64);
-                    circ.SetFillColor(color);
-                    circ.SetPosition(Vector2f(n.pos().x-n.width()/2,n.pos().y-n.height()/2));
-                    window.Draw(circ);
-                    break;
-                default:
-                    rect = RectangleShape(Vector2f(n.width(),n.height()));
-                    rect.SetFillColor(color);
-                    rect.SetOutlineColor(border_color);
-                    rect.SetPosition(Vector2f(n.pos().x-n.width()/2,n.pos().y-n.height()/2));
-                    window.Draw(rect);
-                    break;
-            }
-
-            text.SetString(n.label());
-            text.SetPosition(n.pos().x+5, n.pos().y);
-            window.Draw(text);
         }
 
         void draw() {
             window.Clear();
 
+            // Draw Edges
+
+            for(map<NodeID,Node>::iterator it = graph.nodes_begin(); it != graph.nodes_end(); it++) {
+                Node& n = it->second;
+                if (n.visible())
+                    draw_edges(n);
+            }
+
             // Draw Nodes
 
             for(map<NodeID,Node>::iterator it = graph.nodes_begin(); it != graph.nodes_end(); it++) {
                 Node& n = it->second;
-                draw(n);
+                if (n.visible())
+                    draw(n);
             }
 
             // Draw Node descriptions
