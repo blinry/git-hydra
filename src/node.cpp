@@ -114,6 +114,19 @@ class Node {
             return width();
         }
 
+        bool parent_of_visible(NodeID oid) {
+            for(int k=0; k<degree(); k++) {
+                if (edge(k).target() == oid && !edge(k).folded()) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        float dir_to(Node n2) {
+            return atan2(pos().x-n2.pos().x,pos().y-n2.pos().y);
+        }
+
     private:
 
         NodeID m_oid;

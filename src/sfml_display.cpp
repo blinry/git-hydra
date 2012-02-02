@@ -49,7 +49,7 @@ class SFMLDisplay {
                         edge_color = Color(50,50,50);
                     }
 
-                    float dir = atan2(n.pos().x-n2.pos().x,n.pos().y-n2.pos().y);
+                    float dir = n.dir_to(n2);
 
                     float width = 1;
                     if (n.type() == COMMIT && n2.type() == COMMIT)
