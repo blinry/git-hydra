@@ -8,7 +8,7 @@ class SFMLDisplay {
             //cout << window.GetSettings().AntialiasingLevel << flush;
             font.LoadFromFile(assets_dir()+"/arial.ttf");
             text.SetFont(font);
-            text.SetCharacterSize(10);
+            text.SetCharacterSize(20);
         }
         void draw(Node n) {
             if (!n.visible()) return;
@@ -121,10 +121,10 @@ class SFMLDisplay {
             int line = 0;
             for(int i=0; i<index.entries().size(); i++) {
                 IndexEntry e = index.entries().at(i);
-                char s[100];
+                char s[3000];
                 sprintf(s, "%s (%d)", e.path().c_str(), e.stage());
                 text.SetString(s);
-                text.SetPosition(0, i*10);
+                text.SetPosition(500, i*20);
                 window.Draw(text);
             }
 

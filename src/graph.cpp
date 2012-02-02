@@ -5,7 +5,7 @@ class Graph {
         }
         void update() {
             reseed();
-            unfold_levels(20);
+            unfold_levels(10);
             visibility_analysis();
         }
         void seed(const OID& oid, int depth=999) {

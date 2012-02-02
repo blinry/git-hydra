@@ -77,6 +77,11 @@ class ForceDirectedLayout {
 
                 n1.velocity() *= damping;
                 n1.pos() += n1.velocity();
+
+                if (n1.label() == "index") {
+                    n1.pos().x = 500;
+                    n1.pos().y = 0;
+                }
             }
         }
     private:

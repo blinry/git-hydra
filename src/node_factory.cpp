@@ -171,7 +171,7 @@ class NodeFactory {
             }
 
             roots.insert("HEAD");
-            //roots.insert("index");
+            roots.insert("index");
 
             return roots;
         }
