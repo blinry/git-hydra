@@ -12,7 +12,7 @@ class NodeFactory {
         NodeFactory(const string& repository_path) : repository_path(repository_path) {
             int ret = git_repository_open(&repo, repository_path.c_str());
             if (ret != 0) {
-                cerr << repository_path << " doesn't appear to be a Git repository.\n";
+                cerr << "You don't seem to be in a Git repository.\n";
                 exit(1);
             }
         }
