@@ -8,17 +8,16 @@ class Graph {
             unfold_levels(10);
             visibility_analysis();
         }
-        void seed(const OID& oid, int depth=999) {
-            map<OID,Node>::iterator it = nodes.find(oid);
+        void seed(const NodeID& oid, int depth=999) {
+            map<NodeID,Node>::iterator it = nodes.find(oid);
             if (it == nodes.end()) {
                 // map doesn't contain oid yet
                 nodes[oid] = factory.buildNode(oid);
             }
         }
-        Node& lookup(const OID& oid) {
-            size_t found = oid.find("/");
-            if (found != string::npos || oid == "HEAD" || oid == "index") { // it's a ref!
-                map<OID,Node>::iterator it = nodes.find(oid);
+        Node& lookup(const NodeID& oid) {
+            if (oid.type == REF) {
+                map<NodeID,Node>::iterator it = nodes.find(oid);
                 if (it == nodes.end()) {
                     nodes[oid] = factory.buildNode(oid);
                 } else {
@@ -38,7 +37,7 @@ class Graph {
                         nodes[oid].show();
                 }
             } else {
-                map<OID,Node>::iterator it = nodes.find(oid);
+                map<NodeID,Node>::iterator it = nodes.find(oid);
                 if (it == nodes.end()) {
                     seed(oid,0);
                 }
@@ -49,7 +48,7 @@ class Graph {
             Node *best = 0;
             float best_distance = 99999999; //TODO
             Vec2f pos(x,y);
-            for(map<OID,Node>::iterator it = nodes.begin(); it != nodes.end(); it++) {
+            for(map<NodeID,Node>::iterator it = nodes.begin(); it != nodes.end(); it++) {
                 if (!it->second.visible()) continue;
                 float distance = it->second.pos().distance(pos);
                 if (distance < best_distance) {
@@ -63,39 +62,30 @@ class Graph {
             roots = factory.getRoots();
         }
         void visibility_analysis() {
-            for(map<OID,Node>::iterator it = nodes.begin(); it != nodes.end(); it++) {
+            for(map<NodeID,Node>::iterator it = nodes.begin(); it != nodes.end(); it++) {
                 it->second.hide();
             }
-            for(set<string>::iterator it = roots.begin(); it != roots.end(); it++) {
-                OID ref = *it;
+            for(set<NodeID>::iterator it = roots.begin(); it != roots.end(); it++) {
+                NodeID ref = *it;
                 recursive_set_visible(ref);
             }
         }
         void unfold_levels(int depth) {
-            /*
-            for(map<OID,Node>::iterator it = nodes.begin(); it != nodes.end(); it++) {
-                Node &n = it->second;
-                for(int i=0; i<n.degree(); i++) {
-                    if (!n.edge(i).folded())
-                        n.edge(i).fold();
-                }
-            }
-            */
-            for(set<string>::iterator it = roots.begin(); it != roots.end(); it++) {
-                OID ref = *it;
+            for(set<NodeID>::iterator it = roots.begin(); it != roots.end(); it++) {
+                NodeID ref = *it;
                 recursive_unfold_levels(ref, depth-1);
             }
         }
-        map<OID,Node>::iterator nodes_begin() {
+        map<NodeID,Node>::iterator nodes_begin() {
             return nodes.begin();
         }
-        map<OID,Node>::iterator nodes_end() {
+        map<NodeID,Node>::iterator nodes_end() {
             return nodes.end();
         }
         bool empty() {
             return nodes.size() == 0;
         }
-        void recursive_unfold_levels(OID oid, int depth) {
+        void recursive_unfold_levels(NodeID oid, int depth) {
             if (depth<0) return;
             Node &n = lookup(oid);
             for(int i=0; i<n.degree(); i++) {
@@ -109,9 +99,9 @@ class Graph {
         }
     private:
         NodeFactory factory;
-        set<string> roots;
-        map<OID,Node> nodes;
-        void recursive_set_visible(OID oid) {
+        set<NodeID> roots;
+        map<NodeID,Node> nodes;
+        void recursive_set_visible(NodeID oid) {
             Node &n = lookup(oid);
             n.show();
             for(int j=0; j<n.degree(); j++) {

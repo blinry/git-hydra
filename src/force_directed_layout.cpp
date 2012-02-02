@@ -6,15 +6,13 @@ class ForceDirectedLayout {
             damping=0.1;
         }
         void apply() {
-            for(map<OID,Node>::iterator it = graph.nodes_begin(); it != graph.nodes_end(); it++) {
+            for(map<NodeID,Node>::iterator it = graph.nodes_begin(); it != graph.nodes_end(); it++) {
                 Node& n1 = it->second;
 
                 if (!n1.visible()) continue;
 
                 if (n1.type() == COMMIT)
                     n1.velocity().x -= 0.0001*pow(n1.pos().x,3);
-                else if (n1.type() == INDEX)
-                    ;//n1.velocity().y -= (-200+n1.pos().y);
                 else if (n1.type() == TAG) {
                     ;
                     //if (n1.degree() > 0)
@@ -23,7 +21,7 @@ class ForceDirectedLayout {
                     n1.velocity().x -= 0.000001*pow((n1.pos().x-500),3);
                 }
 
-                for(map<OID,Node>::iterator it2 = graph.nodes_begin(); it2 != graph.nodes_end(); it2++) {
+                for(map<NodeID,Node>::iterator it2 = graph.nodes_begin(); it2 != graph.nodes_end(); it2++) {
                     Node& n2 = it2->second;
                     if (!n2.visible()) continue;
                     float distance = n1.pos().distance(n2.pos());

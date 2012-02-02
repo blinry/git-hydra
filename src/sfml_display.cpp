@@ -100,7 +100,7 @@ class SFMLDisplay {
 
             // Draw Nodes
 
-            for(map<OID,Node>::iterator it = graph.nodes_begin(); it != graph.nodes_end(); it++) {
+            for(map<NodeID,Node>::iterator it = graph.nodes_begin(); it != graph.nodes_end(); it++) {
                 Node& n = it->second;
                 draw(n);
             }
@@ -147,7 +147,7 @@ class SFMLDisplay {
 
                             n.toggle_select();
                             if (n.type() == COMMIT) {
-                                OID tree = n.toggle_tree();
+                                NodeID tree = n.toggle_tree();
                                 graph.recursive_unfold_levels(tree,99999);
                             }
                         } else if (event.MouseButton.Button == 2) {

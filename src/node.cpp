@@ -9,9 +9,9 @@ class Node {
 
         Node() { }
 
-        Node(const OID& oid) : m_oid(oid), m_visible(false), m_selected(false) { }
+        Node(const NodeID& oid) : m_oid(oid), m_visible(false), m_selected(false) { }
 
-        const OID &oid() {
+        const NodeID &oid() {
             return m_oid;
         }
 
@@ -55,7 +55,7 @@ class Node {
             m_selected = !m_selected;
         }
 
-        OID toggle_tree() {
+        NodeID toggle_tree() {
             for(int i=0; i<m_children.size(); i++) {
                 if (edge(i).label() == "tree") {
                     edge(i).toggle_fold();
@@ -77,11 +77,11 @@ class Node {
             return m_velocity;
         }
 
-        const NodeType &type() {
+        const GitType &type() {
             return m_type;
         }
 
-        void type(NodeType type) {
+        void type(GitType type) {
             m_type = type;
         }
 
@@ -116,14 +116,14 @@ class Node {
 
     private:
 
-        OID m_oid;
+        NodeID m_oid;
         string m_label;
         string m_text;
         bool m_visible;
         bool m_selected;
         Vec2f m_pos;
         Vec2f m_velocity;
-        NodeType m_type;
+        GitType m_type;
 
         vector<Edge> m_children;
 };

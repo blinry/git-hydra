@@ -37,6 +37,7 @@ int main(int argc, const char *argv[])
     ForceDirectedLayout layout(graph);
     SFMLDisplay display(graph, index);
 
+
     int i = 0;
     while(display.open()) {
         if (i%10 == 0) {
