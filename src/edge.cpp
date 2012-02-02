@@ -36,6 +36,10 @@ class Edge {
             m_folded = true;
         }
 
+        void toggle_fold() {
+            m_folded = !m_folded;
+        }
+
     private:
 
         OID m_target;

@@ -55,6 +55,15 @@ class Node {
             m_selected = !m_selected;
         }
 
+        OID toggle_tree() {
+            for(int i=0; i<m_children.size(); i++) {
+                if (edge(i).label() == "tree") {
+                    edge(i).toggle_fold();
+                    return edge(i).target();
+                }
+            }
+        }
+
         Vec2f &pos() {
             return m_pos;
         }

@@ -96,7 +96,6 @@ class NodeFactory {
                                 node.add_edge(Edge(oid_string, "parent"));
                             }
 
-                            /*
                             // tree
                             git_tree *tree;
                             git_commit_tree(&tree, commit);
@@ -105,7 +104,6 @@ class NodeFactory {
                             git_oid_fmt(oid_str, target_id);
                             OID oid_string(oid_str,40);
                             node.add_edge(Edge(oid_string, "tree"));
-                            */
                             break;
                         }
                     case 2: //tree

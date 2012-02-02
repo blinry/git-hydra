@@ -146,6 +146,10 @@ class SFMLDisplay {
                             Node &n = graph.nearest_node(click_position.x, click_position.y);
 
                             n.toggle_select();
+                            if (n.type() == COMMIT) {
+                                OID tree = n.toggle_tree();
+                                graph.recursive_unfold_levels(tree,99999);
+                            }
                         } else if (event.MouseButton.Button == 2) {
                             Vector2f click_position = window.ConvertCoords(Mouse::GetPosition().x, Mouse::GetPosition().y);
                             view.SetCenter(click_position);

@@ -72,6 +72,7 @@ class Graph {
             }
         }
         void unfold_levels(int depth) {
+            /*
             for(map<OID,Node>::iterator it = nodes.begin(); it != nodes.end(); it++) {
                 Node &n = it->second;
                 for(int i=0; i<n.degree(); i++) {
@@ -79,6 +80,7 @@ class Graph {
                         n.edge(i).fold();
                 }
             }
+            */
             for(set<string>::iterator it = roots.begin(); it != roots.end(); it++) {
                 OID ref = *it;
                 recursive_unfold_levels(ref, depth-1);
@@ -93,22 +95,22 @@ class Graph {
         bool empty() {
             return nodes.size() == 0;
         }
-    private:
-        NodeFactory factory;
-        set<string> roots;
-        map<OID,Node> nodes;
         void recursive_unfold_levels(OID oid, int depth) {
             if (depth<0) return;
             Node &n = lookup(oid);
             for(int i=0; i<n.degree(); i++) {
-                //if (n.edge(i).label() != "tree") {
+                if (n.edge(i).label() != "tree") {
                     if (n.edge(i).folded()) {
                         n.edge(i).unfold();
                     }
                     recursive_unfold_levels(n.edge(i).target(), depth-1);
-                //}
+                }
             }
         }
+    private:
+        NodeFactory factory;
+        set<string> roots;
+        map<OID,Node> nodes;
         void recursive_set_visible(OID oid) {
             Node &n = lookup(oid);
             n.show();
