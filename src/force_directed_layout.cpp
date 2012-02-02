@@ -83,7 +83,7 @@ class ForceDirectedLayout {
             return force;
         }
 
-        float repulse(Node n1, Node n2) {
+        float repulse(Node& n1, Node& n2) {
             float distance = n1.pos().distance(n2.pos());
             return -((n1.mass()*n2.mass())/(distance*distance))*charge;
         }
