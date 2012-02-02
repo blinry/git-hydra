@@ -1,11 +1,16 @@
+#include <string>
 #include <iostream>
 #include <set>
 #include <map>
 #include <vector>
 using namespace std;
 
+#include <cmath>
 #include <stdio.h>
 #include <stdlib.h>
+
+// Sorry, but I don't think we need ugly header-file-duplication in such a
+// small project.
 
 #include "types.cpp"
 #include "vec2f.cpp"
@@ -18,8 +23,7 @@ using namespace std;
 #include "force_directed_layout.cpp"
 #include "sfml_display.cpp"
 
-int main(int argc, const char *argv[])
-{
+int main(int argc, const char *argv[]) {
     srand(time(NULL));
 
     string git_directory;
@@ -37,17 +41,14 @@ int main(int argc, const char *argv[])
     ForceDirectedLayout layout(graph);
     SFMLDisplay display(graph, index);
 
-
-    int i = 0;
     while(display.open()) {
-        if (i%10 == 0) {
-            graph.update();
-            index.update();
-        }
+        graph.update();
+        index.update();
+
         layout.apply();
+
         display.draw();
         display.process_events();
-        i++;
     }
 
     return 0;

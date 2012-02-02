@@ -126,4 +126,5 @@ class Node {
         GitType m_type;
 
         vector<Edge> m_children;
+
 };

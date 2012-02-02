@@ -1,13 +1,21 @@
+/** 
+ * A directed, acyclic graph. Attached to a Factory.
+ */
+
 class Graph {
+
     public:
+
         Graph(NodeFactory& factory) : factory(factory) {
             reseed();
         }
+
         void update() {
             reseed();
             unfold_levels(10);
             visibility_analysis();
         }
+
         void seed(const NodeID& oid, int depth=999) {
             map<NodeID,Node>::iterator it = nodes.find(oid);
             if (it == nodes.end()) {
@@ -15,6 +23,7 @@ class Graph {
                 nodes[oid] = factory.buildNode(oid);
             }
         }
+
         Node& lookup(const NodeID& oid) {
             if (oid.type == REF) {
                 map<NodeID,Node>::iterator it = nodes.find(oid);
@@ -44,6 +53,7 @@ class Graph {
             }
             return nodes[oid];
         }
+
         Node &nearest_node(float x, float y) {
             Node *best = 0;
             float best_distance = 99999999; //TODO
@@ -58,9 +68,11 @@ class Graph {
             }
             return (*best);
         }
+
         void reseed() {
             roots = factory.getRoots();
         }
+
         void visibility_analysis() {
             for(map<NodeID,Node>::iterator it = nodes.begin(); it != nodes.end(); it++) {
                 it->second.hide();
@@ -70,21 +82,26 @@ class Graph {
                 recursive_set_visible(ref);
             }
         }
+
         void unfold_levels(int depth) {
             for(set<NodeID>::iterator it = roots.begin(); it != roots.end(); it++) {
                 NodeID ref = *it;
                 recursive_unfold_levels(ref, depth-1);
             }
         }
+
         map<NodeID,Node>::iterator nodes_begin() {
             return nodes.begin();
         }
+
         map<NodeID,Node>::iterator nodes_end() {
             return nodes.end();
         }
+
         bool empty() {
             return nodes.size() == 0;
         }
+
         void recursive_unfold_levels(NodeID oid, int depth) {
             if (depth<0) return;
             Node &n = lookup(oid);
@@ -97,10 +114,9 @@ class Graph {
                 }
             }
         }
+
     private:
-        NodeFactory factory;
-        set<NodeID> roots;
-        map<NodeID,Node> nodes;
+
         void recursive_set_visible(NodeID oid) {
             Node &n = lookup(oid);
             n.show();
@@ -111,4 +127,9 @@ class Graph {
                 }
             }
         }
+
+        NodeFactory factory;
+        set<NodeID> roots;
+        map<NodeID,Node> nodes;
+
 };

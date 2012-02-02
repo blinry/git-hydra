@@ -1,8 +1,14 @@
 #include <SFML/Graphics.hpp>
 using namespace sf;
 
+/**
+ * Displays the Graph and the Index. Reacts to input events.
+ */
+
 class SFMLDisplay {
+
     public:
+
         SFMLDisplay(Graph& graph, Index& index) : graph(graph), index(index), window(VideoMode(500,500), "Git-Tutor", Style::Default, ContextSettings(0,0,4,3,0)), view(FloatRect(0,0,window.GetWidth(),window.GetHeight())) {
             window.SetView(view);
             //cout << window.GetSettings().AntialiasingLevel << flush;
@@ -10,6 +16,7 @@ class SFMLDisplay {
             text.SetFont(font);
             text.SetCharacterSize(20);
         }
+
         void draw(Node n) {
             if (!n.visible()) return;
             Color color;
@@ -95,6 +102,7 @@ class SFMLDisplay {
             text.SetPosition(n.pos().x+5, n.pos().y);
             window.Draw(text);
         }
+
         void draw() {
             window.Clear();
 
@@ -130,6 +138,7 @@ class SFMLDisplay {
 
             window.Display();
         }
+
         void process_events() {
             Event event;
             while(window.PollEvent(event)) {
@@ -172,10 +181,13 @@ class SFMLDisplay {
                 }
             }
         }
+
         bool open() {
             return window.IsOpen();
         }
+
     private:
+
         string assets_dir() {
             char path_to_program[200];
             int length = readlink("/proc/self/exe", path_to_program, 200);
@@ -183,10 +195,12 @@ class SFMLDisplay {
             string assets_dir = path_to_program;
             return string(assets_dir, 0, assets_dir.rfind("/"));
         }
+
         RenderWindow window;
         View view;
         Font font;
         Text text;
         Graph &graph;
         Index &index;
+
 };

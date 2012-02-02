@@ -1,11 +1,14 @@
 #include <git2.h>
 #include <cstring>
 
-#include <stdio.h>
-#include <stdlib.h>
+/**
+ * This class communicates with the Git repository and creates Nodes.
+ */
 
 class NodeFactory {
+
     public:
+
         NodeFactory(const string& repository_path) : repository_path(repository_path) {
             int ret = git_repository_open(&repo, repository_path.c_str());
             if (ret != 0) {
@@ -13,6 +16,7 @@ class NodeFactory {
                 exit(1);
             }
         }
+
         Node buildNode(const NodeID& oid) {
             Node node(oid);
 
@@ -65,7 +69,6 @@ class NodeFactory {
                     node.add_edge(Edge(NodeID(OBJECT,oid_string), entry->path));
                 }
             } else {
-
                 git_oid id;
                 git_oid_fromstr(&id, oid.name.c_str());
                 git_object *object;
@@ -138,6 +141,7 @@ class NodeFactory {
 
             return node;
         }
+
         set<NodeID> getRoots() {
             set<NodeID> roots;
 
@@ -196,6 +200,7 @@ class NodeFactory {
         }
 
     private:
+
         git_repository *repo; // TODO
         string repository_path;
         string assets_dir() {
@@ -205,4 +210,5 @@ class NodeFactory {
             string assets_dir = path_to_program;
             return string(assets_dir, 0, assets_dir.rfind("/"));
         }
+
 };
