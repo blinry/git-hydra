@@ -203,14 +203,18 @@ class SFMLDisplay {
             while(window.PollEvent(event)) {
                 if (event.Type == Event::Closed)
                     window.Close();
+                if (event.Type == Event::KeyPressed) {
+                    if (event.Key.Code == Keyboard::Escape)
+                        window.Close();
+                }
                 if (event.Type == Event::MouseWheelMoved) {
                     view.Zoom(1-event.MouseWheel.Delta*0.1);
                     window.SetView(view);
                 }
                 if (event.Type == Event::MouseButtonPressed) {
                     if (!graph.empty()) {
+                        Vector2f click_position = window.ConvertCoords(Mouse::GetPosition(window).x, Mouse::GetPosition(window).y);
                         if (event.MouseButton.Button == 0) {
-                            Vector2f click_position = window.ConvertCoords(event.MouseButton.X, event.MouseButton.Y);
                             Node &n = graph.nearest_node(click_position.x, click_position.y);
 
                             n.toggle_select();
@@ -219,7 +223,6 @@ class SFMLDisplay {
                                 graph.recursive_unfold_levels(tree,99999);
                             }
                         } else if (event.MouseButton.Button == 2) {
-                            Vector2f click_position = window.ConvertCoords(Mouse::GetPosition().x, Mouse::GetPosition().y);
                             view.SetCenter(click_position);
                             window.SetView(view);
                         }
@@ -234,7 +237,7 @@ class SFMLDisplay {
             }
             if (Mouse::IsButtonPressed(Mouse::Right)) {
                 if (!graph.empty()) {
-                    Vector2f click_position = window.ConvertCoords(Mouse::GetPosition().x, Mouse::GetPosition().y);
+                    Vector2f click_position = window.ConvertCoords(Mouse::GetPosition(window).x, Mouse::GetPosition(window).y);
                     Node& n = graph.nearest_node(click_position.x, click_position.y);
                     n.pos(click_position.x, click_position.y);
                 }
