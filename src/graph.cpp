@@ -12,7 +12,7 @@ class Graph {
 
         void update() {
             reseed();
-            unfold_levels(10);
+            unfold_levels(99);
             visibility_analysis();
         }
 

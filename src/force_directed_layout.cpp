@@ -28,7 +28,6 @@ class ForceDirectedLayout {
                     float distance = n1.pos().distance(n2.pos());
                     if (distance == 0) {
                         n2.pos().x += 0.1;
-                        continue;
                     }
 
                     Vec2f connection(n2.pos().x-n1.pos().x, n2.pos().y-n1.pos().y);
@@ -57,7 +56,6 @@ class ForceDirectedLayout {
                 n1.velocity() *= damping;
                 n1.pos() += n1.velocity();
             }
-
         }
 
         float attract(Node& n1, Node& n2) {
@@ -96,7 +94,7 @@ class ForceDirectedLayout {
             float correction = small_angle(n1.dir_to(n2),direction);
             //float strength = 100/(1+exp(-5*correction))-50;
             //float strength = 300*correction;
-            float strength = 100*correction;
+            float strength = 50*correction;
             n1.velocity().x += strength*sin(n1.dir_to(n2)+M_PI/2);
             n1.velocity().y += strength*cos(n1.dir_to(n2)+M_PI/2);
         }
