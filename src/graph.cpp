@@ -35,6 +35,7 @@ class Graph {
                     bool old_selected = nodes[oid].selected();
                     bool edge_folded;
                     bool visible = nodes[oid].visible();
+                    bool needsPosition = nodes[oid].needsPosition;
                     nodes[oid] = factory.buildNode(oid);
                     nodes[oid].pos() = old_pos;
                     if (old_selected)
@@ -44,6 +45,7 @@ class Graph {
                     }
                     if (visible)
                         nodes[oid].show();
+                    nodes[oid].needsPosition = needsPosition;
                 }
             } else {
                 map<NodeID,Node>::iterator it = nodes.find(oid);
@@ -122,7 +124,18 @@ class Graph {
             n.show();
             for(int j=0; j<n.degree(); j++) {
                 Edge &edge = n.edge(j);
+
                 if (!edge.folded()) {
+                    Node &n2 = lookup(n.edge(j).target());
+                    if (n2.needsPosition) {
+                        cout << oid.name << "\n" << flush;
+                        cout << n.pos().x << "\n" << flush;
+                        cout << n.pos().y << "\n" << flush;
+                        cout << n2.label() << "\n" << flush;
+                        n2.pos(n.pos().x + 0.01, n.pos().y + 0.01);
+                        n2.needsPosition = false;
+                    }
+
                     recursive_set_visible(edge.target());
                 }
             }

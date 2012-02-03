@@ -7,9 +7,13 @@ class Node {
 
     public:
 
-        Node() { }
+        Node() {
+            needsPosition = true;
+        }
 
-        Node(const NodeID& oid) : m_oid(oid), m_visible(false), m_selected(false) { }
+        Node(const NodeID& oid) : m_oid(oid), m_visible(false), m_selected(false) {
+            needsPosition = true;
+        }
 
         const NodeID &oid() {
             return m_oid;
@@ -138,6 +142,8 @@ class Node {
             else
                 return RECT;
         }
+
+        bool needsPosition;
 
     private:
 
