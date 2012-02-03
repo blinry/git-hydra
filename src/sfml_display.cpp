@@ -114,15 +114,42 @@ class SFMLDisplay {
                     }
 
                     Vector2f offset(sin(dir+M_PI/2)*width/2, cos(dir+M_PI/2)*width/2);
+                    Vector2f norm(sin(dir)*n2.width()/2, cos(dir)*n2.width()/2);
+                    Vector2f norm2(sin(dir)*width*2, cos(dir)*width*2);
 
-                    ConvexShape line(4);
-                    line.SetFillColor(edge_color);
-                    line.SetPoint(0, Vector2f(n.pos().x, n.pos().y)+offset);
-                    line.SetPoint(1, Vector2f(n2.pos().x, n2.pos().y)+offset);
+                    if ((n.display_type() == SNAKE || n.display_type() == HEAD) && n2.display_type() == SNAKE) {
+                        ConvexShape line(4);
+                        line.SetFillColor(edge_color);
+                        line.SetPoint(0, Vector2f(n.pos().x, n.pos().y)+offset);
+                        line.SetPoint(1, Vector2f(n2.pos().x, n2.pos().y)+offset);
 
-                    line.SetPoint(2, line.GetPoint(1) - offset - offset);
-                    line.SetPoint(3, line.GetPoint(0) - offset - offset);
-                    window.Draw(line);
+                        line.SetPoint(2, line.GetPoint(1) - offset - offset);
+                        line.SetPoint(3, line.GetPoint(0) - offset - offset);
+                        window.Draw(line);
+
+                        ConvexShape arrow(3);
+                        arrow.SetFillColor(Color::White);
+                        arrow.SetPoint(0, Vector2f(n.pos().x, n.pos().y) - norm2);
+                        arrow.SetPoint(1, arrow.GetPoint(0) + norm + 0.5f*offset);
+                        arrow.SetPoint(2, arrow.GetPoint(0) + norm - 0.5f*offset);
+                        window.Draw(arrow);
+                    } else {
+                        ConvexShape line(4);
+                        line.SetFillColor(edge_color);
+                        line.SetPoint(0, Vector2f(n.pos().x, n.pos().y)+offset);
+                        line.SetPoint(1, Vector2f(n2.pos().x, n2.pos().y)+offset+norm+norm2);
+
+                        line.SetPoint(2, line.GetPoint(1) - offset - offset);
+                        line.SetPoint(3, line.GetPoint(0) - offset - offset);
+                        window.Draw(line);
+
+                        ConvexShape arrow(3);
+                        arrow.SetFillColor(edge_color);
+                        arrow.SetPoint(0, Vector2f(n2.pos().x, n2.pos().y) + norm);
+                        arrow.SetPoint(1, arrow.GetPoint(0) + norm2 + offset + offset + offset);
+                        arrow.SetPoint(2, arrow.GetPoint(0) + norm2 - offset - offset - offset);
+                        window.Draw(arrow);
+                    }
             }
         }
 
