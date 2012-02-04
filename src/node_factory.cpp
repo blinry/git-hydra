@@ -83,7 +83,14 @@ class NodeFactory {
                     git_oid_fmt(oid_str, &entry->oid);
                     string oid_string(oid_str,40);
 
-                    node.label(entry->path);
+                    char label[3000];
+                    int stage = git_index_entry_stage(entry);
+                    if (stage == 0)
+                        sprintf(label, "%s", entry->path);
+                    else
+                        sprintf(label, "%s (%d)", entry->path, stage);
+
+                    node.label(label);
                     node.add_edge(Edge(NodeID(OBJECT,oid_string), "refers"));
                 }
             } else {
