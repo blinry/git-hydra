@@ -9,7 +9,7 @@ class SFMLDisplay {
 
     public:
 
-        SFMLDisplay(Graph& graph, Index& index) : graph(graph), index(index), window(VideoMode(500,500), "Git-Tutor", Style::Default, ContextSettings(0,0,4,3,0)), view(FloatRect(0,0,window.GetWidth(),window.GetHeight())) {
+        SFMLDisplay(Graph& graph, Index& index) : graph(graph), index(index), window(VideoMode(500,500), "Git-Tutor", Style::Default, ContextSettings(0,0,4,3,0)), view(FloatRect(0,0,1000,1000)) {
             window.SetView(view);
             //cout << window.GetSettings().AntialiasingLevel << flush;
             font.LoadFromFile(assets_dir()+"/arial.ttf");
@@ -157,8 +157,26 @@ class SFMLDisplay {
             }
         }
 
+        void draw_background() {
+            RectangleShape rect(Vector2f(1000.0/3,view.GetSize().y));
+
+            rect.SetFillColor(Color(30,60,30));
+            rect.SetPosition(Vector2f(0,0));
+            window.Draw(rect);
+
+            rect.SetFillColor(Color(0,0,0));
+            rect.SetPosition(Vector2f(1000.0/3,0));
+            window.Draw(rect);
+
+            rect.SetFillColor(Color(60,30,60));
+            rect.SetPosition(Vector2f(1000.0/3*2,0));
+            window.Draw(rect);
+        }
+
         void draw() {
             window.Clear();
+
+            draw_background();
 
             // Draw Edges
 
@@ -214,8 +232,6 @@ class SFMLDisplay {
                         window.Close();
                 }
                 if (event.Type == Event::MouseWheelMoved) {
-                    view.Zoom(1-event.MouseWheel.Delta*0.1);
-                    window.SetView(view);
                 }
                 if (event.Type == Event::MouseButtonPressed) {
                     if (!graph.empty()) {
@@ -228,16 +244,12 @@ class SFMLDisplay {
                                 NodeID tree = n.toggle_tree();
                                 graph.recursive_unfold_levels(tree,99999);
                             }
-                        } else if (event.MouseButton.Button == 2) {
-                            view.SetCenter(click_position);
-                            window.SetView(view);
                         }
                     }
                 }
                 if (event.Type == Event::Resized) {
                     float aspect_ratio = 1.0*event.Size.Width/event.Size.Height;
-                    float width = view.GetSize().x*(1.0*event.Size.Width/window.GetWidth());
-                    view.SetSize(width, width/aspect_ratio);
+                    view.Reset(FloatRect(0, 0, 1000, 1000/aspect_ratio));
                     window.SetView(view);
                 }
             }

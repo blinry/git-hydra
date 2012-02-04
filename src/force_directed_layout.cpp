@@ -17,9 +17,14 @@ class ForceDirectedLayout {
                 Node& n1 = it->second;
                 if (!n1.visible()) continue;
 
+                if (n1.label() == "HEAD") {
+                    n1.pos().x = 1000.0/12;
+                    n1.pos().y = 500;
+                }
+
                 if (n1.label() == "index") {
-                    n1.pos().x = 600;
-                    n1.pos().y = 0;
+                    n1.pos().x = 1000;
+                    n1.pos().y = 500;
                 }
 
                 constrain_to_field(n1);
@@ -71,14 +76,14 @@ class ForceDirectedLayout {
 
         void constrain_to_field(Node& n1) {
             if (n1.type() == COMMIT)
-                n1.velocity().x -= 0.0001*pow(n1.pos().x,3);
+                n1.velocity().x -= 0.0001*pow(n1.pos().x-1000/6.0,3);
             else if (n1.oid().type == INDEX_ENTRY) {
-                n1.pos().x = 500;
+                n1.pos().x = 1000/3*2+10;
                 //n1.pos().y = atoi(n1.oid().name.c_str())*10;
             } else if (n1.type() == TAG) {
                 ;
             } else {
-                n1.velocity().x -= 0.000001*pow((n1.pos().x-500),3);
+                n1.velocity().x -= 0.00001*pow((n1.pos().x-500),3);
             }
         }
 

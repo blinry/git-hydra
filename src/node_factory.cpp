@@ -20,8 +20,8 @@ class NodeFactory {
         Node buildNode(const NodeID& oid) {
             Node node(oid);
 
-            node.pos().x = (rand()%1000000)/1000000.0;
-            node.pos().y = (rand()%1000000)/1000000.0;
+            node.pos().x = 500+(rand()%1000000)/5000.0;
+            node.pos().y = 500+(rand()%1000000)/5000.0;
 
             if (oid.type == REF) {
                 git_reference *ref = NULL;
@@ -70,9 +70,10 @@ class NodeFactory {
                 git_index *index;
                 git_repository_index(&index, repo);
 
-                git_index_entry *entry;
+                git_index_entry *entry = NULL;
                 //cout << "prae\n" << flush;
-                entry = git_index_get(index, atoi(oid.name.c_str()));
+                if (git_index_entrycount(index) >= atoi(oid.name.c_str()))
+                    entry = git_index_get(index, atoi(oid.name.c_str()));
                 //cout << "post\n" << flush;
 
                 if (!entry) {
