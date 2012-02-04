@@ -14,7 +14,7 @@ class SFMLDisplay {
             //cout << window.GetSettings().AntialiasingLevel << flush;
             font.LoadFromFile(assets_dir()+"/arial.ttf");
             text.SetFont(font);
-            text.SetCharacterSize(10);
+            text.SetCharacterSize(20);
         }
 
         void draw(Node n) {

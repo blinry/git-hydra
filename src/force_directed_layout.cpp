@@ -7,8 +7,8 @@ class ForceDirectedLayout {
     public:
 
         ForceDirectedLayout(Graph& graph) : graph(graph) {
-            spring = 20;
-            charge = 1000;
+            spring = 50;
+            charge = 2000;
             damping = 0.1;
         }
 
@@ -16,11 +16,6 @@ class ForceDirectedLayout {
             for(map<NodeID,Node>::iterator it = graph.nodes_begin(); it != graph.nodes_end(); it++) {
                 Node& n1 = it->second;
                 if (!n1.visible()) continue;
-
-                if (n1.label() == "HEAD") {
-                    n1.pos().x = 1000.0/12;
-                    n1.pos().y = 500;
-                }
 
                 if (n1.label() == "index") {
                     n1.pos().x = 1000;
@@ -85,6 +80,7 @@ class ForceDirectedLayout {
             } else {
                 n1.velocity().x -= 0.00001*pow((n1.pos().x-500),3);
             }
+            n1.velocity().y -= 0.00001*pow((n1.pos().y-500),3);
         }
 
         void turn(Node& n1, Node& n2) {
