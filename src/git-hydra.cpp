@@ -45,6 +45,7 @@ int main(int argc, const char *argv[]) {
         graph.update();
         index.update();
 
+
         layout.apply();
 
         display.draw();

@@ -7,6 +7,7 @@ enum GitType {
 
 enum NodeType {
     INDEX,
+    INDEX_ENTRY,
     REF,
     OBJECT
 };
@@ -31,7 +32,11 @@ class NodeID {
         }
 
         bool operator<(const NodeID& other) const {
-            return other.name < name;
+            if (name < other.name)
+                return true;
+            else if (name == other.name)
+                return type < other.type;
+            return false;
         }
 
         NodeType type;

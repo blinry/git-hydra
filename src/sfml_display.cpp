@@ -183,6 +183,7 @@ class SFMLDisplay {
             }
             window.Draw(text);
 
+            /*
             // Draw Index
 
             int line = 0;
@@ -194,6 +195,7 @@ class SFMLDisplay {
                 text.SetPosition(500, i*20);
                 window.Draw(text);
             }
+            */
 
             window.Display();
         }

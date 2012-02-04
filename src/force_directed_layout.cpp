@@ -17,6 +17,11 @@ class ForceDirectedLayout {
                 Node& n1 = it->second;
                 if (!n1.visible()) continue;
 
+                if (n1.label() == "index") {
+                    n1.pos().x = 600;
+                    n1.pos().y = 0;
+                }
+
                 constrain_to_field(n1);
 
                 for(map<NodeID,Node>::iterator it2 = graph.nodes_begin(); it2 != graph.nodes_end(); it2++) {
@@ -39,10 +44,6 @@ class ForceDirectedLayout {
                     }
 
                     n1.velocity() += connection.normal()*repulse(n1, n2);
-                }
-                if (n1.label() == "index") {
-                    n1.pos().x = 500;
-                    n1.pos().y = 0;
                 }
             }
 
@@ -71,7 +72,9 @@ class ForceDirectedLayout {
         void constrain_to_field(Node& n1) {
             if (n1.type() == COMMIT)
                 n1.velocity().x -= 0.0001*pow(n1.pos().x,3);
-            else if (n1.type() == TAG) {
+            else if (n1.oid().type == INDEX_ENTRY) {
+                n1.pos().x = 500;
+            } else if (n1.type() == TAG) {
                 ;
             } else {
                 n1.velocity().x -= 0.000001*pow((n1.pos().x-500),3);
@@ -89,7 +92,8 @@ class ForceDirectedLayout {
             else if (n1.display_type() == SIGN)
                 direction = -M_PI*1/2;
             else if (n1.display_type() == RECT)
-                direction = -M_PI*1/2;
+                return;
+                //direction = -M_PI*1/2;
 
             float correction = small_angle(n1.dir_to(n2),direction);
             //float strength = 100/(1+exp(-5*correction))-50;

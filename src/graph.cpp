@@ -25,7 +25,8 @@ class Graph {
         }
 
         Node& lookup(const NodeID& oid) {
-            if (oid.type == REF) {
+            //cout << oid.name << "\n" << flush;
+            if (oid.type == REF || oid.type == INDEX || oid.type == INDEX_ENTRY) {
                 map<NodeID,Node>::iterator it = nodes.find(oid);
                 if (it == nodes.end()) {
                     nodes[oid] = factory.buildNode(oid);
@@ -128,10 +129,6 @@ class Graph {
                 if (!edge.folded()) {
                     Node &n2 = lookup(n.edge(j).target());
                     if (n2.needsPosition) {
-                        cout << oid.name << "\n" << flush;
-                        cout << n.pos().x << "\n" << flush;
-                        cout << n.pos().y << "\n" << flush;
-                        cout << n2.label() << "\n" << flush;
                         n2.pos(n.pos().x + 0.01, n.pos().y + 0.01);
                         n2.needsPosition = false;
                     }

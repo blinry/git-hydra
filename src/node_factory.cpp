@@ -53,7 +53,6 @@ class NodeFactory {
                 node.label(oid.name);
                 node.type(TAG);
             } else if (oid.type == INDEX) {
-
                 git_repository_free(repo);
                 int ret = git_repository_open(&repo, repository_path.c_str());
                 node.label(oid.name);
@@ -61,13 +60,23 @@ class NodeFactory {
                 git_index *index;
                 git_repository_index(&index, repo);
                 for(int i=0; i<git_index_entrycount(index); i++) {
-                    git_index_entry *entry;
-                    entry = git_index_get(index, i);
-                    char oid_str[40];
-                    git_oid_fmt(oid_str, &entry->oid);
-                    string oid_string(oid_str,40);
-                    node.add_edge(Edge(NodeID(OBJECT,oid_string), entry->path));
+                    char num[10];
+                    sprintf(num, "%d", i);
+                    node.add_edge(Edge(NodeID(INDEX_ENTRY,num), "contains"));
                 }
+            } else if (oid.type == INDEX_ENTRY) {
+                git_index *index;
+                git_repository_index(&index, repo);
+
+                git_index_entry *entry;
+                entry = git_index_get(index, atoi(oid.name.c_str()));
+                char oid_str[40];
+                git_oid_fmt(oid_str, &entry->oid);
+                string oid_string(oid_str,40);
+
+                node.label(entry->path);
+                node.add_edge(Edge(NodeID(OBJECT,oid_str), "refers"));
+                //node.add_edge(Edge(NodeID(REF,"refs/heads/master"), "refers"));
             } else {
                 git_oid id;
                 git_oid_fromstr(&id, oid.name.c_str());
@@ -174,7 +183,7 @@ class NodeFactory {
             }
 
             roots.insert(NodeID(REF,"HEAD"));
-            //roots.insert(NodeID(INDEX,"index"));
+            roots.insert(NodeID(INDEX,"index"));
 
             return roots;
         }
