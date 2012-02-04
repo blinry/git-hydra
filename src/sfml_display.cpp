@@ -14,7 +14,6 @@ class SFMLDisplay {
             //cout << window.GetSettings().AntialiasingLevel << flush;
             font.LoadFromFile(assets_dir()+"/arial.ttf");
             text.SetFont(font);
-            text.SetCharacterSize(20);
         }
 
         void draw(Node n) {
@@ -96,7 +95,9 @@ class SFMLDisplay {
             if (n.oid().type == INDEX_ENTRY) {
                 text.SetString(n.label());
                 text.SetPosition(n.pos().x+5, n.pos().y-10);
+                text.SetColor(Color(20,20,20));
                 window.Draw(text);
+                text.SetColor(Color(255,255,255));
             } else {
                 Color color = Color::Blue;
                 RectangleShape rect(Vector2f(n.width(),n.height()));
@@ -114,7 +115,7 @@ class SFMLDisplay {
                     continue;
                 if (n.oid().type == INDEX)
                     continue;
-                    Color edge_color = Color::White;
+                    Color edge_color = Color(200,200,200);
 
                     float dir = n.dir_to(n2);
                     float width = (n2.width()+n.width())/6;
@@ -174,9 +175,17 @@ class SFMLDisplay {
             rect.SetPosition(Vector2f(1000.0/3,0));
             window.Draw(rect);
 
-            rect.SetFillColor(Color(60,30,60));
+            rect.SetFillColor(Color(240,230,190));
             rect.SetPosition(Vector2f(1000.0/3*2,0));
             window.Draw(rect);
+
+            text.SetPosition(1000.0/3*2+20,20);
+            text.SetString("Speisekarte");
+            text.SetCharacterSize(40);
+            text.SetColor(Color(20,20,20));
+            window.Draw(text);
+            text.SetCharacterSize(20);
+            text.SetColor(Color(255,255,255));
         }
 
         void draw() {
@@ -210,20 +219,6 @@ class SFMLDisplay {
                 text.SetPosition(n.pos().x+5, n.pos().y+10);
             }
             window.Draw(text);
-
-            /*
-            // Draw Index
-
-            int line = 0;
-            for(int i=0; i<index.entries().size(); i++) {
-                IndexEntry e = index.entries().at(i);
-                char s[3000];
-                sprintf(s, "%s (%d)", e.path().c_str(), e.stage());
-                text.SetString(s);
-                text.SetPosition(500, i*20);
-                window.Draw(text);
-            }
-            */
 
             window.Display();
         }

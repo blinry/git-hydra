@@ -39,11 +39,11 @@ int main(int argc, const char *argv[]) {
     SFMLDisplay display(graph);
 
     while(display.open()) {
+        display.draw();
         graph.update();
 
         layout.apply();
 
-        display.draw();
         display.process_events();
     }
 
