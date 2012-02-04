@@ -7,7 +7,7 @@ class ForceDirectedLayout {
     public:
 
         ForceDirectedLayout(Graph& graph) : graph(graph) {
-            spring = 50;
+            spring = 0;
             charge = 2000;
             damping = 0.1;
         }
@@ -75,12 +75,13 @@ class ForceDirectedLayout {
             else if (n1.oid().type == INDEX_ENTRY) {
                 n1.pos().x = 1000/3*2+10;
                 //n1.pos().y = atoi(n1.oid().name.c_str())*10;
-            } else if (n1.type() == TAG) {
+            } else if (n1.oid().type == REF) {
                 ;
             } else {
                 n1.velocity().x -= 0.00001*pow((n1.pos().x-500),3);
             }
-            n1.velocity().y -= 0.00001*pow((n1.pos().y-500),3);
+            if (n1.type() != TAG)
+                n1.velocity().y -= 0.000005*pow(n1.pos().y-500,3);
         }
 
         void turn(Node& n1, Node& n2) {

@@ -102,16 +102,16 @@ class Node {
         }
 
         float mass() {
-            return 5;
+            return 10;
         }
 
         float width() {
             switch(display_type()) {
                 case SNAKE:
                 case HEAD:
-                    return 20;
+                    return 40;
                 default:
-                    return 10;
+                    return 20;
             }
         }
 

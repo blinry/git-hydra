@@ -48,13 +48,15 @@ class SFMLDisplay {
                 ConvexShape tongue(7);
                 tongue.SetFillColor(Color::Red);
 
-                tongue.SetPoint(0, Vector2f(n.pos().x-1, n.pos().y));
-                tongue.SetPoint(1, Vector2f(n.pos().x-1, n.pos().y-15));
-                tongue.SetPoint(2, Vector2f(n.pos().x-7, n.pos().y-25));
-                tongue.SetPoint(3, Vector2f(n.pos().x, n.pos().y-17));
-                tongue.SetPoint(4, Vector2f(n.pos().x+7, n.pos().y-25));
-                tongue.SetPoint(5, Vector2f(n.pos().x+1, n.pos().y-15));
-                tongue.SetPoint(6, Vector2f(n.pos().x+1, n.pos().y));
+                float fact = 2;
+
+                tongue.SetPoint(0, Vector2f(n.pos().x-1*fact, n.pos().y));
+                tongue.SetPoint(1, Vector2f(n.pos().x-1*fact, n.pos().y-15*fact));
+                tongue.SetPoint(2, Vector2f(n.pos().x-7*fact, n.pos().y-25*fact));
+                tongue.SetPoint(3, Vector2f(n.pos().x, n.pos().y-17*fact));
+                tongue.SetPoint(4, Vector2f(n.pos().x+7*fact, n.pos().y-25*fact));
+                tongue.SetPoint(5, Vector2f(n.pos().x+1*fact, n.pos().y-15*fact));
+                tongue.SetPoint(6, Vector2f(n.pos().x+1*fact, n.pos().y));
                 window.Draw(tongue);
             }
 
@@ -83,21 +85,25 @@ class SFMLDisplay {
 
             }
 
+            /*
             text.SetString(n.label());
             text.SetPosition(n.pos().x+10, n.pos().y);
             window.Draw(text);
+            */
         }
 
         void draw_rect(Node n) {
-            Color color = Color::Blue;
-            RectangleShape rect(Vector2f(n.width(),n.height()));
-            rect.SetFillColor(color);
-            rect.SetPosition(Vector2f(n.pos().x-n.width()/2,n.pos().y-n.height()/2));
-            window.Draw(rect);
-
-            text.SetString(n.label());
-            text.SetPosition(n.pos().x+10, n.pos().y);
-            window.Draw(text);
+            if (n.oid().type == INDEX_ENTRY) {
+                text.SetString(n.label());
+                text.SetPosition(n.pos().x+5, n.pos().y-10);
+                window.Draw(text);
+            } else {
+                Color color = Color::Blue;
+                RectangleShape rect(Vector2f(n.width(),n.height()));
+                rect.SetFillColor(color);
+                rect.SetPosition(Vector2f(n.pos().x-n.width()/2,n.pos().y-n.height()/2));
+                window.Draw(rect);
+            }
         }
 
         void draw_edges(Node n) {
@@ -111,10 +117,10 @@ class SFMLDisplay {
                     Color edge_color = Color::White;
 
                     float dir = n.dir_to(n2);
-                    float width = 3;
+                    float width = (n2.width()+n.width())/6;
                     if ((n.display_type() == SNAKE || n.display_type() == HEAD) && n2.display_type() == SNAKE) {
-                        width = 10;
                         edge_color = Color(20,155,20);
+                        width = n2.width()/2;
                     }
 
                     Vector2f offset(sin(dir+M_PI/2)*width/2, cos(dir+M_PI/2)*width/2);
