@@ -65,18 +65,26 @@ class NodeFactory {
                     node.add_edge(Edge(NodeID(INDEX_ENTRY,num), "contains"));
                 }
             } else if (oid.type == INDEX_ENTRY) {
+                git_repository_free(repo);
+                int ret = git_repository_open(&repo, repository_path.c_str());
                 git_index *index;
                 git_repository_index(&index, repo);
 
                 git_index_entry *entry;
+                //cout << "prae\n" << flush;
                 entry = git_index_get(index, atoi(oid.name.c_str()));
-                char oid_str[40];
-                git_oid_fmt(oid_str, &entry->oid);
-                string oid_string(oid_str,40);
+                //cout << "post\n" << flush;
 
-                node.label(entry->path);
-                node.add_edge(Edge(NodeID(OBJECT,oid_str), "refers"));
-                //node.add_edge(Edge(NodeID(REF,"refs/heads/master"), "refers"));
+                if (!entry) {
+                    node.label("invalid");
+                } else {
+                    char oid_str[40];
+                    git_oid_fmt(oid_str, &entry->oid);
+                    string oid_string(oid_str,40);
+
+                    node.label(entry->path);
+                    node.add_edge(Edge(NodeID(OBJECT,oid_string), "refers"));
+                }
             } else {
                 git_oid id;
                 git_oid_fromstr(&id, oid.name.c_str());

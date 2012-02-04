@@ -18,6 +18,8 @@ class SFMLDisplay {
         }
 
         void draw(Node n) {
+            if (n.label() == "index")
+                return;
             switch (n.display_type()) {
                 case SNAKE:
                     draw_snake(n);
@@ -103,6 +105,8 @@ class SFMLDisplay {
                 if (n.edge(j).folded()) continue;
                 Node n2 = graph.lookup(n.edge(j).target());
                 if (!n2.visible())
+                    continue;
+                if (n.oid().type == INDEX)
                     continue;
                     Color edge_color = Color::White;
 

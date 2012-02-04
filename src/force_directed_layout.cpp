@@ -74,6 +74,7 @@ class ForceDirectedLayout {
                 n1.velocity().x -= 0.0001*pow(n1.pos().x,3);
             else if (n1.oid().type == INDEX_ENTRY) {
                 n1.pos().x = 500;
+                //n1.pos().y = atoi(n1.oid().name.c_str())*10;
             } else if (n1.type() == TAG) {
                 ;
             } else {
