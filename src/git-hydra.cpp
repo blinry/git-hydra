@@ -16,10 +16,8 @@ using namespace std;
 #include "vec2f.cpp"
 #include "edge.cpp"
 #include "node.cpp"
-#include "index_entry.cpp"
 #include "node_factory.cpp"
 #include "graph.cpp"
-#include "index.cpp"
 #include "force_directed_layout.cpp"
 #include "sfml_display.cpp"
 
@@ -36,15 +34,12 @@ int main(int argc, const char *argv[]) {
 
     NodeFactory node_factory(git_directory);
     Graph graph(node_factory);
-    Index index(node_factory);
 
     ForceDirectedLayout layout(graph);
-    SFMLDisplay display(graph, index);
+    SFMLDisplay display(graph);
 
     while(display.open()) {
         graph.update();
-        index.update();
-
 
         layout.apply();
 
