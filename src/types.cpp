@@ -9,6 +9,7 @@ enum NodeType {
     INDEX,
     INDEX_ENTRY,
     REF,
+    TAIL,
     OBJECT
 };
 
@@ -19,7 +20,8 @@ enum NodeDisplayType {
     HEAD,
     HALO,
     BAG,
-    APPLE
+    APPLE,
+    SNAKE_TAIL
 };
 
 class NodeID {

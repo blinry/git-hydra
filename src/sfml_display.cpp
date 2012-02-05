@@ -35,6 +35,8 @@ class SFMLDisplay {
                 case APPLE:
                     draw_apple(n);
                     break;
+                case SNAKE_TAIL:
+                    break;
                     /*
                 case SIGN:
                     draw_sign(n);
@@ -79,7 +81,7 @@ class SFMLDisplay {
                 ConvexShape tongue(7);
                 tongue.SetFillColor(Color::Red);
 
-                float fact = 2;
+                float fact = n.width()/20;
 
                 tongue.SetPoint(0, Vector2f(n.pos().x-1*fact, n.pos().y));
                 tongue.SetPoint(1, Vector2f(n.pos().x-1*fact, n.pos().y-15*fact));
@@ -151,9 +153,9 @@ class SFMLDisplay {
 
                     float dir = n.dir_to(n2);
                     float width = (n2.width()+n.width())/6;
-                    if ((n.display_type() == SNAKE || n.display_type() == HEAD) && n2.display_type() == SNAKE) {
+                    if ((n.display_type() == SNAKE || n.display_type() == HEAD) && (n2.display_type() == SNAKE || n2.display_type() == SNAKE_TAIL )) {
                         edge_color = Color(20,155,20);
-                        width = n2.width()/2;
+                        width = 30;
                     }
 
                     Vector2f offset(sin(dir+M_PI/2)*width/2, cos(dir+M_PI/2)*width/2);
@@ -176,6 +178,14 @@ class SFMLDisplay {
                         arrow.SetPoint(1, arrow.GetPoint(0) + norm + 0.5f*offset);
                         arrow.SetPoint(2, arrow.GetPoint(0) + norm - 0.5f*offset);
                         window.Draw(arrow);
+                    } else if (n2.display_type() == SNAKE_TAIL) {
+                        ConvexShape tail(3);
+                        tail.SetFillColor(edge_color);
+                        tail.SetPoint(0, Vector2f(n.pos().x, n.pos().y)+1.0f*offset);
+                        tail.SetPoint(1, Vector2f(n2.pos().x, n2.pos().y));
+
+                        tail.SetPoint(2, tail.GetPoint(0) - 2.0f*offset);
+                        window.Draw(tail);
                     } else {
                         ConvexShape line(4);
                         line.SetFillColor(edge_color);

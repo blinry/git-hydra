@@ -111,8 +111,10 @@ class Node {
         float width() {
             switch(display_type()) {
                 case SNAKE:
+                    return 50;
                 case HEAD:
-                    return 40;
+                case SNAKE_TAIL:
+                    return 30;
                 default:
                     return 20;
             }
@@ -148,6 +150,8 @@ class Node {
                 return BAG;
             else if (type() == BLOB)
                 return APPLE;
+            else if (oid().type == TAIL)
+                return SNAKE_TAIL;
             else
                 return RECT;
         }

@@ -26,7 +26,9 @@ class NodeFactory {
             if (oid.type == REF) {
                 git_reference *ref = NULL;
                 git_reference_lookup(&ref, repo, oid.name.c_str());
-                if (ref != NULL) {
+                if (ref == NULL) {
+                    node.add_edge(Edge(NodeID(TAIL,oid.name), "has"));
+                } else {
                     switch(git_reference_type(ref)) {
                         case GIT_REF_OID:
                             {
@@ -46,8 +48,6 @@ class NodeFactory {
                                 node.add_edge(Edge(NodeID(REF,oid_string), "points to"));
                                 break;
                             }
-                        default:
-                            exit(1);
                     }
                 }
                 node.label(oid.name);
@@ -93,7 +93,7 @@ class NodeFactory {
                     node.label(label);
                     node.add_edge(Edge(NodeID(OBJECT,oid_string), "refers"));
                 }
-            } else {
+            } else if (oid.type == OBJECT) {
                 git_oid id;
                 git_oid_fromstr(&id, oid.name.c_str());
                 git_object *object;
@@ -121,6 +121,10 @@ class NodeFactory {
                                 git_oid_fmt(oid_str, target_id);
                                 string oid_string(oid_str,40);
                                 node.add_edge(Edge(NodeID(OBJECT,oid_string), "parent"));
+                            }
+
+                            if (parentcount == 0) {
+                                node.add_edge(Edge(NodeID(TAIL,oid.name), "has"));
                             }
 
                             // tree

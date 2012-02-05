@@ -70,7 +70,7 @@ class ForceDirectedLayout {
         }
 
         void constrain_to_field(Node& n1) {
-            if (n1.type() == COMMIT)
+            if (n1.type() == COMMIT || n1.display_type() == SNAKE_TAIL || n1.display_type() == HEAD)
                 n1.velocity().x -= 0.0001*pow(n1.pos().x-1000/6.0,3);
             else if (n1.oid().type == INDEX_ENTRY) {
                 n1.pos().x = 1000/3*2+10;
@@ -86,8 +86,8 @@ class ForceDirectedLayout {
 
         void turn(Node& n1, Node& n2) {
             float direction = 0;
-            if (n1.display_type() == SNAKE || n1.display_type() == HEAD) {
-                if (n2.display_type() == SNAKE)
+            if (n1.display_type() == SNAKE || n1.display_type() == HEAD || n1.display_type() == SNAKE_TAIL) {
+                if (n2.display_type() == SNAKE || n2.display_type() == SNAKE_TAIL)
                     direction = M_PI;
                 else
                     direction = -M_PI*1/2;
