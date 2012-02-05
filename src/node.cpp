@@ -9,6 +9,7 @@ class Node {
 
         Node() {
             needsPosition = true;
+            hole = false;
         }
 
         Node(const NodeID& oid) : m_oid(oid), m_visible(false), m_selected(false) {
@@ -157,6 +158,7 @@ class Node {
         }
 
         bool needsPosition;
+        bool hole;
 
     private:
 

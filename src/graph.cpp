@@ -26,7 +26,6 @@ class Graph {
         }
 
         Node& lookup(const NodeID& oid) {
-            //cout << oid.name << "\n" << flush;
             if (oid.type == REF || oid.type == INDEX || oid.type == INDEX_ENTRY) {
                 map<NodeID,Node>::iterator it = nodes.find(oid);
                 if (it == nodes.end()) {
@@ -35,9 +34,9 @@ class Graph {
                     // it's there, but maybe it needs an update.
                     Vec2f old_pos = nodes[oid].pos();
                     bool old_selected = nodes[oid].selected();
-                    bool edge_folded;
                     bool visible = nodes[oid].visible();
                     bool needsPosition = nodes[oid].needsPosition;
+                    bool hole = nodes[oid].hole;
                     nodes[oid] = factory.buildNode(oid);
                     nodes[oid].pos() = old_pos;
                     if (old_selected)
@@ -48,6 +47,7 @@ class Graph {
                     if (visible)
                         nodes[oid].show();
                     nodes[oid].needsPosition = needsPosition;
+                    nodes[oid].hole = hole;
                 }
             } else {
                 map<NodeID,Node>::iterator it = nodes.find(oid);
@@ -109,8 +109,15 @@ class Graph {
         }
 
         void recursive_unfold_levels(NodeID oid, int depth) {
-            if (depth<0) return;
             Node &n = lookup(oid);
+            if (depth<0) {
+                for(int i=0; i<n.degree(); i++) {
+                    if (n.edge(i).label() != "tree") {
+                        lookup(n.edge(i).target()).hole = true;
+                    }
+                }
+                return;
+            }
             for(int i=0; i<n.degree(); i++) {
                 if (n.edge(i).label() != "tree") {
                     if (n.edge(i).folded()) {
@@ -131,14 +138,21 @@ class Graph {
             for(int j=0; j<n.degree(); j++) {
                 Edge &edge = n.edge(j);
 
+                Node &n2 = lookup(edge.target());
                 if (!edge.folded()) {
-                    Node &n2 = lookup(n.edge(j).target());
                     if (n2.needsPosition) {
-                        n2.pos(n.pos().x + 0.01, n.pos().y + 0.01);
+                        float dx = 0.1, dy = 0.1;
+                        if (n.oid().type == INDEX_ENTRY && n2.type() == BLOB) {
+                            dx = -20;
+                        } else if (n.type() == COMMIT) {
+                            dy = 20;
+                        }
+                        n2.pos(n.pos().x + dx, n.pos().y + dy);
                         n2.needsPosition = false;
                     }
 
                     recursive_set_visible(edge.target());
+                } else {
                 }
             }
         }

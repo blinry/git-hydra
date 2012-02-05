@@ -59,7 +59,7 @@ class ForceDirectedLayout {
                     continue;
                 } else if (n1.oid().type == INDEX_ENTRY) {
                     n1.pos().x = 1000/3*2+10;
-                    n1.pos().y = graph.index_pos+atoi(n1.oid().name.c_str())*20;
+                    n1.pos().y = graph.index_pos+atoi(n1.oid().name.c_str())*30;
                 }
 
             }
