@@ -129,6 +129,7 @@ class Graph {
         }
 
         float index_pos;
+        NodeFactory factory;
 
     private:
 
@@ -157,7 +158,6 @@ class Graph {
             }
         }
 
-        NodeFactory factory;
         set<NodeID> roots;
         map<NodeID,Node> nodes;
 

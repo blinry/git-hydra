@@ -15,6 +15,7 @@ class NodeFactory {
                 cerr << "You don't seem to be in a Git repository.\n";
                 exit(1);
             }
+            all_objects = false;
         }
 
         Node buildNode(const NodeID& oid) {
@@ -191,7 +192,7 @@ class NodeFactory {
                 roots.insert(NodeID(REF,ref_nms.strings[i]));
             }
 
-            if (false) {
+            if (all_objects) {
                 FILE *fp;
                 int status;
                 char path[1035];
@@ -217,6 +218,8 @@ class NodeFactory {
 
             return roots;
         }
+
+        bool all_objects;
 
     private:
 

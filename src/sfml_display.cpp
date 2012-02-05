@@ -282,6 +282,9 @@ class SFMLDisplay {
                 if (event.Type == Event::KeyPressed) {
                     if (event.Key.Code == Keyboard::Escape)
                         window.Close();
+                    if (event.Key.Code == Keyboard::A) {
+                        graph.factory.all_objects = !graph.factory.all_objects;
+                    }
                 }
                 if (event.Type == Event::MouseWheelMoved) {
                     graph.index_pos += event.MouseWheel.Delta*20;
@@ -334,5 +337,4 @@ class SFMLDisplay {
         Font font;
         Text text;
         Graph &graph;
-
 };
