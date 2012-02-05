@@ -1,3 +1,0 @@
-- Knoten ausklappen: Tree zeigt Inhalt, Tag/Ref zeigt Ziel, Commit zeigt im Klappmodus 1 Parents, im Klappmodus 2 Parents und Tree.
-- Knoten verschieben
-- Knoten auswählen
