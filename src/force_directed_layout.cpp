@@ -17,11 +17,6 @@ class ForceDirectedLayout {
                 Node& n1 = it->second;
                 if (!n1.visible()) continue;
 
-                if (n1.label() == "index") {
-                    n1.pos().x = 1000;
-                    n1.pos().y = graph.index_pos;
-                }
-
                 constrain_to_field(n1);
 
                 for(map<NodeID,Node>::iterator it2 = graph.nodes_begin(); it2 != graph.nodes_end(); it2++) {
@@ -47,6 +42,7 @@ class ForceDirectedLayout {
                 }
             }
 
+
             for(map<NodeID,Node>::iterator it = graph.nodes_begin(); it != graph.nodes_end(); it++) {
                 Node& n1 = it->second;
 
@@ -56,6 +52,16 @@ class ForceDirectedLayout {
 
                 n1.velocity() *= damping;
                 n1.pos() += n1.velocity();
+
+                if (n1.label() == "index") {
+                    n1.pos().x = 1000;
+                    n1.pos().y = graph.index_pos;
+                    continue;
+                } else if (n1.oid().type == INDEX_ENTRY) {
+                    n1.pos().x = 1000/3*2+10;
+                    n1.pos().y = graph.index_pos+atoi(n1.oid().name.c_str())*20;
+                }
+
             }
         }
 
@@ -70,18 +76,15 @@ class ForceDirectedLayout {
         }
 
         void constrain_to_field(Node& n1) {
-            if (n1.type() == COMMIT || n1.display_type() == SNAKE_TAIL || n1.display_type() == HEAD)
+            if (n1.type() == COMMIT || n1.display_type() == SNAKE_TAIL || n1.display_type() == HEAD) {
                 n1.velocity().x -= 0.0001*pow(n1.pos().x-1000/6.0,3);
-            else if (n1.oid().type == INDEX_ENTRY) {
-                n1.pos().x = 1000/3*2+10;
-                //n1.pos().y = atoi(n1.oid().name.c_str())*10;
             } else if (n1.oid().type == REF) {
                 ;
             } else {
-                n1.velocity().x -= 0.00001*pow((n1.pos().x-500),3);
+                n1.velocity().x -= 0.000005*pow((n1.pos().x-500),3);
             }
             if (n1.type() != TAG)
-                n1.velocity().y -= 0.000005*pow(n1.pos().y-500,3);
+                n1.velocity().y -= 0.000002*pow(n1.pos().y-500,3);
         }
 
         void turn(Node& n1, Node& n2) {

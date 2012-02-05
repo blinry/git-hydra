@@ -8,7 +8,7 @@ class Graph {
 
         Graph(NodeFactory& factory) : factory(factory) {
             reseed();
-            index_pos = 500;
+            index_pos = 100;
         }
 
         void update() {
