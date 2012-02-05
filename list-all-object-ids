@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Based on https://gist.github.com/1211638/5d0ee7da6f2db49ecd2a9268422a5d268d33b362
+# Thanks to mhl!
+
 set -e
 shopt -s nullglob
 
