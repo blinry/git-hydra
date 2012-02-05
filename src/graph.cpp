@@ -8,6 +8,7 @@ class Graph {
 
         Graph(NodeFactory& factory) : factory(factory) {
             reseed();
+            index_pos = 500;
         }
 
         void update() {
@@ -117,6 +118,8 @@ class Graph {
                 }
             }
         }
+
+        float index_pos;
 
     private:
 

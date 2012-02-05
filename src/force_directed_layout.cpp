@@ -19,7 +19,7 @@ class ForceDirectedLayout {
 
                 if (n1.label() == "index") {
                     n1.pos().x = 1000;
-                    n1.pos().y = 500;
+                    n1.pos().y = graph.index_pos;
                 }
 
                 constrain_to_field(n1);

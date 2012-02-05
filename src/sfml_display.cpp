@@ -233,6 +233,7 @@ class SFMLDisplay {
                         window.Close();
                 }
                 if (event.Type == Event::MouseWheelMoved) {
+                    graph.index_pos += event.MouseWheel.Delta*20;
                 }
                 if (event.Type == Event::MouseButtonPressed) {
                     if (!graph.empty()) {
