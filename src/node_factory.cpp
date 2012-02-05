@@ -102,14 +102,19 @@ class NodeFactory {
 
                 node.label(oid.name.substr(0,6));
 
+                git_odb* odb;
+
+                git_odb_open(&odb, (repository_path+string("objects")).c_str());
+                git_odb_object* obj;
+                git_odb_read(&obj, odb, &id);
+                node.text(string(((const char *)git_odb_object_data(obj)),git_odb_object_size(obj)));
+
                 switch(type) {
                     case 1: //commit
                         {
                             node.type(COMMIT);
                             git_commit *commit;
                             git_commit_lookup(&commit, repo, &id);
-
-                            node.text(git_commit_message(commit));
 
                             // parents
                             int parentcount = git_commit_parentcount(commit);

@@ -116,13 +116,11 @@ class SFMLDisplay {
                 window.Draw(eye);
                 window.Draw(pupil);
 
+                text.SetString(n.label());
+                text.SetPosition(n.pos().x+10, n.pos().y);
+                window.Draw(text);
             }
 
-            /*
-            text.SetString(n.label());
-            text.SetPosition(n.pos().x+10, n.pos().y);
-            window.Draw(text);
-            */
         }
 
         void draw_rect(Node n) {
@@ -261,13 +259,17 @@ class SFMLDisplay {
             // Draw Node descriptions
 
             if (!graph.empty()) {
-                Vector2f mouse_position = window.ConvertCoords(Mouse::GetPosition().x, Mouse::GetPosition().y);
+                Vector2f mouse_position = window.ConvertCoords(Mouse::GetPosition(window).x, Mouse::GetPosition(window).y);
                 Node& n = graph.nearest_node(mouse_position.x, mouse_position.y);
 
-                text.SetString(n.text());
+                text.SetString(n.label());
                 text.SetPosition(n.pos().x+5, n.pos().y+10);
+                window.Draw(text);
+
+                text.SetString(n.text());
+                text.SetPosition(n.pos().x+5, n.pos().y+30);
+                window.Draw(text);
             }
-            window.Draw(text);
 
             window.Display();
         }
