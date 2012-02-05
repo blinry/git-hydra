@@ -26,6 +26,9 @@ class SFMLDisplay {
                 case HEAD:
                     draw_snake(n, true);
                     break;
+                case HALO:
+                    draw_halo(n);
+                    break;
                     /*
                 case SIGN:
                     draw_sign(n);
@@ -35,6 +38,13 @@ class SFMLDisplay {
                     draw_rect(n);
                     break;
             }
+        }
+
+        void draw_halo(Node n) {
+            CircleShape circ(n.width()*2, 64);
+            circ.SetFillColor(Color(100,100,255,50));
+            circ.SetPosition(Vector2f(n.pos().x-n.width()*2,n.pos().y-n.height()*2));
+            window.Draw(circ);
         }
 
         void draw_snake(Node n, bool head = false) {
@@ -113,7 +123,7 @@ class SFMLDisplay {
                 Node n2 = graph.lookup(n.edge(j).target());
                 if (!n2.visible())
                     continue;
-                if (n.oid().type == INDEX)
+                if (n.oid().type == INDEX || (n.oid().type == REF && n.oid().name == "HEAD"))
                     continue;
                     Color edge_color = Color(200,200,200);
 
@@ -202,12 +212,19 @@ class SFMLDisplay {
             }
 
             // Draw Nodes
+            
+            Node head;
 
             for(map<NodeID,Node>::iterator it = graph.nodes_begin(); it != graph.nodes_end(); it++) {
                 Node& n = it->second;
-                if (n.visible())
-                    draw(n);
+                if (n.oid() == NodeID(REF,"HEAD"))
+                    head = n;
+                else
+                    if (n.visible())
+                        draw(n);
             }
+
+            draw(head);
 
             // Draw Node descriptions
 

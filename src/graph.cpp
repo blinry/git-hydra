@@ -64,6 +64,8 @@ class Graph {
             Vec2f pos(x,y);
             for(map<NodeID,Node>::iterator it = nodes.begin(); it != nodes.end(); it++) {
                 if (!it->second.visible()) continue;
+                if (it->second.oid() == NodeID(REF,"HEAD")) continue;
+                if (it->second.oid() == NodeID(INDEX,"index")) continue;
                 float distance = it->second.pos().distance(pos);
                 if (distance < best_distance) {
                     best_distance = distance;

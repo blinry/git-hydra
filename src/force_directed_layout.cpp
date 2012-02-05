@@ -94,7 +94,7 @@ class ForceDirectedLayout {
             }
             else if (n1.display_type() == SIGN)
                 direction = -M_PI*1/2;
-            else if (n1.display_type() == RECT)
+            else
                 return;
                 //direction = -M_PI*1/2;
 

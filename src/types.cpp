@@ -16,7 +16,8 @@ enum NodeDisplayType {
     RECT,
     SIGN,
     SNAKE,
-    HEAD
+    HEAD,
+    HALO
 };
 
 class NodeID {

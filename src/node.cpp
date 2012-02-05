@@ -102,7 +102,10 @@ class Node {
         }
 
         float mass() {
-            return 10;
+            if (display_type() == HALO)
+                return 0;
+            else
+                return 10;
         }
 
         float width() {
@@ -137,6 +140,8 @@ class Node {
                 return SNAKE;
             else if ((type() == TAG && (label().find("refs/heads/") == 0 || label().find("refs/remotes/") == 0)))
                 return HEAD;
+            else if (oid().name == "HEAD" && oid().type == REF)
+                return HALO;
             else if (type() == TAG)
                 return SIGN;
             else
