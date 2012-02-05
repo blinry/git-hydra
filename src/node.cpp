@@ -144,6 +144,10 @@ class Node {
                 return HALO;
             else if (type() == TAG)
                 return SIGN;
+            else if (type() == TREE)
+                return BAG;
+            else if (type() == BLOB)
+                return APPLE;
             else
                 return RECT;
         }

@@ -17,7 +17,9 @@ enum NodeDisplayType {
     SIGN,
     SNAKE,
     HEAD,
-    HALO
+    HALO,
+    BAG,
+    APPLE
 };
 
 class NodeID {

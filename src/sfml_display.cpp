@@ -29,6 +29,12 @@ class SFMLDisplay {
                 case HALO:
                     draw_halo(n);
                     break;
+                case BAG:
+                    draw_bag(n);
+                    break;
+                case APPLE:
+                    draw_apple(n);
+                    break;
                     /*
                 case SIGN:
                     draw_sign(n);
@@ -38,6 +44,22 @@ class SFMLDisplay {
                     draw_rect(n);
                     break;
             }
+        }
+
+        void draw_bag(Node n) {
+            ConvexShape triangle(3);
+            triangle.SetFillColor(Color::Green);
+            triangle.SetPoint(0, Vector2f(n.pos().x, n.pos().y-1.3*n.width()));
+            triangle.SetPoint(1, Vector2f(n.pos().x+n.width(), n.pos().y+0.5*n.width()));
+            triangle.SetPoint(2, Vector2f(n.pos().x-n.width(), n.pos().y+0.5*n.width()));
+            window.Draw(triangle);
+        }
+
+        void draw_apple(Node n) {
+            CircleShape circ(n.width()/2, 64);
+            circ.SetFillColor(Color(100,100,100));
+            circ.SetPosition(Vector2f(n.pos().x-n.width()/2,n.pos().y-n.height()/2));
+            window.Draw(circ);
         }
 
         void draw_halo(Node n) {

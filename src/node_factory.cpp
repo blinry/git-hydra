@@ -151,16 +151,21 @@ class NodeFactory {
                             break;
                         }
                     case 4: //tag
-                        node.type(TAG);
-                        git_tag *tag;
-                        git_tag_lookup(&tag, repo, &id);
-                        git_object *target;
-                        const git_oid *target_id;
-                        target_id = git_tag_target_oid(tag);
-                        char oid_str[40];
-                        git_oid_fmt(oid_str, target_id);
-                        string oid_string(oid_str,40);
-                        node.add_edge(Edge(NodeID(OBJECT,oid_string), "target"));
+                        {
+                            node.type(TAG);
+                            git_tag *tag;
+                            git_tag_lookup(&tag, repo, &id);
+                            git_object *target;
+                            const git_oid *target_id;
+                            target_id = git_tag_target_oid(tag);
+                            char oid_str[40];
+                            git_oid_fmt(oid_str, target_id);
+                            string oid_string(oid_str,40);
+                            node.add_edge(Edge(NodeID(OBJECT,oid_string), "target"));
+                            break;
+                        }
+                    default:
+                        node.type(BLOB);
                 }
             }
 
