@@ -16,6 +16,7 @@ class NodeFactory {
                 exit(1);
             }
             all_objects = false;
+            link_index = false;
         }
 
         Node buildNode(const NodeID& oid) {
@@ -95,7 +96,8 @@ class NodeFactory {
                     sprintf(label, "%s (%d)", entry->path, stage);
 
                 node.label(label);
-                node.add_edge(Edge(NodeID(OBJECT,oidstr(&entry->oid)), "refers"));
+                if (link_index)
+                    node.add_edge(Edge(NodeID(OBJECT,oidstr(&entry->oid)), "refers"));
             }
         }
 
@@ -206,12 +208,14 @@ class NodeFactory {
             }
 
             roots.insert(NodeID(REF,"HEAD"));
+
             roots.insert(NodeID(INDEX,"index"));
 
             return roots;
         }
 
         bool all_objects;
+        bool link_index;
 
     private:
 

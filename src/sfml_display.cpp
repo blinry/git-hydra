@@ -288,9 +288,10 @@ class SFMLDisplay {
                 if (event.Type == Event::KeyPressed) {
                     if (event.Key.Code == Keyboard::Escape)
                         window.Close();
-                    if (event.Key.Code == Keyboard::A) {
+                    if (event.Key.Code == Keyboard::A)
                         graph.factory.all_objects = !graph.factory.all_objects;
-                    }
+                    if (event.Key.Code == Keyboard::I)
+                        graph.factory.link_index = !graph.factory.link_index;
                 }
                 if (event.Type == Event::MouseWheelMoved) {
                     Vector2f click_position = window.ConvertCoords(Mouse::GetPosition(window).x, Mouse::GetPosition(window).y);

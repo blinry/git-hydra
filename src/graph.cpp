@@ -66,6 +66,7 @@ class Graph {
             for(map<NodeID,Node>::iterator it = nodes.begin(); it != nodes.end(); it++) {
                 if (!it->second.visible()) continue;
                 if (it->second.oid() == NodeID(INDEX,"index")) continue;
+                if (it->second.oid().type == INDEX_ENTRY) continue;
                 float distance = it->second.pos().distance(pos);
                 if (distance < best_distance) {
                     best_distance = distance;
