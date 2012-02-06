@@ -116,7 +116,7 @@ class SFMLDisplay {
                 window.Draw(eye);
                 window.Draw(pupil);
 
-                text.SetString(n.label());
+                text.SetString(utf8(n.label()));
                 text.SetPosition(n.pos().x+10, n.pos().y);
                 window.Draw(text);
             }
@@ -125,7 +125,7 @@ class SFMLDisplay {
 
         void draw_rect(Node n) {
             if (n.oid().type == INDEX_ENTRY) {
-                text.SetString(n.label());
+                text.SetString(utf8(n.label()));
                 text.SetPosition(n.pos().x+5, n.pos().y-10);
                 text.SetColor(Color(20,20,20));
                 window.Draw(text);
@@ -262,11 +262,11 @@ class SFMLDisplay {
                 Vector2f mouse_position = window.ConvertCoords(Mouse::GetPosition(window).x, Mouse::GetPosition(window).y);
                 Node& n = graph.nearest_node(mouse_position.x, mouse_position.y);
 
-                text.SetString(n.label());
+                text.SetString(utf8(n.label()));
                 text.SetPosition(n.pos().x+5, n.pos().y+10);
                 window.Draw(text);
 
-                text.SetString(n.text());
+                text.SetString(utf8(n.text()));
                 text.SetPosition(n.pos().x+5, n.pos().y+30);
                 window.Draw(text);
             }
@@ -330,6 +330,12 @@ class SFMLDisplay {
             path_to_program[length] = '\0';
             string assets_dir = path_to_program;
             return string(assets_dir, 0, assets_dir.rfind("/"));
+        }
+
+        sf::String utf8(string utf8) {
+            std::basic_string<Uint32> utf32;
+            sf::Utf8::ToUtf32(utf8.c_str(), utf8.c_str() + utf8.size(), std::back_inserter(utf32));
+            return sf::String(utf32);
         }
 
         RenderWindow window;
