@@ -149,9 +149,11 @@ class SFMLDisplay {
                 Node n2 = graph.lookup(n.edge(j).target());
                 if (!n2.visible())
                     continue;
+
                 if (n.oid().type == INDEX)
                     continue;
-                    Color edge_color = Color(200,200,200);
+
+                Color edge_color = Color(50,50,50);
 
                     float dir = n.dir_to(n2);
                     float width = (n2.width()+n.width())/6;
@@ -205,6 +207,12 @@ class SFMLDisplay {
                         arrow.SetPoint(2, arrow.GetPoint(0) + norm2 - offset - offset - offset);
                         window.Draw(arrow);
                     }
+
+                if (n.selected()) {
+                    text.SetString(n.edge(j).label());
+                    text.SetPosition((n.pos().x+n2.pos().x)/2-text.GetGlobalBounds().Width/2,(n.pos().y+n2.pos().y)/2-text.GetGlobalBounds().Height/2);
+                    window.Draw(text);
+                }
             }
         }
 

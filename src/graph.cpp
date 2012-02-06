@@ -9,7 +9,7 @@ class Graph {
         Graph(NodeFactory& factory) : factory(factory) {
             reseed();
             index_pos = 100;
-            history_pos = 100;
+            history_pos = 500;
         }
 
         void update() {

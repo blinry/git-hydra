@@ -84,8 +84,8 @@ class ForceDirectedLayout {
             } else {
                 n1.velocity().x -= 0.000005*pow((n1.pos().x-500),3);
             }
-            //if (n1.type() != TAG)
-                //n1.velocity().y -= 0.000002*pow(n1.pos().y-500,3);
+            if (n1.type() == BLOB || n1.type() == TREE)
+                n1.velocity().y -= 0.000002*pow(n1.pos().y-500,3);
         }
 
         void turn(Node& n1, Node& n2) {
@@ -97,7 +97,7 @@ class ForceDirectedLayout {
                     direction = -M_PI*1/2;
             }
             else if (n1.display_type() == SIGN)
-                direction = -M_PI*1/2;
+                direction = M_PI;
             else
                 return;
                 //direction = -M_PI*1/2;
