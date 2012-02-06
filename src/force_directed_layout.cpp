@@ -77,14 +77,15 @@ class ForceDirectedLayout {
 
         void constrain_to_field(Node& n1) {
             if (n1.type() == COMMIT || n1.display_type() == SNAKE_TAIL || n1.display_type() == HEAD) {
-                n1.velocity().x -= 0.0001*pow(n1.pos().x-1000/6.0,3);
+                n1.velocity().x -= 0.0001*pow(n1.pos().x-1000/4.0,3);
+                n1.velocity().y -= 0.000005*pow(n1.pos().y-graph.history_pos,3);
             } else if (n1.oid().type == REF) {
                 ;
             } else {
                 n1.velocity().x -= 0.000005*pow((n1.pos().x-500),3);
             }
-            if (n1.type() != TAG)
-                n1.velocity().y -= 0.000002*pow(n1.pos().y-500,3);
+            //if (n1.type() != TAG)
+                //n1.velocity().y -= 0.000002*pow(n1.pos().y-500,3);
         }
 
         void turn(Node& n1, Node& n2) {

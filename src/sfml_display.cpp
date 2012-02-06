@@ -117,7 +117,7 @@ class SFMLDisplay {
                 window.Draw(pupil);
 
                 text.SetString(utf8(n.label()));
-                text.SetPosition(n.pos().x+10, n.pos().y);
+                text.SetPosition(n.pos().x+20, n.pos().y-15);
                 window.Draw(text);
             }
 
@@ -136,6 +136,10 @@ class SFMLDisplay {
                 rect.SetFillColor(color);
                 rect.SetPosition(Vector2f(n.pos().x-n.width()/2,n.pos().y-n.height()/2));
                 window.Draw(rect);
+
+                text.SetString(utf8(n.label()));
+                text.SetPosition(n.pos().x-15-text.GetGlobalBounds().Width, n.pos().y-15);
+                window.Draw(text);
             }
         }
 
@@ -145,7 +149,7 @@ class SFMLDisplay {
                 Node n2 = graph.lookup(n.edge(j).target());
                 if (!n2.visible())
                     continue;
-                if (n.oid().type == INDEX || (n.oid().type == REF && n.oid().name == "HEAD"))
+                if (n.oid().type == INDEX)
                     continue;
                     Color edge_color = Color(200,200,200);
 
@@ -220,11 +224,11 @@ class SFMLDisplay {
             window.Draw(rect);
 
             text.SetPosition(1000.0/3*2+20,20);
-            text.SetString("Speisekarte");
-            text.SetCharacterSize(40);
+            text.SetString("Index");
+            text.SetCharacterSize(30);
             text.SetColor(Color(20,20,20));
             window.Draw(text);
-            text.SetCharacterSize(20);
+            text.SetCharacterSize(15);
             text.SetColor(Color(255,255,255));
         }
 
@@ -256,19 +260,21 @@ class SFMLDisplay {
 
             draw(head);
 
-            // Draw Node descriptions
+            // Draw mouse-over description
 
             if (!graph.empty()) {
                 Vector2f mouse_position = window.ConvertCoords(Mouse::GetPosition(window).x, Mouse::GetPosition(window).y);
                 Node& n = graph.nearest_node(mouse_position.x, mouse_position.y);
 
-                text.SetString(utf8(n.label()));
-                text.SetPosition(n.pos().x+5, n.pos().y+10);
-                window.Draw(text);
+                if (n.display_type() != HEAD && n.oid().type != INDEX_ENTRY && n.oid().type != REF) {
+                    text.SetString(utf8(n.label()));
+                    text.SetPosition(n.pos().x+5, n.pos().y+10);
+                    window.Draw(text);
 
-                text.SetString(utf8(n.text()));
-                text.SetPosition(n.pos().x+5, n.pos().y+30);
-                window.Draw(text);
+                    text.SetString(utf8(n.text()));
+                    text.SetPosition(n.pos().x+5, n.pos().y+30);
+                    window.Draw(text);
+                }
             }
 
             window.Display();
@@ -287,7 +293,11 @@ class SFMLDisplay {
                     }
                 }
                 if (event.Type == Event::MouseWheelMoved) {
-                    graph.index_pos += event.MouseWheel.Delta*20;
+                    Vector2f click_position = window.ConvertCoords(Mouse::GetPosition(window).x, Mouse::GetPosition(window).y);
+                    if (click_position.x < 1000.0/3)
+                        graph.history_pos += event.MouseWheel.Delta*20;
+                    if (click_position.x > 1000.0/3*2)
+                        graph.index_pos += event.MouseWheel.Delta*20;
                 }
                 if (event.Type == Event::MouseButtonPressed) {
                     if (!graph.empty()) {

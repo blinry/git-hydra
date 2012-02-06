@@ -9,6 +9,7 @@ class Graph {
         Graph(NodeFactory& factory) : factory(factory) {
             reseed();
             index_pos = 100;
+            history_pos = 100;
         }
 
         void update() {
@@ -64,7 +65,6 @@ class Graph {
             Vec2f pos(x,y);
             for(map<NodeID,Node>::iterator it = nodes.begin(); it != nodes.end(); it++) {
                 if (!it->second.visible()) continue;
-                if (it->second.oid() == NodeID(REF,"HEAD")) continue;
                 if (it->second.oid() == NodeID(INDEX,"index")) continue;
                 float distance = it->second.pos().distance(pos);
                 if (distance < best_distance) {
@@ -129,6 +129,7 @@ class Graph {
         }
 
         float index_pos;
+        float history_pos;
         NodeFactory factory;
 
     private:
