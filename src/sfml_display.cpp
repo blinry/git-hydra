@@ -9,7 +9,7 @@ class SFMLDisplay {
 
     public:
 
-        SFMLDisplay(Graph& graph) : graph(graph), window(VideoMode(500,500), "Git-Tutor", Style::Default, ContextSettings(0,0,4,3,0)), view(FloatRect(0,0,1000,1000)) {
+        SFMLDisplay(Graph& graph) : graph(graph), window(VideoMode(500,500), "git-hydra", Style::Default, ContextSettings(0,0,4,3,0)), view(FloatRect(0,0,1000,1000)) {
             window.SetView(view);
             //cout << window.GetSettings().AntialiasingLevel << flush;
             font.LoadFromFile(assets_dir()+"/arial.ttf");
