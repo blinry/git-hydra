@@ -60,15 +60,6 @@ class Node {
             m_selected = !m_selected;
         }
 
-        NodeID toggle_tree() {
-            for(int i=0; i<m_children.size(); i++) {
-                if (edge(i).label() == "tree") {
-                    edge(i).toggle_fold();
-                    return edge(i).target();
-                }
-            }
-        }
-
         Vec2f &pos() {
             return m_pos;
         }
@@ -103,8 +94,8 @@ class Node {
         }
 
         float mass() {
-            if (display_type() == HALO)
-                return 0;
+            if (oid().type == INDEX_ENTRY)
+                return 2;
             else
                 return 10;
         }

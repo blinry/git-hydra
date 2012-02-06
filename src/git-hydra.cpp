@@ -37,8 +37,7 @@ int main(int argc, const char *argv[]) {
 
     ForceDirectedLayout layout(graph);
     SFMLDisplay display(graph);
-    graph.update();
-    node_factory.unfold_new_commits = true;
+    graph.update(true);
 
     while(display.open()) {
         display.draw();

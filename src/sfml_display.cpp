@@ -180,9 +180,9 @@ class SFMLDisplay {
 
                         ConvexShape arrow(3);
                         arrow.SetFillColor(Color::White);
-                        arrow.SetPoint(0, Vector2f(n.pos().x, n.pos().y) - norm2);
-                        arrow.SetPoint(1, arrow.GetPoint(0) + norm + 0.5f*offset);
-                        arrow.SetPoint(2, arrow.GetPoint(0) + norm - 0.5f*offset);
+                        arrow.SetPoint(0, Vector2f(n.pos().x, n.pos().y) - 0.8f*norm2);
+                        arrow.SetPoint(1, arrow.GetPoint(0) + 0.8f*norm + 0.3f*offset);
+                        arrow.SetPoint(2, arrow.GetPoint(0) + 0.8f*norm - 0.3f*offset);
                         window.Draw(arrow);
                     } else if (n2.display_type() == SNAKE_TAIL) {
                         ConvexShape tail(3);
@@ -210,11 +210,9 @@ class SFMLDisplay {
                         window.Draw(arrow);
                     }
 
-                if (n.selected()) {
                     text.SetString(n.edge(j).label());
                     text.SetPosition((n.pos().x+n2.pos().x)/2-text.GetGlobalBounds().Width/2,(n.pos().y+n2.pos().y)/2-text.GetGlobalBounds().Height/2);
                     window.Draw(text);
-                }
             }
         }
 
@@ -279,10 +277,12 @@ class SFMLDisplay {
                 if (n.display_type() != HEAD && n.oid().type != INDEX_ENTRY && n.oid().type != REF) {
                     text.SetString(utf8(n.label()));
                     text.SetPosition(n.pos().x+5, n.pos().y+10);
+                    text.SetColor(Color::Red);
                     window.Draw(text);
 
                     text.SetString(utf8(n.text()));
                     text.SetPosition(n.pos().x+5, n.pos().y+30);
+                    text.SetColor(Color::White);
                     window.Draw(text);
                 }
             }
@@ -320,8 +320,12 @@ class SFMLDisplay {
 
                             n.toggle_select();
                             if (n.type() == COMMIT) {
-                                NodeID tree = n.toggle_tree();
-                                graph.recursive_unfold_levels(tree,99999);
+                                // toggle tree
+                                for(int i=0; i<n.degree(); i++) {
+                                    if (graph.lookup(n.edge(i).target()).type() == TREE) {
+                                        n.edge(i).toggle_fold();
+                                    }
+                                }
                             }
                         }
                     }
@@ -354,7 +358,7 @@ class SFMLDisplay {
                 case SNAKE_TAIL:
                     return Color(20,155,20);
                 case BAG:
-                    return Color(50,255,50);
+                    return Color(0,55,0);
                 case APPLE:
                     return Color(100,100,100);
                 case SIGN:

@@ -95,9 +95,12 @@ class ForceDirectedLayout {
                     direction = M_PI;
                 else
                     direction = -M_PI*1/2;
-            }
-            else if (n1.display_type() == SIGN)
-                direction = M_PI;
+            } else if (n1.display_type() == SIGN)
+                direction = -M_PI*0.5;
+            else if (n1.oid().type == INDEX_ENTRY)
+                direction = M_PI*0.5;
+            else if (n1.type() == TREE)
+                direction = -M_PI*0.5;
             else
                 return;
                 //direction = -M_PI*1/2;
@@ -108,6 +111,9 @@ class ForceDirectedLayout {
             float strength = 50*correction;
             n1.velocity().x += strength*sin(n1.dir_to(n2)+M_PI/2);
             n1.velocity().y += strength*cos(n1.dir_to(n2)+M_PI/2);
+
+            n2.velocity().x -= strength*sin(n1.dir_to(n2)+M_PI/2);
+            n2.velocity().y -= strength*cos(n1.dir_to(n2)+M_PI/2);
         }
 
         float small_angle(float a, float t) {

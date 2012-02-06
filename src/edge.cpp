@@ -13,7 +13,7 @@ class Edge {
             m_folded = other.m_folded;
         }
 
-        Edge(const NodeID &target, string label, bool folded=true) :
+        Edge(const NodeID &target, string label="", bool folded=true) :
             m_target(target), m_label(label), m_folded(folded) { }
 
         const NodeID &target() {

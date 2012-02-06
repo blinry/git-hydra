@@ -50,15 +50,15 @@ class NodeFactory {
             git_reference_lookup(&ref, repo, node.oid().name.c_str());
 
             if (ref == NULL) {
-                node.add_edge(Edge(NodeID(TAIL,node.oid().name), "has"));
+                node.add_edge(Edge(NodeID(TAIL,node.oid().name)));
             } else {
                 if (git_reference_type(ref) == GIT_REF_OID) {
-                    node.add_edge(Edge(NodeID(OBJECT,oidstr(git_reference_oid(ref))), "points to"));
+                    node.add_edge(Edge(NodeID(OBJECT,oidstr(git_reference_oid(ref)))));
                 } else {
                     const char *oid_str;
                     oid_str = git_reference_target(ref);
                     string oid_string(oid_str,strlen(oid_str));
-                    node.add_edge(Edge(NodeID(REF,oid_string), "points to"));
+                    node.add_edge(Edge(NodeID(REF,oid_string)));
                 }
             }
             node.label(node.oid().name);
@@ -74,7 +74,7 @@ class NodeFactory {
             for(int i=0; i<git_index_entrycount(index); i++) {
                 char num[10];
                 sprintf(num, "%d", i);
-                node.add_edge(Edge(NodeID(INDEX_ENTRY,num), "contains"));
+                node.add_edge(Edge(NodeID(INDEX_ENTRY,num)));
             }
         }
 
@@ -100,7 +100,7 @@ class NodeFactory {
 
                 node.label(label);
                 if (link_index)
-                    node.add_edge(Edge(NodeID(OBJECT,oidstr(&entry->oid)), "refers"));
+                    node.add_edge(Edge(NodeID(OBJECT,oidstr(&entry->oid))));
             }
         }
 
@@ -111,7 +111,7 @@ class NodeFactory {
             git_object_lookup(&object, repo, &id, GIT_OBJ_ANY);
             git_otype type = git_object_type(object);
 
-            node.label(node.oid().name.substr(0,6));
+            node.label(node.oid().name.substr(0,6)+string("..."));
 
             git_odb* odb;
 
@@ -141,7 +141,7 @@ class NodeFactory {
             git_tag *tag;
             git_tag_lookup(&tag, repo, &id);
 
-            node.add_edge(Edge(NodeID(OBJECT,oidstr(git_tag_target_oid(tag))), "target"));
+            node.add_edge(Edge(NodeID(OBJECT,oidstr(git_tag_target_oid(tag)))));
         }
 
         void build_tree(Node& node, git_oid id) {
@@ -167,17 +167,16 @@ class NodeFactory {
             for(int i = 0; i<parentcount; i++) {
                 git_commit *parent;
                 git_commit_parent(&parent, commit, i);
-                node.add_edge(Edge(NodeID(OBJECT,oidstr(git_commit_id(parent))), "parent"));
+                node.add_edge(Edge(NodeID(OBJECT,oidstr(git_commit_id(parent)))));
             }
 
             if (parentcount == 0)
-                node.add_edge(Edge(NodeID(TAIL,node.oid().name), "has"));
+                node.add_edge(Edge(NodeID(TAIL,node.oid().name)));
 
             // tree
             git_tree *tree;
             git_commit_tree(&tree, commit);
-            cout << unfold_new_commits << flush;
-            node.add_edge(Edge(NodeID(OBJECT,oidstr(git_tree_id(tree))), "tree", !unfold_new_commits));
+            node.add_edge(Edge(NodeID(OBJECT,oidstr(git_tree_id(tree))), "", !unfold_new_commits));
         }
 
         set<NodeID> getRoots() {

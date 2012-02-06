@@ -12,10 +12,18 @@ class Graph {
             history_pos = 500;
         }
 
-        void update() {
+        void update(bool initial = false) {
             reseed();
             unfold_levels(10);
             visibility_analysis();
+
+            if (initial) {
+                factory.unfold_new_commits = true;
+                if (nodes.size()<100) {
+                    factory.all_objects = true;
+                    factory.link_index = true;
+                }
+            }
         }
 
         void seed(const NodeID& oid, int depth=999) {
@@ -113,14 +121,14 @@ class Graph {
             Node &n = lookup(oid);
             if (depth<0) {
                 for(int i=0; i<n.degree(); i++) {
-                    if (n.edge(i).label() != "tree") {
+                    if (lookup(n.edge(i).target()).type() != TREE) {
                         lookup(n.edge(i).target()).hole = true;
                     }
                 }
                 return;
             }
             for(int i=0; i<n.degree(); i++) {
-                if (n.edge(i).label() != "tree") {
+                if (lookup(n.edge(i).target()).type() != TREE) {
                     if (n.edge(i).folded()) {
                         n.edge(i).unfold();
                     }
