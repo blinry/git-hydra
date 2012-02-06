@@ -8,7 +8,7 @@ class ForceDirectedLayout {
 
         ForceDirectedLayout(Graph& graph) : graph(graph) {
             spring = 0;
-            charge = 2000;
+            charge = 1500;
             damping = 0.1;
         }
 
@@ -78,7 +78,7 @@ class ForceDirectedLayout {
         void constrain_to_field(Node& n1) {
             if (n1.type() == COMMIT || n1.display_type() == SNAKE_TAIL || n1.display_type() == HEAD) {
                 n1.velocity().x -= 0.0001*pow(n1.pos().x-1000/4.0,3);
-                n1.velocity().y -= 0.000005*pow(n1.pos().y-graph.history_pos,3);
+                n1.velocity().y -= 0.05*pow(n1.pos().y-graph.history_pos,1);
             } else if (n1.oid().type == REF) {
                 ;
             } else {

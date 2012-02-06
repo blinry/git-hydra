@@ -42,6 +42,8 @@ class NodeFactory {
 
         void build_ref(Node& node) {
             node.type(TAG);
+            node.pos(1000/6, 100);
+            node.needsPosition = false;
 
             git_reference *ref = NULL;
             git_reference_lookup(&ref, repo, node.oid().name.c_str());

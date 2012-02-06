@@ -129,6 +129,14 @@ class Graph {
             }
         }
 
+        void scroll_history(float delta) {
+            for(map<NodeID,Node>::iterator it = nodes_begin(); it != nodes_end(); it++) {
+                Node& n1 = it->second;
+                if (n1.type() == COMMIT || n1.display_type() == SNAKE_TAIL || n1.display_type() == HEAD || n1.display_type() == SIGN)
+                    n1.pos().y += delta;
+            }
+        }
+
         float index_pos;
         float history_pos;
         NodeFactory factory;
@@ -141,21 +149,36 @@ class Graph {
             for(int j=0; j<n.degree(); j++) {
                 Edge &edge = n.edge(j);
 
-                Node &n2 = lookup(edge.target());
                 if (!edge.folded()) {
-                    if (n2.needsPosition) {
-                        float dx = 0.1, dy = 0.1;
-                        if (n.oid().type == INDEX_ENTRY && n2.type() == BLOB) {
-                            dx = -20;
-                        } else if (n.type() == COMMIT) {
-                            dy = 20;
-                        }
-                        n2.pos(n.pos().x + dx, n.pos().y + dy);
+                    Node &n2 = lookup(edge.target());
+                    if (n2.oid().type == INDEX_ENTRY) {
+                        n2.pos().x = 1000/3*2+10;
+                        n2.pos().y = index_pos+atoi(n2.oid().name.c_str())*30;
                         n2.needsPosition = false;
-                    }
+                    } else {
+                        float dx = 0, dy = 0;
+                        if (n.oid().type == INDEX_ENTRY && n2.type() == BLOB) {
+                            dx = -100;
+                        } else if (n.type() == TREE) {
+                            dx = 100;
+                        } else if (n.type() == COMMIT || n.display_type() == HEAD) {
+                            if (n2.type() == TREE)
+                                dx = 100;
+                            else
+                                dy = 100;
+                        } else if (n.type() == TAG || n.oid().type == REF) {
+                            dx = 100;
+                        }
 
+                        if (n2.needsPosition && !n.needsPosition) {
+                            n2.pos(n.pos().x + dx, n.pos().y + dy);
+                            n2.needsPosition = false;
+                        } else if (n.needsPosition && !n2.needsPosition) {
+                            n.pos(n2.pos().x - dx, n2.pos().y - dy);
+                            n.needsPosition = false;
+                        }
+                    }
                     recursive_set_visible(edge.target());
-                } else {
                 }
             }
         }

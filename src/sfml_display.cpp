@@ -303,8 +303,10 @@ class SFMLDisplay {
                 }
                 if (event.Type == Event::MouseWheelMoved) {
                     Vector2f click_position = window.ConvertCoords(Mouse::GetPosition(window).x, Mouse::GetPosition(window).y);
-                    if (click_position.x < 1000.0/3)
+                    if (click_position.x < 1000.0/3) {
                         graph.history_pos += event.MouseWheel.Delta*20;
+                        graph.scroll_history(event.MouseWheel.Delta*20);
+                    }
                     if (click_position.x > 1000.0/3*2)
                         graph.index_pos += event.MouseWheel.Delta*20;
                 }
