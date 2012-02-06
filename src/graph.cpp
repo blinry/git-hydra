@@ -132,7 +132,9 @@ class Graph {
         void scroll_history(float delta) {
             for(map<NodeID,Node>::iterator it = nodes_begin(); it != nodes_end(); it++) {
                 Node& n1 = it->second;
-                if (n1.type() == COMMIT || n1.display_type() == SNAKE_TAIL || n1.display_type() == HEAD || n1.display_type() == SIGN)
+                if (n1.type() == COMMIT || n1.display_type() == SNAKE_TAIL || n1.display_type() == HEAD)
+                    n1.pos().y += delta;
+                if (n1.display_type() == SIGN && (lookup(n1.edge(0).target()).type() == COMMIT || lookup(n1.edge(0).target()).oid().type == REF))
                     n1.pos().y += delta;
             }
         }
