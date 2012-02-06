@@ -50,7 +50,7 @@ class SFMLDisplay {
 
         void draw_bag(Node n) {
             ConvexShape triangle(3);
-            triangle.SetFillColor(Color::Green);
+            triangle.SetFillColor(color(n));
             triangle.SetPoint(0, Vector2f(n.pos().x, n.pos().y-1.3*n.width()));
             triangle.SetPoint(1, Vector2f(n.pos().x+n.width(), n.pos().y+0.5*n.width()));
             triangle.SetPoint(2, Vector2f(n.pos().x-n.width(), n.pos().y+0.5*n.width()));
@@ -59,7 +59,7 @@ class SFMLDisplay {
 
         void draw_apple(Node n) {
             CircleShape circ(n.width()/2, 64);
-            circ.SetFillColor(Color(100,100,100));
+            circ.SetFillColor(color(n));
             circ.SetPosition(Vector2f(n.pos().x-n.width()/2,n.pos().y-n.height()/2));
             window.Draw(circ);
         }
@@ -72,9 +72,8 @@ class SFMLDisplay {
         }
 
         void draw_snake(Node n, bool head = false) {
-            Color color(20,155,20);
             CircleShape circ(n.width()/2.0, 64);
-            circ.SetFillColor(color);
+            circ.SetFillColor(color(n));
             circ.SetPosition(Vector2f(n.pos().x-n.width()/2,n.pos().y-n.height()/2));
 
             if (head) {
@@ -136,9 +135,8 @@ class SFMLDisplay {
                 window.Draw(text);
                 text.SetColor(Color(255,255,255));
             } else {
-                Color color = Color::Blue;
                 RectangleShape rect(Vector2f(n.width(),n.height()));
-                rect.SetFillColor(color);
+                rect.SetFillColor(color(n));
                 rect.SetPosition(Vector2f(n.pos().x-n.width()/2,n.pos().y-n.height()/2));
                 window.Draw(rect);
 
@@ -158,12 +156,11 @@ class SFMLDisplay {
                 if (n.oid().type == INDEX)
                     continue;
 
-                Color edge_color = Color(50,50,50);
+                Color edge_color = color(n);
 
                     float dir = n.dir_to(n2);
                     float width = (n2.width()+n.width())/6;
                     if ((n.display_type() == SNAKE || n.display_type() == HEAD) && (n2.display_type() == SNAKE || n2.display_type() == SNAKE_TAIL )) {
-                        edge_color = Color(20,155,20);
                         width = 30;
                     }
 
@@ -349,6 +346,23 @@ class SFMLDisplay {
         }
 
     private:
+
+        Color color(Node n) {
+            switch (n.display_type()) {
+                case SNAKE:
+                case HEAD:
+                case SNAKE_TAIL:
+                    return Color(20,155,20);
+                case BAG:
+                    return Color(50,255,50);
+                case APPLE:
+                    return Color(100,100,100);
+                case SIGN:
+                    return Color(50,50,255);
+                default:
+                    return Color(255,0,255);
+            }
+        }
 
         string assets_dir() {
             char path_to_program[200];
