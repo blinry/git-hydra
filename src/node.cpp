@@ -141,7 +141,7 @@ class Node {
         NodeDisplayType display_type() {
             if (type() == COMMIT)
                 return SNAKE;
-            else if ((type() == TAG && (label().find("refs/heads/") == 0 || label().find("refs/remotes/") == 0)))
+            else if ((type() == TAG && (label().find("refs/heads/") == 0 || (label().find("refs/remotes/") == 0 && label().find("HEAD") == -1))))
                 return HEAD;
             else if (type() == TAG)
                 return SIGN;
