@@ -141,7 +141,7 @@ class Graph {
 
         float index_pos;
         float history_pos;
-        NodeFactory factory;
+        NodeFactory& factory;
 
     private:
 

@@ -17,6 +17,7 @@ class NodeFactory {
             }
             all_objects = false;
             link_index = false;
+            unfold_new_commits = false;
         }
 
         Node buildNode(const NodeID& oid) {
@@ -151,7 +152,7 @@ class NodeFactory {
 
             for(int i = 0; i<git_tree_entrycount(tree); i++) {
                 const git_tree_entry *entry = git_tree_entry_byindex(tree, i);
-                node.add_edge(Edge(NodeID(OBJECT,oidstr(git_tree_entry_id(entry))), git_tree_entry_name(entry)));
+                node.add_edge(Edge(NodeID(OBJECT,oidstr(git_tree_entry_id(entry))), git_tree_entry_name(entry), false));
             }
         }
 
@@ -175,7 +176,8 @@ class NodeFactory {
             // tree
             git_tree *tree;
             git_commit_tree(&tree, commit);
-            node.add_edge(Edge(NodeID(OBJECT,oidstr(git_tree_id(tree))), "tree"));
+            cout << unfold_new_commits << flush;
+            node.add_edge(Edge(NodeID(OBJECT,oidstr(git_tree_id(tree))), "tree", !unfold_new_commits));
         }
 
         set<NodeID> getRoots() {
@@ -218,6 +220,7 @@ class NodeFactory {
 
         bool all_objects;
         bool link_index;
+        bool unfold_new_commits;
 
     private:
 
