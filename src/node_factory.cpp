@@ -42,7 +42,7 @@ class NodeFactory {
 
         void build_ref(Node& node) {
             node.type(TAG);
-            node.pos(1000/6, 100);
+            node.pos(1000/6, 500);
             node.needsPosition = false;
 
             git_reference *ref = NULL;
