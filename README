@@ -1,0 +1,44 @@
+git-hydra
+=========
+
+This tool visualizes the internal structure of a Git repository in real-time.
+
+Dependencies
+------------
+
+You'll need the libraries to compile SFML:
+
+- pthread
+- opengl
+- xlib
+- xrandr
+- freetype
+- glew
+- jpeg
+- sndfile
+- openal
+
+SFML and libgit2 itself are included in this project (for now). If you cloned
+this from the Git repository, issue
+
+    git submodule init && git submodule update
+
+to set them up. If you took this from the PADI-SVN, they are already in place.
+It's highly recommended to have a recent version of Git, too! :-)
+
+Installation
+------------
+
+Just type "make". Add this directory to your PATH.
+
+Usage
+-----
+
+When you're inside a git repository, run "git-hydra".
+
+- Move nodes by dragging with the right mouse button.
+- Select nodes with the left mouse button. This unfolds commits!
+- Press "i" to link the index entries with the corresponding blobs.
+- Press "a" to show all objects, not just the reachable ones.
+
+You can scroll the commit history and the index with your mouse wheel.

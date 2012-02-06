@@ -1,7 +1,0 @@
-Beschrieben wird die "freie" Nutzung des Git-Tutors.
-
-Der Anwender navigiert in das Repository, das er anschauen möchte und ruft "git-tutor" auf. Es öffnet sich ein Fenster, in dem die Versionsgeschichte in Form von kleinen, verbundenen Blasen angezeigt wird. Ab einer bestimmten Anzahl Commits  (etwa 50) ist Schluss, damit der Graph übersichtlich bleibt. Tags und Refs zeigen auf die richtigen Stellen, der HEAD zeigt auch irgendwodrauf. Die Dinger sehen aus wie Rechtecke.
-
-Nun kann der Anwender sich den Graphen ansehen. Wählt man einen Knoten per Klick aus, werden sämtliche seiner Eigenschaften angezeigt. Die Verbindungen, die er hat, werden fett dargestellt. Man kann zoomen, die Kamera verschieben und außerdem Knoten ein- und ausklappen.
-
-Spannend wird es, wenn der Anwender das Repository ändert. Das Programm bekommt jede Änderung mit und stellt sie in Echtzeit dar, dabei werden die Veränderungen nacheinander animiert angezeigt.

@@ -192,7 +192,7 @@ class NodeFactory {
                 char path[1035];
 
                 string prog = assets_dir();
-                prog += "/list-all-object-ids";
+                prog += "/res/list-all-object-ids";
                 fp = popen(prog.c_str(), "r");
                 if (fp == NULL) {
                     printf("Failed to run command\n" );
