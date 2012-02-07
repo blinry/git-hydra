@@ -264,6 +264,7 @@ class SFMLDisplay {
                 graph.right_border = 2000/3.0;
             else
                 graph.right_border = 1000;
+            graph.height = view.GetSize().y;
 
             draw_background();
 

@@ -152,6 +152,7 @@ class Graph {
         NodeFactory& factory;
 
         float left_border, right_border;
+        float height;
 
     private:
 

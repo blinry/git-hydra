@@ -77,16 +77,29 @@ class ForceDirectedLayout {
         }
 
         void constrain_to_field(Node& n1) {
+
+            // keep snake in the middle of the left area
             if (n1.type() == COMMIT || n1.display_type() == SNAKE_TAIL || n1.display_type() == HEAD) {
                 n1.velocity().x -= 0.0001*pow(n1.pos().x-graph.left_border/2,3);
                 n1.velocity().y -= 0.05*pow(n1.pos().y-graph.history_pos,1);
-            } else if (n1.oid().type == REF) {
-                ;
-            } else {
-                n1.velocity().x -= 0.000005*pow((n1.pos().x-(graph.left_border+(-graph.left_border+graph.right_border)/2)),3);
             }
-            if (n1.type() == BLOB || n1.type() == TREE)
-                n1.velocity().y -= 0.000002*pow(n1.pos().y-(graph.left_border+(-graph.left_border+graph.right_border))/2,3);
+
+            float border = 200;
+            float strength = 0.00002;
+
+            // keep blobs and trees in the middle area
+            if (n1.type() == BLOB || n1.type() == TREE) {
+                if (n1.pos().x < graph.left_border + border)
+                    n1.velocity().x += strength*pow(graph.left_border + border - n1.pos().x,3);
+                if (n1.pos().x > graph.right_border - border)
+                    n1.velocity().x += strength*pow(graph.right_border - border - n1.pos().x,3);
+                if (n1.pos().y < border)
+                    n1.velocity().y += strength*pow(border - n1.pos().y,3);
+                if (n1.pos().y > graph.height-border)
+                    n1.velocity().y += strength*pow(graph.height - border - n1.pos().y,3);
+                //n1.velocity().x -= 0.000005*pow((n1.pos().x-(graph.left_border+(-graph.left_border+graph.right_border)/2)),3);
+                //n1.velocity().y -= 0.000002*pow(n1.pos().y-(graph.left_border+(-graph.left_border+graph.right_border))/2,3);
+            }
         }
 
         void turn(Node& n1, Node& n2) {
