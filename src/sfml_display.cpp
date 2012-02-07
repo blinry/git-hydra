@@ -124,13 +124,16 @@ class SFMLDisplay {
                 Vector2f leye(n.pos().x-3.5*eye_radius,n.pos().y-eye_radius);
                 Vector2f reye(n.pos().x+1.5*eye_radius,n.pos().y-eye_radius);
 
+                Vector2f mouse_position = window.ConvertCoords(Mouse::GetPosition(window).x, Mouse::GetPosition(window).y);
+                float dir = atan2(n.pos().x-mouse_position.x,n.pos().y-mouse_position.y);
+
                 eye.SetPosition(leye);
-                pupil.SetPosition(leye);
+                pupil.SetPosition(leye+Vector2f(1.8,1.8)-2.0f*Vector2f(sin(dir), cos(dir)));
                 window.Draw(eye);
                 window.Draw(pupil);
 
                 eye.SetPosition(reye);
-                pupil.SetPosition(reye);
+                pupil.SetPosition(reye+Vector2f(1.8,1.8)-2.0f*Vector2f(sin(dir), cos(dir)));
                 window.Draw(eye);
                 window.Draw(pupil);
 
@@ -231,31 +234,36 @@ class SFMLDisplay {
         }
 
         void draw_background() {
-            RectangleShape rect(Vector2f(1000.0/3,view.GetSize().y));
+            RectangleShape rect(Vector2f(graph.left_border,view.GetSize().y));
 
             rect.SetFillColor(Color(30,60,30));
             rect.SetPosition(Vector2f(0,0));
             window.Draw(rect);
 
-            rect.SetFillColor(Color(0,0,0));
-            rect.SetPosition(Vector2f(1000.0/3,0));
-            window.Draw(rect);
+            if (graph.factory.show_index) {
+                rect.SetFillColor(color(MENU_ENTRY));
+                rect.SetSize(Vector2f(1000-graph.right_border,view.GetSize().y));
+                rect.SetPosition(Vector2f(graph.right_border,0));
+                window.Draw(rect);
 
-            rect.SetFillColor(color(MENU_ENTRY));
-            rect.SetPosition(Vector2f(1000.0/3*2,0));
-            window.Draw(rect);
-
-            text.SetPosition(1000.0/3*2+20,20);
-            text.SetString("Index");
-            text.SetCharacterSize(30);
-            text.SetColor(Color(20,20,20));
-            window.Draw(text);
-            text.SetCharacterSize(15);
-            text.SetColor(Color(255,255,255));
+                text.SetPosition(graph.right_border+20,20);
+                text.SetString("Index");
+                text.SetCharacterSize(30);
+                text.SetColor(Color(20,20,20));
+                window.Draw(text);
+                text.SetCharacterSize(15);
+                text.SetColor(Color(255,255,255));
+            }
         }
 
         void draw() {
             window.Clear();
+
+            graph.left_border = 1000/3.0;
+            if (graph.factory.show_index)
+                graph.right_border = 2000/3.0;
+            else
+                graph.right_border = 1000;
 
             draw_background();
 
@@ -318,15 +326,15 @@ class SFMLDisplay {
                     if (event.Key.Code == Keyboard::R)
                         graph.factory.all_refs = !graph.factory.all_refs;
                     if (event.Key.Code == Keyboard::I)
-                        graph.factory.link_index = !graph.factory.link_index;
+                        graph.factory.show_index = !graph.factory.show_index;
                 }
                 if (event.Type == Event::MouseWheelMoved) {
                     Vector2f click_position = window.ConvertCoords(Mouse::GetPosition(window).x, Mouse::GetPosition(window).y);
-                    if (click_position.x < 1000.0/3) {
+                    if (click_position.x < graph.left_border) {
                         graph.history_pos += event.MouseWheel.Delta*20;
                         graph.scroll_history(event.MouseWheel.Delta*20);
                     }
-                    if (click_position.x > 1000.0/3*2)
+                    if (click_position.x > graph.right_border)
                         graph.index_pos += event.MouseWheel.Delta*20;
                 }
                 if (event.Type == Event::MouseButtonPressed) {
@@ -416,4 +424,5 @@ class SFMLDisplay {
         CircleShape eye;
         CircleShape pupil;
         RectangleShape rect;
+
 };

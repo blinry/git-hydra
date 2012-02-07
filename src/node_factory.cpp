@@ -20,7 +20,7 @@ class NodeFactory {
 
             all_objects = false;
             all_refs = false;
-            link_index = false;
+            show_index = false;
             unfold_new_commits = false;
         }
 
@@ -78,7 +78,7 @@ class NodeFactory {
         void build_index(Node& node) {
             node.label(node.oid().name);
 
-            if (link_index) {
+            if (show_index) {
                 git_index *index;
                 git_repository_index(&index, repo);
                 git_index_read(index);
@@ -110,7 +110,7 @@ class NodeFactory {
                     sprintf(label, "%s (%d)", entry->path, stage);
 
                 node.label(label);
-                if (link_index)
+                if (show_index)
                     node.add_edge(Edge(NodeID(OBJECT,oidstr(&entry->oid))));
             }
             git_index_free(index);
@@ -249,7 +249,7 @@ class NodeFactory {
 
         bool all_objects;
         bool all_refs;
-        bool link_index;
+        bool show_index;
         bool unfold_new_commits;
 
     private:

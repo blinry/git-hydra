@@ -59,7 +59,7 @@ class ForceDirectedLayout {
                     n1.pos().y = graph.index_pos;
                     continue;
                 } else if (n1.oid().type == INDEX_ENTRY) {
-                    n1.pos().x = 1000/3*2+10;
+                    n1.pos().x = graph.right_border+10;
                     n1.pos().y = graph.index_pos+atoi(n1.oid().name.c_str())*30;
                 }
 
@@ -78,15 +78,15 @@ class ForceDirectedLayout {
 
         void constrain_to_field(Node& n1) {
             if (n1.type() == COMMIT || n1.display_type() == SNAKE_TAIL || n1.display_type() == HEAD) {
-                n1.velocity().x -= 0.0001*pow(n1.pos().x-1000/6.0,3);
+                n1.velocity().x -= 0.0001*pow(n1.pos().x-graph.left_border/2,3);
                 n1.velocity().y -= 0.05*pow(n1.pos().y-graph.history_pos,1);
             } else if (n1.oid().type == REF) {
                 ;
             } else {
-                n1.velocity().x -= 0.000005*pow((n1.pos().x-500),3);
+                n1.velocity().x -= 0.000005*pow((n1.pos().x-(graph.left_border+(-graph.left_border+graph.right_border)/2)),3);
             }
             if (n1.type() == BLOB || n1.type() == TREE)
-                n1.velocity().y -= 0.000002*pow(n1.pos().y-500,3);
+                n1.velocity().y -= 0.000002*pow(n1.pos().y-(graph.left_border+(-graph.left_border+graph.right_border))/2,3);
         }
 
         void turn(Node& n1, Node& n2) {

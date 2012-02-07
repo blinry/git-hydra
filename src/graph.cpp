@@ -22,7 +22,7 @@ class Graph {
                 if (nodes.size()<50) {
                     factory.all_objects = true;
                     factory.all_refs = true;
-                    factory.link_index = true;
+                    factory.show_index = true;
                 }
             }
         }
@@ -151,6 +151,8 @@ class Graph {
         float history_pos;
         NodeFactory& factory;
 
+        float left_border, right_border;
+
     private:
 
         void recursive_set_visible(NodeID oid) {
@@ -198,5 +200,4 @@ class Graph {
 
         set<NodeID> roots;
         map<NodeID,Node> nodes;
-
 };
