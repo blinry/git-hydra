@@ -22,7 +22,8 @@ enum NodeDisplayType {
     HALO,
     BAG,
     APPLE,
-    SNAKE_TAIL
+    SNAKE_TAIL,
+    MENU_ENTRY
 };
 
 class NodeID {

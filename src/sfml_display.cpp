@@ -19,11 +19,11 @@ class SFMLDisplay {
             hole.SetFillColor(Color::Black);
 
             snake.SetRadius(25);
-            snake.SetFillColor(Color(20,155,20));
+            snake.SetFillColor(color(SNAKE));
             snake.SetOutlineColor(Color::White);
 
             head.SetRadius(15);
-            head.SetFillColor(Color(20,155,20));
+            head.SetFillColor(color(SNAKE));
 
             tongue.SetPointCount(7);
             tongue.SetFillColor(Color::Red);
@@ -37,14 +37,14 @@ class SFMLDisplay {
             tongue.SetPoint(6, Vector2f(1*fact, 0));
 
             triangle.SetPointCount(3);
-            triangle.SetFillColor(Color(0,55,0));
+            triangle.SetFillColor(color(BAG));
             snake.SetOutlineColor(Color::White);
             triangle.SetPoint(0, Vector2f(0, -1.3*20));
             triangle.SetPoint(1, Vector2f(+20, 0.5*20));
             triangle.SetPoint(2, Vector2f(-20, 0.5*20));
 
             apple.SetRadius(10);
-            apple.SetFillColor(Color(100,100,100));
+            apple.SetFillColor(color(APPLE));
 
             eye.SetRadius(4);
             eye.SetFillColor(Color::White);
@@ -150,7 +150,7 @@ class SFMLDisplay {
                 text.SetColor(Color(255,255,255));
             } else {
                 RectangleShape rect(Vector2f(n.width(),n.height()));
-                rect.SetFillColor(color(n));
+                rect.SetFillColor(color(n.display_type()));
                 rect.SetPosition(Vector2f(n.pos().x-n.width()/2,n.pos().y-n.height()/2));
                 window.Draw(rect);
 
@@ -170,7 +170,7 @@ class SFMLDisplay {
                 if (n.oid().type == INDEX)
                     continue;
 
-                Color edge_color = color(n);
+                Color edge_color = color(n.display_type());
 
                 float dir = n.dir_to(n2);
                 float width = (n2.width()+n.width())/6;
@@ -241,7 +241,7 @@ class SFMLDisplay {
             rect.SetPosition(Vector2f(1000.0/3,0));
             window.Draw(rect);
 
-            rect.SetFillColor(Color(240,230,190));
+            rect.SetFillColor(color(MENU_ENTRY));
             rect.SetPosition(Vector2f(1000.0/3*2,0));
             window.Draw(rect);
 
@@ -281,7 +281,7 @@ class SFMLDisplay {
                 Vector2f mouse_position = window.ConvertCoords(Mouse::GetPosition(window).x, Mouse::GetPosition(window).y);
                 Node& n = graph.nearest_node(mouse_position.x, mouse_position.y);
 
-                if (n.display_type() != HEAD && n.oid().type != INDEX_ENTRY && n.oid().type != REF) {
+                if (n.display_type() != HEAD && n.oid().type != INDEX_ENTRY && n.oid().type != REF && n.display_type() != SNAKE_TAIL) {
                     text.SetString(utf8(n.label()));
                     text.SetPosition(n.pos().x+15, n.pos().y-10);
                     text.SetColor(Color::Red);
@@ -368,8 +368,8 @@ class SFMLDisplay {
 
     private:
 
-        Color color(Node n) {
-            switch (n.display_type()) {
+        Color color(NodeDisplayType t) {
+            switch (t) {
                 case SNAKE:
                 case HEAD:
                 case SNAKE_TAIL:
@@ -380,6 +380,8 @@ class SFMLDisplay {
                     return Color(100,100,100);
                 case SIGN:
                     return Color(50,50,255);
+                case MENU_ENTRY:
+                    return Color(240,230,190);
                 default:
                     return Color(255,0,255);
             }

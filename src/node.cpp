@@ -142,6 +142,8 @@ class Node {
                 return APPLE;
             else if (oid().type == TAIL)
                 return SNAKE_TAIL;
+            else if (oid().type == INDEX_ENTRY)
+                return MENU_ENTRY;
             else
                 return RECT;
         }

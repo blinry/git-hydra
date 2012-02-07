@@ -35,7 +35,8 @@ class ForceDirectedLayout {
                     if (n1.parent_of_visible(n2.oid())) {
                         turn(n1, n2);
                         n1.velocity() += connection.normal()*attract(n1, n2);
-                        n2.velocity() -= connection.normal()*attract(n1, n2);
+                        if (n1.type() != TAG)
+                            n2.velocity() -= connection.normal()*attract(n1, n2);
                     }
 
                     n1.velocity() += connection.normal()*repulse(n1, n2);
@@ -77,7 +78,7 @@ class ForceDirectedLayout {
 
         void constrain_to_field(Node& n1) {
             if (n1.type() == COMMIT || n1.display_type() == SNAKE_TAIL || n1.display_type() == HEAD) {
-                n1.velocity().x -= 0.0001*pow(n1.pos().x-1000/4.0,3);
+                n1.velocity().x -= 0.0001*pow(n1.pos().x-1000/6.0,3);
                 n1.velocity().y -= 0.05*pow(n1.pos().y-graph.history_pos,1);
             } else if (n1.oid().type == REF) {
                 ;
