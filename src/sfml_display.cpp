@@ -23,10 +23,10 @@ class SFMLDisplay {
             snake.SetOutlineColor(Color::White);
 
             head.SetRadius(15);
-            head.SetFillColor(color(SNAKE));
+            head.SetFillColor(color(HEAD));
 
             tongue.SetPointCount(7);
-            tongue.SetFillColor(Color::Red);
+            tongue.SetFillColor(Color(200,20,20));
             float fact = 2;
             tongue.SetPoint(0, Vector2f(-1*fact, 0));
             tongue.SetPoint(1, Vector2f(-1*fact, -15*fact));
@@ -70,13 +70,17 @@ class SFMLDisplay {
                 case BAG:
                     draw_bag(n);
                     break;
-                case APPLE:
-                    draw_apple(n);
-                    break;
                 case SNAKE_TAIL:
                     break;
+                case MENU_ENTRY:
+                    draw_menu_entry(n);
+                    break;
+                case SIGN:
+                    draw_sign(n);
+                    break;
+                case APPLE:
                 default:
-                    draw_rect(n);
+                    draw_apple(n);
                     break;
             }
         }
@@ -144,23 +148,25 @@ class SFMLDisplay {
 
         }
 
-        void draw_rect(Node n) {
-            if (n.oid().type == INDEX_ENTRY) {
-                text.SetString(utf8(n.label()));
-                text.SetPosition(n.pos().x+5, n.pos().y-10);
-                text.SetColor(Color(20,20,20));
-                window.Draw(text);
-                text.SetColor(Color(255,255,255));
-            } else {
-                RectangleShape rect(Vector2f(n.width(),n.height()));
-                rect.SetFillColor(color(n.display_type()));
-                rect.SetPosition(Vector2f(n.pos().x-n.width()/2,n.pos().y-n.height()/2));
-                window.Draw(rect);
+        void draw_menu_entry(Node n) {
+            text.SetString(utf8(n.label()));
+            text.SetPosition(n.pos().x+5, n.pos().y-10);
+            text.SetColor(Color(20,20,20));
+            window.Draw(text);
+            text.SetColor(Color(255,255,255));
+        }
 
-                text.SetString(utf8(n.label()));
-                text.SetPosition(n.pos().x-15-text.GetGlobalBounds().Width, n.pos().y-15);
-                window.Draw(text);
-            }
+        void draw_sign(Node n) {
+            text.SetString(utf8(n.label()));
+            text.SetPosition(n.pos().x-text.GetGlobalBounds().Width, n.pos().y-15);
+
+            float border = 5;
+            RectangleShape rect(Vector2f(text.GetGlobalBounds().Width+2*border, text.GetGlobalBounds().Height+2.7*border));
+            rect.SetPosition(text.GetPosition()-Vector2f(border,border));
+            rect.SetFillColor(color(n.display_type()));
+            window.Draw(rect);
+
+            window.Draw(text);
         }
 
         void draw_edges(Node n) {
@@ -380,15 +386,15 @@ class SFMLDisplay {
         Color color(NodeDisplayType t) {
             switch (t) {
                 case SNAKE:
-                case HEAD:
                 case SNAKE_TAIL:
+                case HEAD:
                     return Color(20,155,20);
                 case BAG:
                     return Color(0,55,0);
                 case APPLE:
                     return Color(100,100,100);
                 case SIGN:
-                    return Color(50,50,255);
+                    return Color(50,50,200);
                 case MENU_ENTRY:
                     return Color(240,230,190);
                 default:
