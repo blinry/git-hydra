@@ -20,6 +20,10 @@ class NodeFactory {
             unfold_new_commits = false;
         }
 
+        ~NodeFactory() {
+            git_repository_free(repo);
+        }
+
         Node buildNode(const NodeID& oid) {
             Node node(oid);
             node.pos(500,500);
@@ -199,6 +203,7 @@ class NodeFactory {
             for(int i=0; i<ref_nms.count; i++) {
                 roots.insert(NodeID(REF,ref_nms.strings[i]));
             }
+            git_strarray_free(&ref_nms);
 
             if (all_objects) {
                 FILE *fp;
