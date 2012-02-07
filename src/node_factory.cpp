@@ -62,26 +62,25 @@ class NodeFactory {
                     node.add_edge(Edge(NodeID(REF,oid_string)));
                 }
             }
+            git_reference_free(ref);
             node.label(node.oid().name);
         }
 
         void build_index(Node& node) {
-            git_repository_free(repo);
-            int ret = git_repository_open(&repo, repository_path.c_str());
             node.label(node.oid().name);
 
             git_index *index;
             git_repository_index(&index, repo);
+            git_index_read(index);
             for(int i=0; i<git_index_entrycount(index); i++) {
                 char num[10];
                 sprintf(num, "%d", i);
                 node.add_edge(Edge(NodeID(INDEX_ENTRY,num)));
             }
+            git_index_free(index);
         }
 
         void build_index_entry(Node& node) {
-            git_repository_free(repo);
-            int ret = git_repository_open(&repo, repository_path.c_str());
             git_index *index;
             git_repository_index(&index, repo);
 
@@ -103,6 +102,7 @@ class NodeFactory {
                 if (link_index)
                     node.add_edge(Edge(NodeID(OBJECT,oidstr(&entry->oid))));
             }
+            git_index_free(index);
         }
 
         void build_object(Node& node) {
@@ -111,6 +111,7 @@ class NodeFactory {
             git_object *object;
             git_object_lookup(&object, repo, &id, GIT_OBJ_ANY);
             git_otype type = git_object_type(object);
+            git_object_free(object);
 
             node.label(node.oid().name.substr(0,6)+string("..."));
 
@@ -120,6 +121,8 @@ class NodeFactory {
             git_odb_object* obj;
             git_odb_read(&obj, odb, &id);
             node.text(string(((const char *)git_odb_object_data(obj)),git_odb_object_size(obj)));
+            git_odb_object_free(obj);
+            git_odb_free(odb);
 
             switch(type) {
                 case 1: //commit
@@ -143,6 +146,7 @@ class NodeFactory {
             git_tag_lookup(&tag, repo, &id);
 
             node.add_edge(Edge(NodeID(OBJECT,oidstr(git_tag_target_oid(tag)))));
+            git_tag_free(tag);
         }
 
         void build_tree(Node& node, git_oid id) {
@@ -155,6 +159,7 @@ class NodeFactory {
                 const git_tree_entry *entry = git_tree_entry_byindex(tree, i);
                 node.add_edge(Edge(NodeID(OBJECT,oidstr(git_tree_entry_id(entry))), git_tree_entry_name(entry), false));
             }
+            git_tree_free(tree);
         }
 
         void build_commit(Node& node, git_oid id) {
@@ -169,6 +174,7 @@ class NodeFactory {
                 git_commit *parent;
                 git_commit_parent(&parent, commit, i);
                 node.add_edge(Edge(NodeID(OBJECT,oidstr(git_commit_id(parent)))));
+                git_commit_free(parent);
             }
 
             if (parentcount == 0)
@@ -178,6 +184,8 @@ class NodeFactory {
             git_tree *tree;
             git_commit_tree(&tree, commit);
             node.add_edge(Edge(NodeID(OBJECT,oidstr(git_tree_id(tree))), "", !unfold_new_commits));
+            git_tree_free(tree);
+            git_commit_free(commit);
             if (unfold_new_commits)
                 node.toggle_select();
         }
@@ -232,7 +240,7 @@ class NodeFactory {
             return string(oid_str,40);
         }
 
-        git_repository *repo; // TODO
+        git_repository *repo;
         string repository_path;
         string assets_dir() {
             char path_to_program[200];

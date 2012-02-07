@@ -156,7 +156,6 @@ class Graph {
             Node &n = lookup(oid);
             n.show();
             if (n.hole) {
-                cout << oid.name << "\n";
                 return;
             }
             for(int j=0; j<n.degree(); j++) {
