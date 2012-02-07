@@ -39,6 +39,7 @@ When you're inside a git repository, run "git-hydra".
 - Move nodes by dragging with the right mouse button.
 - Select nodes with the left mouse button. This unfolds commits!
 - Press "i" to link the index entries with the corresponding blobs.
-- Press "a" to show all objects, not just the reachable ones.
+- Press "o" to show all objects, not just the reachable ones.
+- Press "r" to show all refs, not just those below HEAD.
 
 You can scroll the commit history and the index with your mouse wheel.

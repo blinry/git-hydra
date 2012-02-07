@@ -313,8 +313,10 @@ class SFMLDisplay {
                 if (event.Type == Event::KeyPressed) {
                     if (event.Key.Code == Keyboard::Escape)
                         window.Close();
-                    if (event.Key.Code == Keyboard::A)
+                    if (event.Key.Code == Keyboard::O)
                         graph.factory.all_objects = !graph.factory.all_objects;
+                    if (event.Key.Code == Keyboard::R)
+                        graph.factory.all_refs = !graph.factory.all_refs;
                     if (event.Key.Code == Keyboard::I)
                         graph.factory.link_index = !graph.factory.link_index;
                 }

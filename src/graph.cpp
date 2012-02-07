@@ -19,8 +19,9 @@ class Graph {
 
             if (initial) {
                 factory.unfold_new_commits = true;
-                if (nodes.size()<100) {
+                if (nodes.size()<50) {
                     factory.all_objects = true;
+                    factory.all_refs = true;
                     factory.link_index = true;
                 }
             }
