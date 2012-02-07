@@ -136,7 +136,6 @@ class SFMLDisplay {
         }
 
         void draw_rect(Node n) {
-                cout << n.label() << "\n" << flush;
             if (n.oid().type == INDEX_ENTRY) {
                 text.SetString(utf8(n.label()));
                 text.SetPosition(n.pos().x+5, n.pos().y-10);

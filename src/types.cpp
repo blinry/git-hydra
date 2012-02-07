@@ -1,4 +1,5 @@
 enum GitType {
+    UNKNOWN,
     BLOB,
     TREE,
     COMMIT,
