@@ -118,6 +118,9 @@ class NodeFactory {
             git_oid_fromstr(&id, node.oid().name.c_str());
             git_object *object;
             git_object_lookup(&object, repo, &id, GIT_OBJ_ANY);
+            cout << node.oid().name << "\n" << flush;
+            if (object == NULL)
+                return;
             git_otype type = git_object_type(object);
             git_object_free(object);
 
@@ -125,6 +128,8 @@ class NodeFactory {
 
             git_odb_object* obj;
             git_odb_read(&obj, odb, &id);
+            if (obj == NULL)
+                return;
             node.text(string(((const char *)git_odb_object_data(obj)),git_odb_object_size(obj)));
             git_odb_object_free(obj);
 
