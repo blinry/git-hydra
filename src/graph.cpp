@@ -122,6 +122,7 @@ class Graph {
             if (depth<0) {
                 for(int i=0; i<n.degree(); i++) {
                     if (lookup(n.edge(i).target()).type() != TREE) {
+                        n.edge(i).unfold();
                         lookup(n.edge(i).target()).hole = true;
                     }
                 }
@@ -129,9 +130,7 @@ class Graph {
             }
             for(int i=0; i<n.degree(); i++) {
                 if (lookup(n.edge(i).target()).type() != TREE) {
-                    if (n.edge(i).folded()) {
-                        n.edge(i).unfold();
-                    }
+                    n.edge(i).unfold();
                     recursive_unfold_levels(n.edge(i).target(), depth-1);
                 }
             }
@@ -156,6 +155,10 @@ class Graph {
         void recursive_set_visible(NodeID oid) {
             Node &n = lookup(oid);
             n.show();
+            if (n.hole) {
+                cout << oid.name << "\n";
+                return;
+            }
             for(int j=0; j<n.degree(); j++) {
                 Edge &edge = n.edge(j);
 

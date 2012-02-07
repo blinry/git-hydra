@@ -19,6 +19,10 @@ class SFMLDisplay {
         void draw(Node n) {
             if (n.label() == "index")
                 return;
+            if (n.hole) {
+                draw_hole(n);
+                return;
+            }
             switch (n.display_type()) {
                 case SNAKE:
                     draw_snake(n);
@@ -46,6 +50,13 @@ class SFMLDisplay {
                     draw_rect(n);
                     break;
             }
+        }
+
+        void draw_hole(Node n) {
+            CircleShape circ(n.width()/2, 64);
+            circ.SetFillColor(Color::Black);
+            circ.SetPosition(Vector2f(n.pos().x-n.width()/2,n.pos().y-n.height()/2));
+            window.Draw(circ);
         }
 
         void draw_bag(Node n) {

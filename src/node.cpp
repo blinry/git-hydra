@@ -14,6 +14,7 @@ class Node {
 
         Node(const NodeID& oid) : m_oid(oid), m_visible(false), m_selected(false) {
             needsPosition = true;
+            hole = false;
         }
 
         const NodeID &oid() {
