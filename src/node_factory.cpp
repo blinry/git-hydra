@@ -22,6 +22,7 @@ class NodeFactory {
             all_refs = false;
             show_index = false;
             unfold_new_commits = false;
+            unfold_all = false;
         }
 
         ~NodeFactory() {
@@ -199,7 +200,7 @@ class NodeFactory {
             // tree
             git_tree *tree;
             git_commit_tree(&tree, commit);
-            node.add_edge(Edge(NodeID(OBJECT,oidstr(git_tree_id(tree))), "", !unfold_new_commits));
+            node.add_edge(Edge(NodeID(OBJECT,oidstr(git_tree_id(tree))), ""));
             git_tree_free(tree);
             git_commit_free(commit);
             if (unfold_new_commits)
@@ -251,6 +252,7 @@ class NodeFactory {
         bool all_refs;
         bool show_index;
         bool unfold_new_commits;
+        bool unfold_all;
 
     private:
 

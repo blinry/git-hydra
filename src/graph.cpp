@@ -8,8 +8,8 @@ class Graph {
 
         Graph(NodeFactory& factory) : factory(factory) {
             reseed();
-            index_pos = 100;
-            history_pos = 500;
+            index_pos = 130;
+            history_pos = 100;
         }
 
         void update(bool initial = false) {
@@ -130,7 +130,7 @@ class Graph {
                 return;
             }
             for(int i=0; i<n.degree(); i++) {
-                if (lookup(n.edge(i).target()).type() != TREE) {
+                if (factory.unfold_all || !(n.type() == COMMIT && lookup(n.edge(i).target()).type() == TREE)) {
                     n.edge(i).unfold();
                     recursive_unfold_levels(n.edge(i).target(), depth-1);
                 }

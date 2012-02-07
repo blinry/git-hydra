@@ -14,6 +14,7 @@ class SFMLDisplay {
             //cout << window.GetSettings().AntialiasingLevel << flush;
             font.LoadFromFile(assets_dir()+"/res/DroidSans-Regular.ttf");
             text.SetFont(font);
+            text.SetCharacterSize(15);
 
             hole.SetRadius(25);
             hole.SetFillColor(Color::Black);
@@ -252,7 +253,7 @@ class SFMLDisplay {
                 rect.SetPosition(Vector2f(graph.right_border,0));
                 window.Draw(rect);
 
-                text.SetPosition(graph.right_border+20,20);
+                text.SetPosition(graph.right_border+20,50);
                 text.SetString("Index");
                 text.SetCharacterSize(30);
                 text.SetColor(Color(20,20,20));
@@ -260,6 +261,35 @@ class SFMLDisplay {
                 text.SetCharacterSize(15);
                 text.SetColor(Color(255,255,255));
             }
+
+        }
+
+        void draw_menu() {
+            RectangleShape rect;
+            rect.SetSize(Vector2f(1000,30));
+            rect.SetPosition(Vector2f(0,0));
+            rect.SetFillColor(Color::Black);
+            window.Draw(rect);
+
+            text.SetPosition(5,5);
+            string desc;
+            desc += "O: ";
+            if (graph.factory.all_objects)
+                desc += "Nur erreichbare Objekte anzeigen";
+            else
+                desc += "Alle Objekte anzeigen";
+            desc += " - R: ";
+            if (graph.factory.all_refs)
+                desc += "Nur HEAD anzeigen";
+            else
+                desc += "Alle Refs anzeigen";
+            desc += " - I: ";
+            if (graph.factory.show_index)
+                desc += "Index ausblenden";
+            else
+                desc += "Index anzeigen";
+            text.SetString(desc);
+            window.Draw(text);
         }
 
         void draw() {
@@ -289,6 +319,8 @@ class SFMLDisplay {
                 if (n.visible())
                     draw(n);
             }
+
+            draw_menu();
 
             // Draw mouse-over description
 
@@ -354,7 +386,7 @@ class SFMLDisplay {
                             if (n.type() == COMMIT || n.type() == TREE) {
                                 // toggle tree
                                 for(int i=0; i<n.degree(); i++) {
-                                    if (graph.lookup(n.edge(i).target()).type() == TREE) {
+                                    if (graph.lookup(n.edge(i).target()).type() == TREE || graph.lookup(n.edge(i).target()).type() == BLOB) {
                                         n.edge(i).toggle_fold();
                                     }
                                 }
