@@ -130,7 +130,12 @@ class NodeFactory {
             git_odb_read(&obj, odb, &id);
             if (obj == NULL)
                 return;
-            node.text(string(((const char *)git_odb_object_data(obj)),git_odb_object_size(obj)));
+            int content_size = git_odb_object_size(obj);
+            if (content_size > 500)
+                node.text(string(((const char *)git_odb_object_data(obj)), 500)+"...");
+            else
+                node.text(string(((const char *)git_odb_object_data(obj)), content_size));
+
             git_odb_object_free(obj);
 
             switch(type) {
