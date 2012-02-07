@@ -15,6 +15,9 @@ class NodeFactory {
                 cerr << "You don't seem to be in a Git repository.\n";
                 exit(1);
             }
+
+            git_odb_open(&odb, (repository_path+string("objects")).c_str());
+
             all_objects = false;
             link_index = false;
             unfold_new_commits = false;
@@ -22,6 +25,7 @@ class NodeFactory {
 
         ~NodeFactory() {
             git_repository_free(repo);
+            git_odb_free(odb);
         }
 
         Node buildNode(const NodeID& oid) {
@@ -119,14 +123,10 @@ class NodeFactory {
 
             node.label(node.oid().name.substr(0,6)+string("..."));
 
-            git_odb* odb;
-
-            git_odb_open(&odb, (repository_path+string("objects")).c_str());
             git_odb_object* obj;
             git_odb_read(&obj, odb, &id);
             node.text(string(((const char *)git_odb_object_data(obj)),git_odb_object_size(obj)));
             git_odb_object_free(obj);
-            git_odb_free(odb);
 
             switch(type) {
                 case 1: //commit
@@ -246,6 +246,7 @@ class NodeFactory {
         }
 
         git_repository *repo;
+        git_odb *odb;
         string repository_path;
         string assets_dir() {
             char path_to_program[200];
