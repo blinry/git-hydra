@@ -38,6 +38,7 @@ class SFMLDisplay {
 
             triangle.SetPointCount(3);
             triangle.SetFillColor(Color(0,55,0));
+            snake.SetOutlineColor(Color::White);
             triangle.SetPoint(0, Vector2f(0, -1.3*20));
             triangle.SetPoint(1, Vector2f(+20, 0.5*20));
             triangle.SetPoint(2, Vector2f(-20, 0.5*20));
@@ -87,6 +88,11 @@ class SFMLDisplay {
 
         void draw_bag(Node n) {
             triangle.SetPosition(Vector2f(n.pos().x-n.width()/2,n.pos().y));
+            if (n.selected()) {
+                triangle.SetOutlineThickness(1);
+            } else {
+                triangle.SetOutlineThickness(0);
+            }
             window.Draw(triangle);
         }
 
@@ -328,7 +334,7 @@ class SFMLDisplay {
                             Node &n = graph.nearest_node(click_position.x, click_position.y);
 
                             n.toggle_select();
-                            if (n.type() == COMMIT) {
+                            if (n.type() == COMMIT || n.type() == TREE) {
                                 // toggle tree
                                 for(int i=0; i<n.degree(); i++) {
                                     if (graph.lookup(n.edge(i).target()).type() == TREE) {

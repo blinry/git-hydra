@@ -19,6 +19,7 @@ class NodeFactory {
             git_odb_open(&odb, (repository_path+string("objects")).c_str());
 
             all_objects = false;
+            all_refs = false;
             link_index = false;
             unfold_new_commits = false;
         }
@@ -77,15 +78,17 @@ class NodeFactory {
         void build_index(Node& node) {
             node.label(node.oid().name);
 
-            git_index *index;
-            git_repository_index(&index, repo);
-            git_index_read(index);
-            for(int i=0; i<git_index_entrycount(index); i++) {
-                char num[10];
-                sprintf(num, "%d", i);
-                node.add_edge(Edge(NodeID(INDEX_ENTRY,num)));
+            if (link_index) {
+                git_index *index;
+                git_repository_index(&index, repo);
+                git_index_read(index);
+                for(int i=0; i<git_index_entrycount(index); i++) {
+                    char num[10];
+                    sprintf(num, "%d", i);
+                    node.add_edge(Edge(NodeID(INDEX_ENTRY,num)));
+                }
+                git_index_free(index);
             }
-            git_index_free(index);
         }
 
         void build_index_entry(Node& node) {
@@ -170,7 +173,7 @@ class NodeFactory {
 
             for(int i = 0; i<git_tree_entrycount(tree); i++) {
                 const git_tree_entry *entry = git_tree_entry_byindex(tree, i);
-                node.add_edge(Edge(NodeID(OBJECT,oidstr(git_tree_entry_id(entry))), git_tree_entry_name(entry), false));
+                node.add_edge(Edge(NodeID(OBJECT,oidstr(git_tree_entry_id(entry))), git_tree_entry_name(entry)));
             }
             git_tree_free(tree);
         }
@@ -206,13 +209,15 @@ class NodeFactory {
         set<NodeID> getRoots() {
             set<NodeID> roots;
 
-            git_strarray ref_nms;
-            git_reference_listall(&ref_nms, repo, GIT_REF_LISTALL);
+            if (all_refs) {
+                git_strarray ref_nms;
+                git_reference_listall(&ref_nms, repo, GIT_REF_LISTALL);
 
-            for(int i=0; i<ref_nms.count; i++) {
-                roots.insert(NodeID(REF,ref_nms.strings[i]));
+                for(int i=0; i<ref_nms.count; i++) {
+                    roots.insert(NodeID(REF,ref_nms.strings[i]));
+                }
+                git_strarray_free(&ref_nms);
             }
-            git_strarray_free(&ref_nms);
 
             if (all_objects) {
                 FILE *fp;
@@ -243,6 +248,7 @@ class NodeFactory {
         }
 
         bool all_objects;
+        bool all_refs;
         bool link_index;
         bool unfold_new_commits;
 
