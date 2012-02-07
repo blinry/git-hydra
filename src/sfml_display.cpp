@@ -91,7 +91,7 @@ class SFMLDisplay {
                 tongue.SetPoint(6, Vector2f(n.pos().x+1*fact, n.pos().y));
                 window.Draw(tongue);
             } else {
-                if (!n.selected()) {
+                if (n.selected()) {
                     circ.SetOutlineColor(Color::White);
                     circ.SetOutlineThickness(1);
                 }

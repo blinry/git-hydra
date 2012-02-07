@@ -22,6 +22,7 @@ class NodeFactory {
 
         Node buildNode(const NodeID& oid) {
             Node node(oid);
+            node.pos(500,500);
 
             switch(oid.type) {
                 case REF:
@@ -177,6 +178,8 @@ class NodeFactory {
             git_tree *tree;
             git_commit_tree(&tree, commit);
             node.add_edge(Edge(NodeID(OBJECT,oidstr(git_tree_id(tree))), "", !unfold_new_commits));
+            if (unfold_new_commits)
+                node.toggle_select();
         }
 
         set<NodeID> getRoots() {
