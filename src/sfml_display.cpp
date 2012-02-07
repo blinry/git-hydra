@@ -301,6 +301,7 @@ class SFMLDisplay {
             else
                 graph.right_border = 1000;
             graph.height = view.GetSize().y;
+            graph.factory.height = view.GetSize().y;
 
             draw_background();
 
@@ -373,8 +374,10 @@ class SFMLDisplay {
                         graph.history_pos += event.MouseWheel.Delta*20;
                         graph.scroll_history(event.MouseWheel.Delta*20);
                     }
-                    if (click_position.x > graph.right_border)
+                    if (click_position.x > graph.right_border) {
                         graph.index_pos += event.MouseWheel.Delta*20;
+                        graph.factory.index_pos += event.MouseWheel.Delta*20;
+                    }
                 }
                 if (event.Type == Event::MouseButtonPressed) {
                     if (!graph.empty()) {

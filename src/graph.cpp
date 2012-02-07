@@ -19,11 +19,14 @@ class Graph {
 
             if (initial) {
                 factory.unfold_new_commits = true;
+                factory.show_index = true;
+                /*
                 if (nodes.size()<50) {
                     factory.all_objects = true;
                     factory.all_refs = true;
                     factory.show_index = true;
                 }
+                */
             }
         }
 
@@ -130,7 +133,7 @@ class Graph {
                 return;
             }
             for(int i=0; i<n.degree(); i++) {
-                if (factory.unfold_all || !(n.type() == COMMIT && lookup(n.edge(i).target()).type() == TREE)) {
+                if (factory.unfold_all || n.selected() || !(n.type() == COMMIT && lookup(n.edge(i).target()).type() == TREE)) {
                     n.edge(i).unfold();
                     recursive_unfold_levels(n.edge(i).target(), depth-1);
                 }
@@ -168,7 +171,7 @@ class Graph {
                 if (!edge.folded()) {
                     Node &n2 = lookup(edge.target());
                     if (n2.oid().type == INDEX_ENTRY) {
-                        n2.pos().x = 1000/3*2+10;
+                        n2.pos().x = right_border+10;
                         n2.pos().y = index_pos+atoi(n2.oid().name.c_str())*30;
                         n2.needsPosition = false;
                     } else {

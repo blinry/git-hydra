@@ -23,6 +23,8 @@ class NodeFactory {
             show_index = false;
             unfold_new_commits = false;
             unfold_all = false;
+
+            index_pos = 130;
         }
 
         ~NodeFactory() {
@@ -83,7 +85,18 @@ class NodeFactory {
                 git_index *index;
                 git_repository_index(&index, repo);
                 git_index_read(index);
-                for(int i=0; i<git_index_entrycount(index); i++) {
+
+                if (git_index_entrycount(index) == 0) {
+                    // happens mostly in new repositories. we need a dirty hack here:
+                    git_repository_free(repo);
+                    git_repository_open(&repo, repository_path.c_str());
+                }
+
+                int start_index = (150-index_pos)/30;
+                int end_index = start_index+(height-150)/30;
+                if (start_index<0)
+                    start_index = 0;
+                for(int i=start_index; i<git_index_entrycount(index) && i<=end_index; i++) {
                     char num[10];
                     sprintf(num, "%d", i);
                     node.add_edge(Edge(NodeID(INDEX_ENTRY,num)));
@@ -253,6 +266,9 @@ class NodeFactory {
         bool show_index;
         bool unfold_new_commits;
         bool unfold_all;
+
+        float index_pos;
+        float height;
 
     private:
 
