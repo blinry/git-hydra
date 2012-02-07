@@ -4,7 +4,6 @@
  */
 
 class Node {
-
     public:
 
         Node() {

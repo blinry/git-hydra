@@ -74,11 +74,6 @@ class SFMLDisplay {
                     break;
                 case SNAKE_TAIL:
                     break;
-                    /*
-                       case SIGN:
-                       draw_sign(n);
-                       break;
-                       */
                 default:
                     draw_rect(n);
                     break;
@@ -141,6 +136,7 @@ class SFMLDisplay {
         }
 
         void draw_rect(Node n) {
+                cout << n.label() << "\n" << flush;
             if (n.oid().type == INDEX_ENTRY) {
                 text.SetString(utf8(n.label()));
                 text.SetPosition(n.pos().x+5, n.pos().y-10);
@@ -268,18 +264,11 @@ class SFMLDisplay {
 
             // Draw Nodes
 
-            Node head;
-
             for(map<NodeID,Node>::iterator it = graph.nodes_begin(); it != graph.nodes_end(); it++) {
                 Node& n = it->second;
-                if (n.oid() == NodeID(REF,"HEAD"))
-                    head = n;
-                else
-                    if (n.visible())
-                        draw(n);
+                if (n.visible())
+                    draw(n);
             }
-
-            draw(head);
 
             // Draw mouse-over description
 

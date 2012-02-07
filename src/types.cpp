@@ -37,10 +37,10 @@ class NodeID {
         }
 
         bool operator<(const NodeID& other) const {
-            if (name < other.name)
+            if (type < other.type)
                 return true;
-            else if (name == other.name)
-                return type < other.type;
+            else if (type == other.type)
+                return name < other.name;
             return false;
         }
 
