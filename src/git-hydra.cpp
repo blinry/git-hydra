@@ -36,8 +36,14 @@ int main(int argc, const char *argv[]) {
     Graph graph(node_factory);
 
     ForceDirectedLayout layout(graph);
-    SFMLDisplay display(graph);
     graph.update(true);
+
+    //display.draw();
+    for(int i=0; i<500; i++) {
+        layout.apply();
+    }
+
+    SFMLDisplay display(graph);
 
     while(display.open()) {
         display.draw();

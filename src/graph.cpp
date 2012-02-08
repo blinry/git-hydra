@@ -10,6 +10,9 @@ class Graph {
             reseed();
             index_pos = 130;
             history_pos = 100;
+
+            left_border = 1000/3.0;
+            right_border = 2000/3.0;
         }
 
         void update(bool initial = false) {
