@@ -335,18 +335,20 @@ class SFMLDisplay {
                     text.SetColor(Color::Red);
                     window.Draw(text);
 
-                    text.SetString(utf8(n.text()));
-                    text.SetPosition(n.pos().x+15, n.pos().y+15);
-                    text.SetColor(Color::White);
+                    if (n.type() != TREE) {
+                        text.SetString(utf8(n.text()));
+                        text.SetPosition(n.pos().x+15, n.pos().y+15);
+                        text.SetColor(Color::White);
 
-                    float border = 5;
+                        float border = 5;
 
-                    RectangleShape bg(Vector2f(text.GetGlobalBounds().Width+2*border, text.GetGlobalBounds().Height+2*border));
-                    bg.SetPosition(text.GetPosition()-Vector2f(border,border));
-                    bg.SetFillColor(Color(10,10,10,200));
-                    window.Draw(bg);
+                        RectangleShape bg(Vector2f(text.GetGlobalBounds().Width+2*border, text.GetGlobalBounds().Height+2*border));
+                        bg.SetPosition(text.GetPosition()-Vector2f(border,border));
+                        bg.SetFillColor(Color(10,10,10,200));
+                        window.Draw(bg);
 
-                    window.Draw(text);
+                        window.Draw(text);
+                    }
                 }
             }
 
