@@ -89,6 +89,8 @@ class SFMLDisplay {
         void draw_hole(Node n) {
             hole.SetPosition(Vector2f(n.pos().x-n.width()/2,n.pos().y-n.height()/2));
             window.Draw(hole);
+            head.SetPosition(Vector2f(n.pos().x-n.width()/2/5*3,n.pos().y-n.height()/2/5*3));
+            window.Draw(head);
         }
 
         void draw_bag(Node n) {
@@ -126,8 +128,8 @@ class SFMLDisplay {
 
             if (is_head) {
                 double eye_radius = n.width()/8.0;
-                Vector2f leye(n.pos().x-3.5*eye_radius,n.pos().y-eye_radius);
-                Vector2f reye(n.pos().x+1.5*eye_radius,n.pos().y-eye_radius);
+                Vector2f leye(n.pos().x-3.5*eye_radius,n.pos().y-eye_radius-7);
+                Vector2f reye(n.pos().x+1.5*eye_radius,n.pos().y-eye_radius-7);
 
                 Vector2f mouse_position = window.ConvertCoords(Mouse::GetPosition(window).x, Mouse::GetPosition(window).y);
                 float dir = atan2(n.pos().x-mouse_position.x,n.pos().y-mouse_position.y);
@@ -305,20 +307,20 @@ class SFMLDisplay {
 
             draw_background();
 
-            // Draw Edges
-
-            for(map<NodeID,Node>::iterator it = graph.nodes_begin(); it != graph.nodes_end(); it++) {
-                Node& n = it->second;
-                if (n.visible())
-                    draw_edges(n);
-            }
-
             // Draw Nodes
 
             for(map<NodeID,Node>::iterator it = graph.nodes_begin(); it != graph.nodes_end(); it++) {
                 Node& n = it->second;
                 if (n.visible())
                     draw(n);
+            }
+
+            // Draw Edges
+
+            for(map<NodeID,Node>::iterator it = graph.nodes_begin(); it != graph.nodes_end(); it++) {
+                Node& n = it->second;
+                if (n.visible())
+                    draw_edges(n);
             }
 
             draw_menu();
