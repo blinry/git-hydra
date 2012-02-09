@@ -40,7 +40,8 @@ class ForceDirectedLayout {
                             n2.velocity() -= connection.normal()*attract(n1, n2);
                     }
 
-                    n1.velocity() += connection.normal()*repulse(n1, n2);
+                    if (n2.type() != TAG)
+                        n1.velocity() += connection.normal()*repulse(n1, n2);
                 }
             }
 

@@ -38,7 +38,6 @@ int main(int argc, const char *argv[]) {
     ForceDirectedLayout layout(graph);
     graph.update(true);
 
-    //display.draw();
     for(int i=0; i<500; i++) {
         layout.apply();
     }
