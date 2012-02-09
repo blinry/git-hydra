@@ -7,13 +7,13 @@ class ForceDirectedLayout {
     public:
 
         ForceDirectedLayout(Graph& graph) : graph(graph) {
-            spring = 10;
-            charge = 1500;
+            spring = 0;
+            charge = 1000;
             damping = 0.1;
             clock.Restart();
         }
 
-        void apply(bool simulate_1sec = false) {
+        void apply(bool simulate_time = false) {
             for(map<NodeID,Node>::iterator it = graph.nodes_begin(); it != graph.nodes_end(); it++) {
                 Node& n1 = it->second;
                 if (!n1.visible()) continue;
@@ -45,8 +45,8 @@ class ForceDirectedLayout {
 
             int elapsed_ms = clock.GetElapsedTime().AsMilliseconds();
             clock.Restart();
-            if (simulate_1sec)
-                elapsed_ms = 1000;
+            if (simulate_time)
+                elapsed_ms = 100;
 
             for(map<NodeID,Node>::iterator it = graph.nodes_begin(); it != graph.nodes_end(); it++) {
                 Node& n1 = it->second;

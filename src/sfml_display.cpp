@@ -236,13 +236,6 @@ class SFMLDisplay {
                     window.Draw(arrow);
                 }
 
-                if (focused_node) {
-                    if (n.oid() == focused_node->oid() || n2.oid() == focused_node->oid()) {
-                        text.SetString(n.edge(j).label());
-                        text.SetPosition((n.pos().x+n2.pos().x)/2-text.GetGlobalBounds().Width/2,(n.pos().y+n2.pos().y)/2-text.GetGlobalBounds().Height/2);
-                        window.Draw(text);
-                    }
-                }
             }
         }
 
@@ -311,7 +304,16 @@ class SFMLDisplay {
 
             draw_background();
 
-            // Draw Nodes
+            // Draw edges
+
+            for(map<NodeID,Node>::iterator it = graph.nodes_begin(); it != graph.nodes_end(); it++) {
+                Node& n = it->second;
+                if (n.visible())
+                    draw_edges(n);
+            }
+
+
+            // Draw nodes
 
             for(map<NodeID,Node>::iterator it = graph.nodes_begin(); it != graph.nodes_end(); it++) {
                 Node& n = it->second;
@@ -319,12 +321,16 @@ class SFMLDisplay {
                     draw(n);
             }
 
-            // Draw Edges
+            // Draw edge labels
 
-            for(map<NodeID,Node>::iterator it = graph.nodes_begin(); it != graph.nodes_end(); it++) {
-                Node& n = it->second;
-                if (n.visible())
-                    draw_edges(n);
+            if (focused_node) {
+                for(int j=0; j<focused_node->degree(); j++) {
+                    if (focused_node->edge(j).folded()) continue;
+                    Node n2 = graph.lookup(focused_node->edge(j).target());
+                    text.SetString(focused_node->edge(j).label());
+                    text.SetPosition((focused_node->pos().x+n2.pos().x)/2-text.GetGlobalBounds().Width/2,(focused_node->pos().y+n2.pos().y)/2-text.GetGlobalBounds().Height/2);
+                    window.Draw(text);
+                }
             }
 
             draw_menu();

@@ -44,7 +44,7 @@ int main(int argc, const char *argv[]) {
         layout.apply(true);
     }
 
-    graph.scroll_history(-graph.lookup(NodeID(REF, "HEAD")).pos().y+50);
+    graph.scroll_history(-graph.lookup(NodeID(REF, "HEAD")).pos().y+100);
 
     while(display.open()) {
         display.draw();
