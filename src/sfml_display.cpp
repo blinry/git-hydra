@@ -236,9 +236,13 @@ class SFMLDisplay {
                     window.Draw(arrow);
                 }
 
-                text.SetString(n.edge(j).label());
-                text.SetPosition((n.pos().x+n2.pos().x)/2-text.GetGlobalBounds().Width/2,(n.pos().y+n2.pos().y)/2-text.GetGlobalBounds().Height/2);
-                window.Draw(text);
+                if (focused_node) {
+                    if (n.oid() == focused_node->oid() || n2.oid() == focused_node->oid()) {
+                        text.SetString(n.edge(j).label());
+                        text.SetPosition((n.pos().x+n2.pos().x)/2-text.GetGlobalBounds().Width/2,(n.pos().y+n2.pos().y)/2-text.GetGlobalBounds().Height/2);
+                        window.Draw(text);
+                    }
+                }
             }
         }
 
