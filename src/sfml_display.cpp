@@ -355,7 +355,6 @@ class SFMLDisplay {
                         if (focused_node->type() != TREE) {
                             text.SetString(utf8(focused_node->text()));
                             text.SetPosition(focused_node->pos().x+15, focused_node->pos().y+15);
-                            text.SetColor(Color::White);
 
                             float border = 5;
 
@@ -377,6 +376,7 @@ class SFMLDisplay {
 
                         window.Draw(ellipse);
                         window.Draw(text);
+                        text.SetColor(Color::White);
                     }
                 }
             }

@@ -138,6 +138,8 @@ class NodeFactory {
             if (object == NULL)
                 return;
             git_otype type = git_object_type(object);
+            if (type < 0)
+                return; // those two cases happen with submodules...
             git_object_free(object);
 
             node.label(node.oid().name.substr(0,6)+string("..."));
