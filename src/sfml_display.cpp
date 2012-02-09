@@ -331,25 +331,33 @@ class SFMLDisplay {
                 Vector2f mouse_position = window.ConvertCoords(Mouse::GetPosition(window).x, Mouse::GetPosition(window).y);
                 Node& n = graph.nearest_node(mouse_position.x, mouse_position.y);
 
-                if (n.display_type() != HEAD && n.oid().type != INDEX_ENTRY && n.oid().type != REF && n.display_type() != SNAKE_TAIL) {
-                    text.SetString(utf8(n.label()));
-                    text.SetPosition(n.pos().x+15, n.pos().y-10);
-                    text.SetColor(Color::Red);
-                    window.Draw(text);
+                if (!Mouse::IsButtonPressed(Mouse::Right))
+                    if (sqrt(pow(n.pos().x-mouse_position.x,2) + pow(n.pos().y-mouse_position.y,2))<100)
+                        focused_node = &n;
+                    else
+                        focused_node = NULL;
 
-                    if (n.type() != TREE) {
-                        text.SetString(utf8(n.text()));
-                        text.SetPosition(n.pos().x+15, n.pos().y+15);
-                        text.SetColor(Color::White);
-
-                        float border = 5;
-
-                        RectangleShape bg(Vector2f(text.GetGlobalBounds().Width+2*border, text.GetGlobalBounds().Height+2*border));
-                        bg.SetPosition(text.GetPosition()-Vector2f(border,border));
-                        bg.SetFillColor(Color(10,10,10,200));
-                        window.Draw(bg);
-
+                if (focused_node) {
+                    if (focused_node->display_type() != HEAD && focused_node->oid().type != INDEX_ENTRY && focused_node->oid().type != REF && focused_node->display_type() != SNAKE_TAIL) {
+                        text.SetString(utf8(focused_node->label()));
+                        text.SetPosition(focused_node->pos().x+15, focused_node->pos().y-10);
+                        text.SetColor(Color::Red);
                         window.Draw(text);
+
+                        if (focused_node->type() != TREE) {
+                            text.SetString(utf8(focused_node->text()));
+                            text.SetPosition(focused_node->pos().x+15, focused_node->pos().y+15);
+                            text.SetColor(Color::White);
+
+                            float border = 5;
+
+                            RectangleShape bg(Vector2f(text.GetGlobalBounds().Width+2*border, text.GetGlobalBounds().Height+2*border));
+                            bg.SetPosition(text.GetPosition()-Vector2f(border,border));
+                            bg.SetFillColor(Color(10,10,10,200));
+                            window.Draw(bg);
+
+                            window.Draw(text);
+                        }
                     }
                 }
             }
@@ -408,10 +416,9 @@ class SFMLDisplay {
                 }
             }
             if (Mouse::IsButtonPressed(Mouse::Right)) {
-                if (!graph.empty()) {
+                if (focused_node) {
                     Vector2f click_position = window.ConvertCoords(Mouse::GetPosition(window).x, Mouse::GetPosition(window).y);
-                    Node& n = graph.nearest_node(click_position.x, click_position.y);
-                    n.pos(click_position.x, click_position.y);
+                    focused_node->pos(click_position.x, click_position.y);
                 }
             }
         }
@@ -470,5 +477,7 @@ class SFMLDisplay {
         CircleShape eye;
         CircleShape pupil;
         RectangleShape rect;
+
+        Node* focused_node;
 
 };
