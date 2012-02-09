@@ -128,7 +128,7 @@ class Graph {
             Node &n = lookup(oid);
             if (depth<0) {
                 for(int i=0; i<n.degree(); i++) {
-                    if (lookup(n.edge(i).target()).type() != TREE) {
+                    if (lookup(n.edge(i).target()).type() == COMMIT) {
                         n.edge(i).unfold();
                         lookup(n.edge(i).target()).hole = true;
                     }
@@ -136,7 +136,8 @@ class Graph {
                 return;
             }
             for(int i=0; i<n.degree(); i++) {
-                if (factory.unfold_all || n.selected() || !(n.type() == COMMIT && lookup(n.edge(i).target()).type() == TREE)) {
+                if (factory.unfold_all || n.selected() || (lookup(n.edge(i).target()).type() == COMMIT || lookup(n.edge(i).target()).type() == TAG)) {
+                    cout << "unfold " << oid.name << "\n" << flush;
                     n.edge(i).unfold();
                     recursive_unfold_levels(n.edge(i).target(), depth-1);
                 }

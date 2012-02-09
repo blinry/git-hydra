@@ -87,10 +87,10 @@ class SFMLDisplay {
         }
 
         void draw_hole(Node n) {
-            hole.SetPosition(Vector2f(n.pos().x-n.width()/2,n.pos().y-n.height()/2));
-            window.Draw(hole);
-            head.SetPosition(Vector2f(n.pos().x-n.width()/2/5*3,n.pos().y-n.height()/2/5*3));
-            window.Draw(head);
+            //hole.SetPosition(Vector2f(n.pos().x-n.width()/2,n.pos().y-n.height()/2));
+            //window.Draw(hole);
+            //head.SetPosition(Vector2f(n.pos().x-n.width()/2/5*3,n.pos().y-n.height()/2/5*3));
+            //window.Draw(head);
         }
 
         void draw_bag(Node n) {
