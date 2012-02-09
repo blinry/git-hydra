@@ -18,8 +18,8 @@ using namespace std;
 #include "node.cpp"
 #include "node_factory.cpp"
 #include "graph.cpp"
-#include "force_directed_layout.cpp"
 #include "sfml_display.cpp"
+#include "force_directed_layout.cpp"
 
 int main(int argc, const char *argv[]) {
     srand(time(NULL));
