@@ -269,22 +269,22 @@ class SFMLDisplay {
             RectangleShape rect;
             rect.SetSize(Vector2f(1000,30));
             rect.SetPosition(Vector2f(0,0));
-            rect.SetFillColor(Color::Black);
+            rect.SetFillColor(Color(0,0,0,200));
             window.Draw(rect);
 
             text.SetPosition(5,5);
             string desc;
-            desc += "O: ";
+            desc += "o: ";
             if (graph.factory.all_objects)
                 desc += "Nur erreichbare Objekte anzeigen";
             else
                 desc += "Alle Objekte anzeigen";
-            desc += " - R: ";
+            desc += "  -  r: ";
             if (graph.factory.all_refs)
                 desc += "Nur HEAD anzeigen";
             else
                 desc += "Alle Refs anzeigen";
-            desc += " - I: ";
+            desc += "  -  i: ";
             if (graph.factory.show_index)
                 desc += "Index ausblenden";
             else
