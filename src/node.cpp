@@ -10,12 +10,14 @@ class Node {
             needsPosition = true;
             hole = false;
             continue_unfolding = false;
+            m_type = UNKNOWN_GT;
         }
 
         Node(const NodeID& oid) : m_oid(oid), m_visible(false), m_selected(false) {
             needsPosition = true;
             hole = false;
             continue_unfolding = false;
+            m_type = UNKNOWN_GT;
         }
 
         const NodeID &oid() {
@@ -136,16 +138,16 @@ class Node {
                 return SNAKE;
             else if ((type() == TAG && (label().find("refs/heads/") == 0 || (label().find("refs/remotes/") == 0 && label().find("HEAD") == -1))))
                 return HEAD;
+            else if (oid().type == TAIL)
+                return SNAKE_TAIL;
+            else if (oid().type == INDEX_ENTRY)
+                return MENU_ENTRY;
             else if (type() == TAG)
                 return SIGN;
             else if (type() == TREE)
                 return BAG;
             else if (type() == BLOB)
                 return APPLE;
-            else if (oid().type == TAIL)
-                return SNAKE_TAIL;
-            else if (oid().type == INDEX_ENTRY)
-                return MENU_ENTRY;
             else
                 return RECT;
         }

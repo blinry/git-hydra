@@ -1,5 +1,5 @@
 enum GitType {
-    UNKNOWN,
+    UNKNOWN_GT,
     BLOB,
     TREE,
     COMMIT,
@@ -7,6 +7,7 @@ enum GitType {
 };
 
 enum NodeType {
+    UNKNOWN_NT,
     INDEX,
     INDEX_ENTRY,
     REF,
@@ -15,6 +16,7 @@ enum NodeType {
 };
 
 enum NodeDisplayType {
+    UNKNOWN_DT,
     RECT,
     SIGN,
     SNAKE,
