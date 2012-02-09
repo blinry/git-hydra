@@ -143,7 +143,7 @@ class Graph {
             }
         */
             for(int i=0; i<n.degree(); i++) {
-                if (factory.all_objects || n.selected() || (lookup(n.edge(i).target()).type() == COMMIT || lookup(n.edge(i).target()).type() == TAG)) {
+                if (factory.all_objects || n.selected() || (lookup(n.edge(i).target()).type() == COMMIT || lookup(n.edge(i).target()).type() == TAG || lookup(n.edge(i).target()).oid().type == TAIL)) {
                     n.edge(i).unfold();
                     Node& n2 = lookup(n.edge(i).target());
                     if (depth>0)
