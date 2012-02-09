@@ -151,7 +151,7 @@ class Graph {
                     else if (n2.continue_unfolding) {
                         n2.hole = false;
                         recursive_unfold_levels(n2.oid(), 4);
-                    } else
+                    } else if (n2.type() == COMMIT)
                         n2.hole = true;
                 }
             }
