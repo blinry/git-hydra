@@ -351,10 +351,6 @@ class SFMLDisplay {
 
                 if (focused_node) {
                     if (focused_node->display_type() != HEAD && focused_node->oid().type != INDEX_ENTRY && focused_node->oid().type != REF && focused_node->display_type() != SNAKE_TAIL) {
-                        text.SetString(utf8(focused_node->label()));
-                        text.SetPosition(focused_node->pos().x+15, focused_node->pos().y-10);
-                        text.SetColor(Color::Red);
-                        window.Draw(text);
 
                         if (focused_node->type() != TREE) {
                             text.SetString(utf8(focused_node->text()));
@@ -370,6 +366,17 @@ class SFMLDisplay {
 
                             window.Draw(text);
                         }
+
+                        text.SetString(utf8(focused_node->label()));
+                        text.SetPosition(focused_node->pos().x+15, focused_node->pos().y-10);
+                        text.SetColor(Color::Yellow);
+
+                        RectangleShape ellipse(Vector2f(text.GetGlobalBounds().Width+10, text.GetGlobalBounds().Height+5));
+                        ellipse.SetPosition(focused_node->pos().x+15-5, focused_node->pos().y-5-5);
+                        ellipse.SetFillColor(Color(10,10,10,200));
+
+                        window.Draw(ellipse);
+                        window.Draw(text);
                     }
                 }
             }
