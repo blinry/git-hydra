@@ -292,7 +292,7 @@ class SFMLDisplay {
                 desc += "Index ausblenden";
             else
                 desc += "Index anzeigen";
-            text.SetString(desc);
+            text.SetString(utf8(desc));
             window.Draw(text);
         }
 
@@ -332,7 +332,7 @@ class SFMLDisplay {
                 for(int j=0; j<focused_node->degree(); j++) {
                     if (focused_node->edge(j).folded()) continue;
                     Node n2 = graph.lookup(focused_node->edge(j).target());
-                    text.SetString(focused_node->edge(j).label());
+                    text.SetString(utf8(focused_node->edge(j).label()));
                     text.SetPosition((focused_node->pos().x+n2.pos().x)/2-text.GetGlobalBounds().Width/2,(focused_node->pos().y+n2.pos().y)/2-text.GetGlobalBounds().Height/2);
                     window.Draw(text);
                 }
