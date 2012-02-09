@@ -9,11 +9,13 @@ class Node {
         Node() {
             needsPosition = true;
             hole = false;
+            continue_unfolding = false;
         }
 
         Node(const NodeID& oid) : m_oid(oid), m_visible(false), m_selected(false) {
             needsPosition = true;
             hole = false;
+            continue_unfolding = false;
         }
 
         const NodeID &oid() {
@@ -150,6 +152,7 @@ class Node {
 
         bool needsPosition;
         bool hole;
+        bool continue_unfolding;
 
     private:
 

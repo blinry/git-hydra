@@ -21,7 +21,7 @@ class Graph {
             visibility_analysis();
 
             if (initial) {
-                factory.unfold_new_commits = true;
+                //factory.unfold_new_commits = true;
                 factory.show_index = true;
                 factory.unfold_all = true;
                 /*
@@ -132,20 +132,27 @@ class Graph {
 
         void recursive_unfold_levels(NodeID oid, int depth) {
             Node &n = lookup(oid);
-            if (depth<0) {
+            /*
                 for(int i=0; i<n.degree(); i++) {
                     if (lookup(n.edge(i).target()).type() == COMMIT) {
                         n.edge(i).unfold();
-                        lookup(n.edge(i).target()).hole = true;
+                        if (!n2.selected())
                     }
                 }
                 return;
             }
+        */
             for(int i=0; i<n.degree(); i++) {
                 if (factory.all_objects || n.selected() || (lookup(n.edge(i).target()).type() == COMMIT || lookup(n.edge(i).target()).type() == TAG)) {
-                    cout << "unfold " << oid.name << "\n" << flush;
                     n.edge(i).unfold();
-                    recursive_unfold_levels(n.edge(i).target(), depth-1);
+                    Node& n2 = lookup(n.edge(i).target());
+                    if (depth>0)
+                        recursive_unfold_levels(n2.oid(), depth-1);
+                    else if (n2.continue_unfolding) {
+                        n2.hole = false;
+                        recursive_unfold_levels(n2.oid(), 4);
+                    } else
+                        n2.hole = true;
                 }
             }
         }
@@ -172,9 +179,8 @@ class Graph {
         void recursive_set_visible(NodeID oid) {
             Node &n = lookup(oid);
             n.show();
-            if (n.hole) {
+            if (n.hole)
                 return;
-            }
             for(int j=0; j<n.degree(); j++) {
                 Edge &edge = n.edge(j);
 

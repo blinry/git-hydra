@@ -87,10 +87,12 @@ class SFMLDisplay {
         }
 
         void draw_hole(Node n) {
-            //hole.SetPosition(Vector2f(n.pos().x-n.width()/2,n.pos().y-n.height()/2));
-            //window.Draw(hole);
-            //head.SetPosition(Vector2f(n.pos().x-n.width()/2/5*3,n.pos().y-n.height()/2/5*3));
-            //window.Draw(head);
+            if (n.selected()) {
+            hole.SetPosition(Vector2f(n.pos().x-n.width()/2,n.pos().y-n.height()/2));
+            window.Draw(hole);
+            head.SetPosition(Vector2f(n.pos().x-n.width()/2/5*3,n.pos().y-n.height()/2/5*3));
+            window.Draw(head);
+            }
         }
 
         void draw_bag(Node n) {
@@ -407,12 +409,16 @@ class SFMLDisplay {
                         if (event.MouseButton.Button == 0) {
                             Node &n = graph.nearest_node(click_position.x, click_position.y);
 
-                            n.toggle_select();
                             if (n.type() == COMMIT || n.type() == TREE) {
-                                // toggle tree
-                                for(int i=0; i<n.degree(); i++) {
-                                    if (graph.lookup(n.edge(i).target()).type() == TREE || graph.lookup(n.edge(i).target()).type() == BLOB) {
-                                        n.edge(i).toggle_fold();
+                                if (n.hole) {
+                                    n.continue_unfolding = true;
+                                } else {
+                                    n.toggle_select();
+                                    // toggle tree
+                                    for(int i=0; i<n.degree(); i++) {
+                                        if (graph.lookup(n.edge(i).target()).type() == TREE || graph.lookup(n.edge(i).target()).type() == BLOB) {
+                                            n.edge(i).toggle_fold();
+                                        }
                                     }
                                 }
                             }
