@@ -116,7 +116,7 @@ class ForceDirectedLayout {
                 else
                     direction = -M_PI*1/2;
             } else if (n1.display_type() == SIGN)
-                direction = -M_PI*0.5;
+                direction = -M_PI*0.75;
             else if (n1.oid().type == INDEX_ENTRY)
                 direction = M_PI*0.5;
             else if (n1.type() == TREE)
