@@ -23,6 +23,7 @@ class Graph {
             if (initial) {
                 factory.unfold_new_commits = true;
                 factory.show_index = true;
+                factory.unfold_all = true;
                 /*
                 if (nodes.size()<50) {
                     factory.all_objects = true;
@@ -106,6 +107,11 @@ class Graph {
         }
 
         void unfold_levels(int depth) {
+            for(map<NodeID,Node>::iterator it = nodes.begin(); it != nodes.end(); it++) {
+                Node& n = it->second;
+                for(int i=0; i<n.degree(); i++)
+                    n.edge(i).fold();
+            }
             for(set<NodeID>::iterator it = roots.begin(); it != roots.end(); it++) {
                 NodeID ref = *it;
                 recursive_unfold_levels(ref, depth-1);
@@ -136,7 +142,7 @@ class Graph {
                 return;
             }
             for(int i=0; i<n.degree(); i++) {
-                if (factory.unfold_all || n.selected() || (lookup(n.edge(i).target()).type() == COMMIT || lookup(n.edge(i).target()).type() == TAG)) {
+                if (factory.all_objects || n.selected() || (lookup(n.edge(i).target()).type() == COMMIT || lookup(n.edge(i).target()).type() == TAG)) {
                     cout << "unfold " << oid.name << "\n" << flush;
                     n.edge(i).unfold();
                     recursive_unfold_levels(n.edge(i).target(), depth-1);
