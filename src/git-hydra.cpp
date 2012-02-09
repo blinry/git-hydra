@@ -38,11 +38,13 @@ int main(int argc, const char *argv[]) {
     ForceDirectedLayout layout(graph);
     graph.update(true);
 
+    SFMLDisplay display(graph);
+    display.draw();
     for(int i=0; i<500; i++) {
-        layout.apply();
+        layout.apply(true);
     }
 
-    SFMLDisplay display(graph);
+    graph.scroll_history(-graph.lookup(NodeID(REF, "HEAD")).pos().y+50);
 
     while(display.open()) {
         display.draw();

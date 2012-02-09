@@ -7,13 +7,13 @@ class ForceDirectedLayout {
     public:
 
         ForceDirectedLayout(Graph& graph) : graph(graph) {
-            spring = 0;
+            spring = 10;
             charge = 1500;
             damping = 0.1;
             clock.Restart();
         }
 
-        void apply() {
+        void apply(bool simulate_1sec = false) {
             for(map<NodeID,Node>::iterator it = graph.nodes_begin(); it != graph.nodes_end(); it++) {
                 Node& n1 = it->second;
                 if (!n1.visible()) continue;
@@ -36,17 +36,17 @@ class ForceDirectedLayout {
                     if (n1.parent_of_visible(n2.oid())) {
                         turn(n1, n2);
                         n1.velocity() += connection.normal()*attract(n1, n2);
-                        if (n1.type() != TAG)
-                            n2.velocity() -= connection.normal()*attract(n1, n2);
+                        n2.velocity() -= connection.normal()*attract(n1, n2);
                     }
 
-                    if (n2.type() != TAG)
-                        n1.velocity() += connection.normal()*repulse(n1, n2);
+                    n1.velocity() += connection.normal()*repulse(n1, n2);
                 }
             }
 
             int elapsed_ms = clock.GetElapsedTime().AsMilliseconds();
             clock.Restart();
+            if (simulate_1sec)
+                elapsed_ms = 1000;
 
             for(map<NodeID,Node>::iterator it = graph.nodes_begin(); it != graph.nodes_end(); it++) {
                 Node& n1 = it->second;
@@ -85,8 +85,10 @@ class ForceDirectedLayout {
             // keep snake in the middle of the left area
             if (n1.type() == COMMIT || n1.display_type() == SNAKE_TAIL || n1.display_type() == HEAD) {
                 n1.velocity().x -= 0.0001*pow(n1.pos().x-graph.left_border/2,3);
-                n1.velocity().y -= 0.05*pow(n1.pos().y-graph.history_pos,1);
             }
+            //if (n1.display_type() == SNAKE_TAIL || n1.hole)
+            if (n1.oid() == NodeID(REF, "HEAD"))
+                n1.velocity().y -= 0.0001*pow(n1.pos().y-graph.history_pos,3);
 
             float border = 200;
             float strength = 0.00002;
