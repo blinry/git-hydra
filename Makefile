@@ -10,6 +10,6 @@ deps/SFML/build/lib/libsfml-graphics.so.2.0:
 	cd deps/SFML && mkdir -p build && cd build && cmake .. && make
 
 clean:
-	rm git-hydra
+	rm -f git-hydra
 	rm -rf deps/libgit2/build/
 	rm -rf deps/SFML/build/
