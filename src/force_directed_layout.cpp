@@ -8,7 +8,7 @@ class ForceDirectedLayout {
 
         ForceDirectedLayout(Graph& graph) : graph(graph) {
             spring = 0;
-            charge = 1000;
+            charge = 1500;
             damping = 0.1;
             clock.Restart();
         }
@@ -56,7 +56,7 @@ class ForceDirectedLayout {
                     n1.velocity() = n1.velocity().normal()*max;
 
                 n1.velocity() *= damping;
-                n1.pos() += n1.velocity()*((float)(elapsed_ms/50.0));
+                n1.pos() += n1.velocity()*((float)(elapsed_ms/30.0));
 
                 if (n1.label() == "index") {
                     n1.pos().x = 1000;
