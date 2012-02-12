@@ -277,19 +277,19 @@ class SFMLDisplay {
             string desc;
             desc += "o: ";
             if (graph.factory.all_objects)
-                desc += "Nur erreichbare Objekte anzeigen";
+                desc += "Only show reachable objects";
             else
-                desc += "Alle Objekte anzeigen";
+                desc += "Show all objects";
             desc += "  -  r: ";
             if (graph.factory.all_refs)
-                desc += "Nur HEAD anzeigen";
+                desc += "Show only HEAD";
             else
-                desc += "Alle Refs anzeigen";
+                desc += "Show all refs";
             desc += "  -  i: ";
             if (graph.factory.show_index)
-                desc += "Index ausblenden";
+                desc += "Hide index";
             else
-                desc += "Index anzeigen";
+                desc += "Show index";
             text.SetString(utf8(desc));
             window.Draw(text);
         }
