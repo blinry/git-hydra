@@ -9,8 +9,11 @@ class NodeFactory {
 
     public:
 
-        NodeFactory(const string& repository_path) : repository_path(repository_path) {
-            int ret = git_repository_open(&repo, repository_path.c_str());
+        NodeFactory(const string& start_path) {
+            char* repo_path = new char[2000];
+            git_repository_discover(repo_path, 2000, start_path.c_str(), false, NULL);
+            repository_path = repo_path;
+            int ret = git_repository_open(&repo, repo_path);
             if (ret != 0) {
                 cerr << "You don't seem to be in a Git repository.\n";
                 exit(1);

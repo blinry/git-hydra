@@ -24,15 +24,14 @@ using namespace std;
 int main(int argc, const char *argv[]) {
     srand(time(NULL));
 
-    string git_directory;
+    string start_path;
     if (argc>1) {
-        git_directory = argv[1];
-        git_directory += "/.git/";
+        start_path = argv[1];
     } else {
-        git_directory = ".git/";
+        start_path = ".";
     }
 
-    NodeFactory node_factory(git_directory);
+    NodeFactory node_factory(start_path);
     Graph graph(node_factory);
 
     ForceDirectedLayout layout(graph);
