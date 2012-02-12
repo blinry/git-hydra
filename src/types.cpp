@@ -29,7 +29,6 @@ enum NodeDisplayType {
 };
 
 class NodeID {
-
     public:
 
         NodeID() { }
@@ -50,5 +49,4 @@ class NodeID {
 
         NodeType type;
         string name;
-
 };

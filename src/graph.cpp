@@ -1,9 +1,8 @@
-/** 
+/*
  * A directed, acyclic graph. Attached to a Factory.
  */
 
 class Graph {
-
     public:
 
         Graph(NodeFactory& factory) : factory(factory) {
@@ -21,16 +20,8 @@ class Graph {
             visibility_analysis();
 
             if (initial) {
-                //factory.unfold_new_commits = true;
                 factory.show_index = true;
                 factory.unfold_all = true;
-                /*
-                if (nodes.size()<50) {
-                    factory.all_objects = true;
-                    factory.all_refs = true;
-                    factory.show_index = true;
-                }
-                */
             }
         }
 
@@ -77,7 +68,7 @@ class Graph {
 
         Node &nearest_node(float x, float y) {
             Node *best = 0;
-            float best_distance = 99999999; //TODO
+            float best_distance = 99999999;
             Vec2f pos(x,y);
             for(map<NodeID,Node>::iterator it = nodes.begin(); it != nodes.end(); it++) {
                 if (!it->second.visible()) continue;
@@ -132,16 +123,6 @@ class Graph {
 
         void recursive_unfold_levels(NodeID oid, int depth) {
             Node &n = lookup(oid);
-            /*
-                for(int i=0; i<n.degree(); i++) {
-                    if (lookup(n.edge(i).target()).type() == COMMIT) {
-                        n.edge(i).unfold();
-                        if (!n2.selected())
-                    }
-                }
-                return;
-            }
-        */
             for(int i=0; i<n.degree(); i++) {
                 if (factory.all_objects || n.selected() || (lookup(n.edge(i).target()).type() == COMMIT || lookup(n.edge(i).target()).type() == TAG || lookup(n.edge(i).target()).oid().type == TAIL)) {
                     n.edge(i).unfold();

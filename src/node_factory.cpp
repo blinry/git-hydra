@@ -1,12 +1,11 @@
 #include <git2.h>
 #include <cstring>
 
-/**
+/*
  * This class communicates with the Git repository and creates Nodes.
  */
 
 class NodeFactory {
-
     public:
 
         NodeFactory(const string& start_path) {
@@ -293,5 +292,4 @@ class NodeFactory {
             string assets_dir = path_to_program;
             return string(assets_dir, 0, assets_dir.rfind("/"));
         }
-
 };

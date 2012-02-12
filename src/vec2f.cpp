@@ -1,9 +1,8 @@
-/**
+/*
  * Well, it's a 2D vector of floats. With many handy operations.
  */
 
 class Vec2f {
-
     public:
 
         float x, y;
@@ -50,5 +49,4 @@ class Vec2f {
             x *= factor;
             y *= factor;
         }
-
 };

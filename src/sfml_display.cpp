@@ -1,17 +1,15 @@
 #include <SFML/Graphics.hpp>
 using namespace sf;
 
-/**
+/*
  * Displays the Graph and the Index. Reacts to input events.
  */
 
 class SFMLDisplay {
-
     public:
 
         SFMLDisplay(Graph& graph) : graph(graph), window(VideoMode(500,500), "git-hydra", Style::Default, ContextSettings(0,0,4,3,0)), view(FloatRect(0,0,1000,1000)) {
             window.SetView(view);
-            //cout << window.GetSettings().AntialiasingLevel << flush;
 
             focused_node = NULL;
 
@@ -310,7 +308,6 @@ class SFMLDisplay {
             draw_background();
 
             // Draw edges
-
             for(map<NodeID,Node>::iterator it = graph.nodes_begin(); it != graph.nodes_end(); it++) {
                 Node& n = it->second;
                 if (n.visible())
@@ -319,7 +316,6 @@ class SFMLDisplay {
 
 
             // Draw nodes
-
             for(map<NodeID,Node>::iterator it = graph.nodes_begin(); it != graph.nodes_end(); it++) {
                 Node& n = it->second;
                 if (n.visible())
@@ -327,7 +323,6 @@ class SFMLDisplay {
             }
 
             // Draw edge labels
-
             if (focused_node) {
                 for(int j=0; j<focused_node->degree(); j++) {
                     if (focused_node->edge(j).folded()) continue;
@@ -341,7 +336,6 @@ class SFMLDisplay {
             draw_menu();
 
             // Draw mouse-over description
-
             if (!graph.empty()) {
                 Vector2f mouse_position = window.ConvertCoords(Mouse::GetPosition(window).x, Mouse::GetPosition(window).y);
                 Node& n = graph.nearest_node(mouse_position.x, mouse_position.y);
@@ -505,5 +499,4 @@ class SFMLDisplay {
         RectangleShape rect;
 
         Node* focused_node;
-
 };

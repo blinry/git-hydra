@@ -1,11 +1,10 @@
-/**
+/*
  * Directed Edge that points to another node (via a NodeID). Has a label and
- * contains information about whether it is folded, which means that it's
- * parents are hidden.
+ * contains information about whether it is folded, which means that it doesn't
+ * contribute to show it's parents.
  */
 
 class Edge {
-
     public:
 
         Edge(const Edge &other) : m_target(other.m_target) {
@@ -45,5 +44,4 @@ class Edge {
         NodeID m_target;
         string m_label;
         bool m_folded;
-
 };

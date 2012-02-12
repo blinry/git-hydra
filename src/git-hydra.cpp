@@ -3,14 +3,13 @@
 #include <set>
 #include <map>
 #include <vector>
-using namespace std;
-
 #include <cmath>
 #include <stdio.h>
 #include <stdlib.h>
 
-// Sorry, but I don't think we need ugly header-file-duplication in such a
-// small project.
+using namespace std;
+
+// I don't think we need ugly header-duplication in such a small project.
 
 #include "types.cpp"
 #include "vec2f.cpp"

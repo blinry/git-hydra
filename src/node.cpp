@@ -1,4 +1,4 @@
-/**
+/*
  * A node in a directed graph. Points to some children and contains information
  * about physical simulation.
  */
@@ -168,5 +168,4 @@ class Node {
         GitType m_type;
 
         vector<Edge> m_children;
-
 };

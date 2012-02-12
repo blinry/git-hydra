@@ -1,9 +1,8 @@
-/**
+/*
  * This class layouts a graph by simulating it's nodes as charged, interconnected particles.
  */
 
 class ForceDirectedLayout {
-
     public:
 
         ForceDirectedLayout(Graph& graph) : graph(graph) {
@@ -51,7 +50,7 @@ class ForceDirectedLayout {
             for(map<NodeID,Node>::iterator it = graph.nodes_begin(); it != graph.nodes_end(); it++) {
                 Node& n1 = it->second;
 
-                float max = 500; //this is an ugly hardcoded value. TODO.
+                float max = 500;
                 if (n1.velocity().length()>max)
                     n1.velocity() = n1.velocity().normal()*max;
 
@@ -86,7 +85,8 @@ class ForceDirectedLayout {
             if (n1.type() == COMMIT || n1.display_type() == SNAKE_TAIL || n1.display_type() == HEAD) {
                 n1.velocity().x -= 0.0001*pow(n1.pos().x-graph.left_border/2,3);
             }
-            //if (n1.display_type() == SNAKE_TAIL || n1.hole)
+
+            // keep HEAD around y = graph.history_pos
             if (n1.oid() == NodeID(REF, "HEAD"))
                 n1.velocity().y -= 0.0001*pow(n1.pos().y-graph.history_pos,3);
 
@@ -103,8 +103,6 @@ class ForceDirectedLayout {
                     n1.velocity().y += strength*pow(border - n1.pos().y,3);
                 if (n1.pos().y > graph.height-border)
                     n1.velocity().y += strength*pow(graph.height - border - n1.pos().y,3);
-                //n1.velocity().x -= 0.000005*pow((n1.pos().x-(graph.left_border+(-graph.left_border+graph.right_border)/2)),3);
-                //n1.velocity().y -= 0.000002*pow(n1.pos().y-(graph.left_border+(-graph.left_border+graph.right_border))/2,3);
             }
         }
 
@@ -123,11 +121,8 @@ class ForceDirectedLayout {
                 direction = -M_PI*0.5;
             else
                 return;
-                //direction = -M_PI*1/2;
 
             float correction = small_angle(n1.dir_to(n2),direction);
-            //float strength = 100/(1+exp(-5*correction))-50;
-            //float strength = 300*correction;
             float strength = 50*correction;
             n1.velocity().x += strength*sin(n1.dir_to(n2)+M_PI/2);
             n1.velocity().y += strength*cos(n1.dir_to(n2)+M_PI/2);
@@ -150,5 +145,4 @@ class ForceDirectedLayout {
         float spring, charge, damping;
         Graph &graph;
         sf::Clock clock; // sorry, future custom-display-writer. Deadline is approaching.
-
 };
