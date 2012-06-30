@@ -9,7 +9,7 @@ class ForceDirectedLayout {
             spring = 0;
             charge = 1500;
             damping = 0.1;
-            clock.Restart();
+            clock.restart();
         }
 
         void apply(bool simulate_time = false) {
@@ -42,8 +42,8 @@ class ForceDirectedLayout {
                 }
             }
 
-            int elapsed_ms = clock.GetElapsedTime().AsMilliseconds();
-            clock.Restart();
+            int elapsed_ms = clock.getElapsedTime().asMilliseconds();
+            clock.restart();
             if (simulate_time)
                 elapsed_ms = 100;
 

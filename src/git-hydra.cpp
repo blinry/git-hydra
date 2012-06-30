@@ -37,20 +37,20 @@ int main(int argc, const char *argv[]) {
     graph.update(true);
 
     SFMLDisplay display(graph);
-    display.draw();
+    //display.draw();
     for(int i=0; i<500; i++) {
         layout.apply(true);
     }
 
     graph.scroll_history(-graph.lookup(NodeID(REF, "HEAD")).pos().y+100);
 
-    while(display.open()) {
-        display.draw();
+    while(true){//display.open()) {
+        //display.draw();
         graph.update();
 
         layout.apply();
 
-        display.process_events();
+        //display.process_events();
     }
 
     return 0;

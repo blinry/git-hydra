@@ -9,50 +9,50 @@ class SFMLDisplay {
     public:
 
         SFMLDisplay(Graph& graph) : graph(graph), window(VideoMode(500,500), "git-hydra", Style::Default, ContextSettings(0,0,4,3,0)), view(FloatRect(0,0,1000,1000)) {
-            window.SetView(view);
+            window.setView(view);
 
             focused_node = NULL;
 
-            font.LoadFromFile(assets_dir()+"/res/DroidSans-Regular.ttf");
-            text.SetFont(font);
-            text.SetCharacterSize(15);
+            font.loadFromFile(assets_dir()+"/res/DroidSans-Regular.ttf");
+            text.setFont(font);
+            text.setCharacterSize(15);
 
-            hole.SetRadius(25);
-            hole.SetFillColor(Color::Black);
+            hole.setRadius(25);
+            hole.setFillColor(Color::Black);
 
-            snake.SetRadius(25);
-            snake.SetFillColor(color(SNAKE));
-            snake.SetOutlineColor(Color::White);
+            snake.setRadius(25);
+            snake.setFillColor(color(SNAKE));
+            snake.setOutlineColor(Color::White);
 
-            head.SetRadius(15);
-            head.SetFillColor(color(HEAD));
+            head.setRadius(15);
+            head.setFillColor(color(HEAD));
 
-            tongue.SetPointCount(7);
-            tongue.SetFillColor(Color(200,20,20));
+            tongue.setPointCount(7);
+            tongue.setFillColor(Color(200,20,20));
             float fact = 2;
-            tongue.SetPoint(0, Vector2f(-1*fact, 0));
-            tongue.SetPoint(1, Vector2f(-1*fact, -15*fact));
-            tongue.SetPoint(2, Vector2f(-7*fact, -25*fact));
-            tongue.SetPoint(3, Vector2f(0, -17*fact));
-            tongue.SetPoint(4, Vector2f(7*fact, -25*fact));
-            tongue.SetPoint(5, Vector2f(1*fact, -15*fact));
-            tongue.SetPoint(6, Vector2f(1*fact, 0));
+            tongue.setPoint(0, Vector2f(-1*fact, 0));
+            tongue.setPoint(1, Vector2f(-1*fact, -15*fact));
+            tongue.setPoint(2, Vector2f(-7*fact, -25*fact));
+            tongue.setPoint(3, Vector2f(0, -17*fact));
+            tongue.setPoint(4, Vector2f(7*fact, -25*fact));
+            tongue.setPoint(5, Vector2f(1*fact, -15*fact));
+            tongue.setPoint(6, Vector2f(1*fact, 0));
 
-            triangle.SetPointCount(3);
-            triangle.SetFillColor(color(BAG));
-            snake.SetOutlineColor(Color::White);
-            triangle.SetPoint(0, Vector2f(0, -1.3*20));
-            triangle.SetPoint(1, Vector2f(+20, 0.5*20));
-            triangle.SetPoint(2, Vector2f(-20, 0.5*20));
+            triangle.setPointCount(3);
+            triangle.setFillColor(color(BAG));
+            snake.setOutlineColor(Color::White);
+            triangle.setPoint(0, Vector2f(0, -1.3*20));
+            triangle.setPoint(1, Vector2f(+20, 0.5*20));
+            triangle.setPoint(2, Vector2f(-20, 0.5*20));
 
-            apple.SetRadius(10);
-            apple.SetFillColor(color(APPLE));
+            apple.setRadius(10);
+            apple.setFillColor(color(APPLE));
 
-            eye.SetRadius(4);
-            eye.SetFillColor(Color::White);
+            eye.setRadius(4);
+            eye.setFillColor(Color::White);
 
-            pupil.SetRadius(2);
-            pupil.SetFillColor(Color::Black);
+            pupil.setRadius(2);
+            pupil.setFillColor(Color::Black);
         }
 
         void draw(Node n) {
@@ -89,43 +89,43 @@ class SFMLDisplay {
 
         void draw_hole(Node n) {
             if (n.selected()) {
-            hole.SetPosition(Vector2f(n.pos().x-n.width()/2,n.pos().y-n.height()/2));
-            window.Draw(hole);
-            head.SetPosition(Vector2f(n.pos().x-n.width()/2/5*3,n.pos().y-n.height()/2/5*3));
-            window.Draw(head);
+            hole.setPosition(Vector2f(n.pos().x-n.width()/2,n.pos().y-n.height()/2));
+            window.draw(hole);
+            head.setPosition(Vector2f(n.pos().x-n.width()/2/5*3,n.pos().y-n.height()/2/5*3));
+            window.draw(head);
             }
         }
 
         void draw_bag(Node n) {
-            triangle.SetPosition(Vector2f(n.pos().x-n.width()/2,n.pos().y));
+            triangle.setPosition(Vector2f(n.pos().x-n.width()/2,n.pos().y));
             if (n.selected()) {
-                triangle.SetOutlineThickness(1);
+                triangle.setOutlineThickness(1);
             } else {
-                triangle.SetOutlineThickness(0);
+                triangle.setOutlineThickness(0);
             }
-            window.Draw(triangle);
+            window.draw(triangle);
         }
 
         void draw_apple(Node n) {
-            apple.SetPosition(Vector2f(n.pos().x-n.width()/2,n.pos().y-n.height()/2));
-            window.Draw(apple);
+            apple.setPosition(Vector2f(n.pos().x-n.width()/2,n.pos().y-n.height()/2));
+            window.draw(apple);
         }
 
         void draw_snake(Node n, bool is_head = false) {
 
             if (is_head) {
-                tongue.SetPosition(Vector2f(n.pos().x, n.pos().y));
-                window.Draw(tongue);
-                head.SetPosition(Vector2f(n.pos().x-n.width()/2,n.pos().y-n.height()/2));
-                window.Draw(head);
+                tongue.setPosition(Vector2f(n.pos().x, n.pos().y));
+                window.draw(tongue);
+                head.setPosition(Vector2f(n.pos().x-n.width()/2,n.pos().y-n.height()/2));
+                window.draw(head);
             } else {
                 if (n.selected()) {
-                    snake.SetOutlineThickness(1);
+                    snake.setOutlineThickness(1);
                 } else {
-                    snake.SetOutlineThickness(0);
+                    snake.setOutlineThickness(0);
                 }
-                snake.SetPosition(Vector2f(n.pos().x-n.width()/2,n.pos().y-n.height()/2));
-                window.Draw(snake);
+                snake.setPosition(Vector2f(n.pos().x-n.width()/2,n.pos().y-n.height()/2));
+                window.draw(snake);
             }
 
 
@@ -134,45 +134,45 @@ class SFMLDisplay {
                 Vector2f leye(n.pos().x-3.5*eye_radius,n.pos().y-eye_radius-7);
                 Vector2f reye(n.pos().x+1.5*eye_radius,n.pos().y-eye_radius-7);
 
-                Vector2f mouse_position = window.ConvertCoords(Mouse::GetPosition(window).x, Mouse::GetPosition(window).y);
+                Vector2f mouse_position = window.convertCoords(Vector2i(Mouse::getPosition(window).x, Mouse::getPosition(window).y));
                 float dir = atan2(n.pos().x-mouse_position.x,n.pos().y-mouse_position.y);
 
-                eye.SetPosition(leye);
-                pupil.SetPosition(leye+Vector2f(1.8,1.8)-2.0f*Vector2f(sin(dir), cos(dir)));
-                window.Draw(eye);
-                window.Draw(pupil);
+                eye.setPosition(leye);
+                pupil.setPosition(leye+Vector2f(1.8,1.8)-2.0f*Vector2f(sin(dir), cos(dir)));
+                window.draw(eye);
+                window.draw(pupil);
 
-                eye.SetPosition(reye);
-                pupil.SetPosition(reye+Vector2f(1.8,1.8)-2.0f*Vector2f(sin(dir), cos(dir)));
-                window.Draw(eye);
-                window.Draw(pupil);
+                eye.setPosition(reye);
+                pupil.setPosition(reye+Vector2f(1.8,1.8)-2.0f*Vector2f(sin(dir), cos(dir)));
+                window.draw(eye);
+                window.draw(pupil);
 
-                text.SetString(utf8(n.label()));
-                text.SetPosition(n.pos().x+20, n.pos().y-15);
-                window.Draw(text);
+                text.setString(utf8(n.label()));
+                text.setPosition(n.pos().x+20, n.pos().y-15);
+                window.draw(text);
             }
 
         }
 
         void draw_menu_entry(Node n) {
-            text.SetString(utf8(n.label()));
-            text.SetPosition(n.pos().x+5, n.pos().y-10);
-            text.SetColor(Color(20,20,20));
-            window.Draw(text);
-            text.SetColor(Color(255,255,255));
+            text.setString(utf8(n.label()));
+            text.setPosition(n.pos().x+5, n.pos().y-10);
+            text.setColor(Color(20,20,20));
+            window.draw(text);
+            text.setColor(Color(255,255,255));
         }
 
         void draw_sign(Node n) {
-            text.SetString(utf8(n.label()));
-            text.SetPosition(n.pos().x-text.GetGlobalBounds().Width, n.pos().y-15);
+            text.setString(utf8(n.label()));
+            text.setPosition(n.pos().x-text.getGlobalBounds().width, n.pos().y-15);
 
             float border = 5;
-            RectangleShape rect(Vector2f(text.GetGlobalBounds().Width+2*border, text.GetGlobalBounds().Height+2.7*border));
-            rect.SetPosition(text.GetPosition()-Vector2f(border,border));
-            rect.SetFillColor(color(n.display_type()));
-            window.Draw(rect);
+            RectangleShape rect(Vector2f(text.getGlobalBounds().width+2*border, text.getGlobalBounds().height+2.7*border));
+            rect.setPosition(text.getPosition()-Vector2f(border,border));
+            rect.setFillColor(color(n.display_type()));
+            window.draw(rect);
 
-            window.Draw(text);
+            window.draw(text);
         }
 
         void draw_edges(Node n) {
@@ -199,81 +199,81 @@ class SFMLDisplay {
 
                 if ((n.display_type() == SNAKE || n.display_type() == HEAD) && n2.display_type() == SNAKE) {
                     ConvexShape line(4);
-                    line.SetFillColor(edge_color);
-                    line.SetPoint(0, Vector2f(n.pos().x, n.pos().y)+offset);
-                    line.SetPoint(1, Vector2f(n2.pos().x, n2.pos().y)+offset);
+                    line.setFillColor(edge_color);
+                    line.setPoint(0, Vector2f(n.pos().x, n.pos().y)+offset);
+                    line.setPoint(1, Vector2f(n2.pos().x, n2.pos().y)+offset);
 
-                    line.SetPoint(2, line.GetPoint(1) - offset - offset);
-                    line.SetPoint(3, line.GetPoint(0) - offset - offset);
-                    window.Draw(line);
+                    line.setPoint(2, line.getPoint(1) - offset - offset);
+                    line.setPoint(3, line.getPoint(0) - offset - offset);
+                    window.draw(line);
 
                     ConvexShape arrow(3);
-                    arrow.SetFillColor(Color::White);
-                    arrow.SetPoint(0, Vector2f(n.pos().x, n.pos().y) - 0.8f*norm2);
-                    arrow.SetPoint(1, arrow.GetPoint(0) + 0.8f*norm + 0.3f*offset);
-                    arrow.SetPoint(2, arrow.GetPoint(0) + 0.8f*norm - 0.3f*offset);
-                    window.Draw(arrow);
+                    arrow.setFillColor(Color::White);
+                    arrow.setPoint(0, Vector2f(n.pos().x, n.pos().y) - 0.8f*norm2);
+                    arrow.setPoint(1, arrow.getPoint(0) + 0.8f*norm + 0.3f*offset);
+                    arrow.setPoint(2, arrow.getPoint(0) + 0.8f*norm - 0.3f*offset);
+                    window.draw(arrow);
                 } else if (n2.display_type() == SNAKE_TAIL) {
                     ConvexShape tail(3);
-                    tail.SetFillColor(edge_color);
-                    tail.SetPoint(0, Vector2f(n.pos().x, n.pos().y)+1.0f*offset);
-                    tail.SetPoint(1, Vector2f(n2.pos().x, n2.pos().y));
+                    tail.setFillColor(edge_color);
+                    tail.setPoint(0, Vector2f(n.pos().x, n.pos().y)+1.0f*offset);
+                    tail.setPoint(1, Vector2f(n2.pos().x, n2.pos().y));
 
-                    tail.SetPoint(2, tail.GetPoint(0) - 2.0f*offset);
-                    window.Draw(tail);
+                    tail.setPoint(2, tail.getPoint(0) - 2.0f*offset);
+                    window.draw(tail);
                 } else {
                     ConvexShape line(4);
-                    line.SetFillColor(edge_color);
-                    line.SetPoint(0, Vector2f(n.pos().x, n.pos().y)+offset);
-                    line.SetPoint(1, Vector2f(n2.pos().x, n2.pos().y)+offset+norm+norm2);
+                    line.setFillColor(edge_color);
+                    line.setPoint(0, Vector2f(n.pos().x, n.pos().y)+offset);
+                    line.setPoint(1, Vector2f(n2.pos().x, n2.pos().y)+offset+norm+norm2);
 
-                    line.SetPoint(2, line.GetPoint(1) - offset - offset);
-                    line.SetPoint(3, line.GetPoint(0) - offset - offset);
-                    window.Draw(line);
+                    line.setPoint(2, line.getPoint(1) - offset - offset);
+                    line.setPoint(3, line.getPoint(0) - offset - offset);
+                    window.draw(line);
 
                     ConvexShape arrow(3);
-                    arrow.SetFillColor(edge_color);
-                    arrow.SetPoint(0, Vector2f(n2.pos().x, n2.pos().y) + norm);
-                    arrow.SetPoint(1, arrow.GetPoint(0) + norm2 + offset + offset + offset);
-                    arrow.SetPoint(2, arrow.GetPoint(0) + norm2 - offset - offset - offset);
-                    window.Draw(arrow);
+                    arrow.setFillColor(edge_color);
+                    arrow.setPoint(0, Vector2f(n2.pos().x, n2.pos().y) + norm);
+                    arrow.setPoint(1, arrow.getPoint(0) + norm2 + offset + offset + offset);
+                    arrow.setPoint(2, arrow.getPoint(0) + norm2 - offset - offset - offset);
+                    window.draw(arrow);
                 }
 
             }
         }
 
         void draw_background() {
-            RectangleShape rect(Vector2f(graph.left_border,view.GetSize().y));
+            RectangleShape rect(Vector2f(graph.left_border,view.getSize().y));
 
-            rect.SetFillColor(Color(30,60,30));
-            rect.SetPosition(Vector2f(0,0));
-            window.Draw(rect);
+            rect.setFillColor(Color(30,60,30));
+            rect.setPosition(Vector2f(0,0));
+            window.draw(rect);
 
             if (graph.factory.show_index) {
-                rect.SetFillColor(color(MENU_ENTRY));
-                rect.SetSize(Vector2f(1000-graph.right_border,view.GetSize().y));
-                rect.SetPosition(Vector2f(graph.right_border,0));
-                window.Draw(rect);
+                rect.setFillColor(color(MENU_ENTRY));
+                rect.setSize(Vector2f(1000-graph.right_border,view.getSize().y));
+                rect.setPosition(Vector2f(graph.right_border,0));
+                window.draw(rect);
 
-                text.SetPosition(graph.right_border+20,50);
-                text.SetString("Index");
-                text.SetCharacterSize(30);
-                text.SetColor(Color(20,20,20));
-                window.Draw(text);
-                text.SetCharacterSize(15);
-                text.SetColor(Color(255,255,255));
+                text.setPosition(graph.right_border+20,50);
+                text.setString("Index");
+                text.setCharacterSize(30);
+                text.setColor(Color(20,20,20));
+                window.draw(text);
+                text.setCharacterSize(15);
+                text.setColor(Color(255,255,255));
             }
 
         }
 
         void draw_menu() {
             RectangleShape rect;
-            rect.SetSize(Vector2f(1000,30));
-            rect.SetPosition(Vector2f(0,0));
-            rect.SetFillColor(Color(0,0,0,200));
-            window.Draw(rect);
+            rect.setSize(Vector2f(1000,30));
+            rect.setPosition(Vector2f(0,0));
+            rect.setFillColor(Color(0,0,0,200));
+            window.draw(rect);
 
-            text.SetPosition(5,5);
+            text.setPosition(5,5);
             string desc;
             desc += "o: ";
             if (graph.factory.all_objects)
@@ -290,20 +290,20 @@ class SFMLDisplay {
                 desc += "Hide index";
             else
                 desc += "Show index";
-            text.SetString(utf8(desc));
-            window.Draw(text);
+            text.setString(utf8(desc));
+            window.draw(text);
         }
 
         void draw() {
-            window.Clear();
+            window.clear();
 
             graph.left_border = 1000/3.0;
             if (graph.factory.show_index)
                 graph.right_border = 2000/3.0;
             else
                 graph.right_border = 1000;
-            graph.height = view.GetSize().y;
-            graph.factory.height = view.GetSize().y;
+            graph.height = view.getSize().y;
+            graph.factory.height = view.getSize().y;
 
             draw_background();
 
@@ -327,9 +327,9 @@ class SFMLDisplay {
                 for(int j=0; j<focused_node->degree(); j++) {
                     if (focused_node->edge(j).folded()) continue;
                     Node n2 = graph.lookup(focused_node->edge(j).target());
-                    text.SetString(utf8(focused_node->edge(j).label()));
-                    text.SetPosition((focused_node->pos().x+n2.pos().x)/2-text.GetGlobalBounds().Width/2,(focused_node->pos().y+n2.pos().y)/2-text.GetGlobalBounds().Height/2);
-                    window.Draw(text);
+                    text.setString(utf8(focused_node->edge(j).label()));
+                    text.setPosition((focused_node->pos().x+n2.pos().x)/2-text.getGlobalBounds().width/2,(focused_node->pos().y+n2.pos().y)/2-text.getGlobalBounds().height/2);
+                    window.draw(text);
                 }
             }
 
@@ -337,10 +337,10 @@ class SFMLDisplay {
 
             // Draw mouse-over description
             if (!graph.empty()) {
-                Vector2f mouse_position = window.ConvertCoords(Mouse::GetPosition(window).x, Mouse::GetPosition(window).y);
+                Vector2f mouse_position = window.convertCoords(Vector2i(Mouse::getPosition(window).x, Mouse::getPosition(window).y));
                 Node& n = graph.nearest_node(mouse_position.x, mouse_position.y);
 
-                if (!Mouse::IsButtonPressed(Mouse::Right))
+                if (!Mouse::isButtonPressed(Mouse::Right))
                     if (sqrt(pow(n.pos().x-mouse_position.x,2) + pow(n.pos().y-mouse_position.y,2))<100)
                         focused_node = &n;
                     else
@@ -350,67 +350,67 @@ class SFMLDisplay {
                     if (focused_node->display_type() != HEAD && focused_node->oid().type != INDEX_ENTRY && focused_node->oid().type != REF && focused_node->display_type() != SNAKE_TAIL) {
 
                         if (focused_node->type() != TREE) {
-                            text.SetString(utf8(focused_node->text()));
-                            text.SetPosition(focused_node->pos().x+15, focused_node->pos().y+15);
+                            text.setString(utf8(focused_node->text()));
+                            text.setPosition(focused_node->pos().x+15, focused_node->pos().y+15);
 
                             float border = 5;
 
-                            RectangleShape bg(Vector2f(text.GetGlobalBounds().Width+2*border, text.GetGlobalBounds().Height+2*border));
-                            bg.SetPosition(text.GetPosition()-Vector2f(border,border));
-                            bg.SetFillColor(Color(10,10,10,200));
-                            window.Draw(bg);
+                            RectangleShape bg(Vector2f(text.getGlobalBounds().width+2*border, text.getGlobalBounds().height+2*border));
+                            bg.setPosition(text.getPosition()-Vector2f(border,border));
+                            bg.setFillColor(Color(10,10,10,200));
+                            window.draw(bg);
 
-                            window.Draw(text);
+                            window.draw(text);
                         }
 
-                        text.SetString(utf8(focused_node->label()));
-                        text.SetPosition(focused_node->pos().x+15, focused_node->pos().y-10);
-                        text.SetColor(Color::Yellow);
+                        text.setString(utf8(focused_node->label()));
+                        text.setPosition(focused_node->pos().x+15, focused_node->pos().y-10);
+                        text.setColor(Color::Yellow);
 
-                        RectangleShape ellipse(Vector2f(text.GetGlobalBounds().Width+10, text.GetGlobalBounds().Height+5));
-                        ellipse.SetPosition(focused_node->pos().x+15-5, focused_node->pos().y-5-5);
-                        ellipse.SetFillColor(Color(10,10,10,200));
+                        RectangleShape ellipse(Vector2f(text.getGlobalBounds().width+10, text.getGlobalBounds().height+5));
+                        ellipse.setPosition(focused_node->pos().x+15-5, focused_node->pos().y-5-5);
+                        ellipse.setFillColor(Color(10,10,10,200));
 
-                        window.Draw(ellipse);
-                        window.Draw(text);
-                        text.SetColor(Color::White);
+                        window.draw(ellipse);
+                        window.draw(text);
+                        text.setColor(Color::White);
                     }
                 }
             }
 
-            window.Display();
+            window.display();
         }
 
         void process_events() {
             Event event;
-            while(window.PollEvent(event)) {
-                if (event.Type == Event::Closed)
-                    window.Close();
-                if (event.Type == Event::KeyPressed) {
-                    if (event.Key.Code == Keyboard::Escape)
-                        window.Close();
-                    if (event.Key.Code == Keyboard::O)
+            while(window.pollEvent(event)) {
+                if (event.type == Event::Closed)
+                    window.close();
+                if (event.type == Event::KeyPressed) {
+                    if (event.key.code == Keyboard::Escape)
+                        window.close();
+                    if (event.key.code == Keyboard::O)
                         graph.factory.all_objects = !graph.factory.all_objects;
-                    if (event.Key.Code == Keyboard::R)
+                    if (event.key.code == Keyboard::R)
                         graph.factory.all_refs = !graph.factory.all_refs;
-                    if (event.Key.Code == Keyboard::I)
+                    if (event.key.code == Keyboard::I)
                         graph.factory.show_index = !graph.factory.show_index;
                 }
-                if (event.Type == Event::MouseWheelMoved) {
-                    Vector2f click_position = window.ConvertCoords(Mouse::GetPosition(window).x, Mouse::GetPosition(window).y);
+                if (event.type == Event::MouseWheelMoved) {
+                    Vector2f click_position = window.convertCoords(Vector2i(Mouse::getPosition(window).x, Mouse::getPosition(window).y));
                     if (click_position.x < graph.left_border) {
-                        graph.history_pos += event.MouseWheel.Delta*20;
-                        graph.scroll_history(event.MouseWheel.Delta*20);
+                        graph.history_pos += event.mouseWheel.delta*20;
+                        graph.scroll_history(event.mouseWheel.delta*20);
                     }
                     if (click_position.x > graph.right_border) {
-                        graph.index_pos += event.MouseWheel.Delta*20;
-                        graph.factory.index_pos += event.MouseWheel.Delta*20;
+                        graph.index_pos += event.mouseWheel.delta*20;
+                        graph.factory.index_pos += event.mouseWheel.delta*20;
                     }
                 }
-                if (event.Type == Event::MouseButtonPressed) {
+                if (event.type == Event::MouseButtonPressed) {
                     if (!graph.empty()) {
-                        Vector2f click_position = window.ConvertCoords(Mouse::GetPosition(window).x, Mouse::GetPosition(window).y);
-                        if (event.MouseButton.Button == 0) {
+                        Vector2f click_position = window.convertCoords(Vector2i(Mouse::getPosition(window).x, Mouse::getPosition(window).y));
+                        if (event.mouseButton.button == 0) {
                             Node &n = graph.nearest_node(click_position.x, click_position.y);
 
                             if (n.type() == COMMIT || n.type() == TREE) {
@@ -429,22 +429,22 @@ class SFMLDisplay {
                         }
                     }
                 }
-                if (event.Type == Event::Resized) {
-                    float aspect_ratio = 1.0*event.Size.Width/event.Size.Height;
-                    view.Reset(FloatRect(0, 0, 1000, 1000/aspect_ratio));
-                    window.SetView(view);
+                if (event.type == Event::Resized) {
+                    float aspect_ratio = 1.0*event.size.width/event.size.height;
+                    view.reset(FloatRect(0, 0, 1000, 1000/aspect_ratio));
+                    window.setView(view);
                 }
             }
-            if (Mouse::IsButtonPressed(Mouse::Right)) {
+            if (Mouse::isButtonPressed(Mouse::Right)) {
                 if (focused_node) {
-                    Vector2f click_position = window.ConvertCoords(Mouse::GetPosition(window).x, Mouse::GetPosition(window).y);
+                    Vector2f click_position = window.convertCoords(Vector2i(Mouse::getPosition(window).x, Mouse::getPosition(window).y));
                     focused_node->pos(click_position.x, click_position.y);
                 }
             }
         }
 
         bool open() {
-            return window.IsOpen();
+            return window.isOpen();
         }
 
     private:
@@ -478,7 +478,7 @@ class SFMLDisplay {
 
         sf::String utf8(string utf8) {
             std::basic_string<Uint32> utf32;
-            sf::Utf8::ToUtf32(utf8.c_str(), utf8.c_str() + utf8.size(), std::back_inserter(utf32));
+            sf::Utf8::toUtf32(utf8.c_str(), utf8.c_str() + utf8.size(), std::back_inserter(utf32));
             return sf::String(utf32);
         }
 
