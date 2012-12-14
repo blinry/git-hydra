@@ -229,7 +229,7 @@ class NodeFactory {
 
             if (all_refs) {
                 git_strarray ref_nms;
-                git_reference_listall(&ref_nms, repo, GIT_REF_LISTALL);
+                git_reference_list(&ref_nms, repo, GIT_REF_LISTALL);
 
                 for(int i=0; i<ref_nms.count; i++) {
                     roots.insert(NodeID(REF,ref_nms.strings[i]));
