@@ -68,10 +68,10 @@ class NodeFactory {
                 node.add_edge(Edge(NodeID(TAIL,node.oid().name)));
             } else {
                 if (git_reference_type(ref) == GIT_REF_OID) {
-                    node.add_edge(Edge(NodeID(OBJECT,oidstr(git_reference_oid(ref)))));
+                    node.add_edge(Edge(NodeID(OBJECT,oidstr(git_reference_target(ref)))));
                 } else {
                     const char *oid_str;
-                    oid_str = git_reference_target(ref);
+                    oid_str = git_reference_name(ref);
                     string oid_string(oid_str,strlen(oid_str));
                     node.add_edge(Edge(NodeID(REF,oid_string)));
                 }
@@ -111,9 +111,9 @@ class NodeFactory {
             git_index *index;
             git_repository_index(&index, repo);
 
-            git_index_entry *entry = NULL;
+            const git_index_entry *entry;
             if (git_index_entrycount(index) >= atoi(node.oid().name.c_str()))
-                entry = git_index_get(index, atoi(node.oid().name.c_str()));
+                entry = git_index_get_byindex(index, atoi(node.oid().name.c_str()));
 
             if (!entry) {
                 node.label("invalid");
@@ -179,7 +179,7 @@ class NodeFactory {
             git_tag *tag;
             git_tag_lookup(&tag, repo, &id);
 
-            node.add_edge(Edge(NodeID(OBJECT,oidstr(git_tag_target_oid(tag)))));
+            node.add_edge(Edge(NodeID(OBJECT,oidstr(git_tag_target_id(tag)))));
             git_tag_free(tag);
         }
 
@@ -229,7 +229,7 @@ class NodeFactory {
 
             if (all_refs) {
                 git_strarray ref_nms;
-                git_reference_list(&ref_nms, repo, GIT_REF_LISTALL);
+                git_reference_list(&ref_nms, repo);
 
                 for(int i=0; i<ref_nms.count; i++) {
                     roots.insert(NodeID(REF,ref_nms.strings[i]));

@@ -134,7 +134,7 @@ class SFMLDisplay {
                 Vector2f leye(n.pos().x-3.5*eye_radius,n.pos().y-eye_radius-7);
                 Vector2f reye(n.pos().x+1.5*eye_radius,n.pos().y-eye_radius-7);
 
-                Vector2f mouse_position = window.convertCoords(Vector2i(Mouse::getPosition(window).x, Mouse::getPosition(window).y));
+                Vector2f mouse_position = window.mapPixelToCoords(Vector2i(Mouse::getPosition(window).x, Mouse::getPosition(window).y));
                 float dir = atan2(n.pos().x-mouse_position.x,n.pos().y-mouse_position.y);
 
                 eye.setPosition(leye);
@@ -337,7 +337,7 @@ class SFMLDisplay {
 
             // Draw mouse-over description
             if (!graph.empty()) {
-                Vector2f mouse_position = window.convertCoords(Vector2i(Mouse::getPosition(window).x, Mouse::getPosition(window).y));
+                Vector2f mouse_position = window.mapPixelToCoords(Vector2i(Mouse::getPosition(window).x, Mouse::getPosition(window).y));
                 Node& n = graph.nearest_node(mouse_position.x, mouse_position.y);
 
                 if (!Mouse::isButtonPressed(Mouse::Right))
@@ -397,7 +397,7 @@ class SFMLDisplay {
                         graph.factory.show_index = !graph.factory.show_index;
                 }
                 if (event.type == Event::MouseWheelMoved) {
-                    Vector2f click_position = window.convertCoords(Vector2i(Mouse::getPosition(window).x, Mouse::getPosition(window).y));
+                    Vector2f click_position = window.mapPixelToCoords(Vector2i(Mouse::getPosition(window).x, Mouse::getPosition(window).y));
                     if (click_position.x < graph.left_border) {
                         graph.history_pos += event.mouseWheel.delta*20;
                         graph.scroll_history(event.mouseWheel.delta*20);
@@ -409,7 +409,7 @@ class SFMLDisplay {
                 }
                 if (event.type == Event::MouseButtonPressed) {
                     if (!graph.empty()) {
-                        Vector2f click_position = window.convertCoords(Vector2i(Mouse::getPosition(window).x, Mouse::getPosition(window).y));
+                        Vector2f click_position = window.mapPixelToCoords(Vector2i(Mouse::getPosition(window).x, Mouse::getPosition(window).y));
                         if (event.mouseButton.button == 0) {
                             Node &n = graph.nearest_node(click_position.x, click_position.y);
 
@@ -437,7 +437,7 @@ class SFMLDisplay {
             }
             if (Mouse::isButtonPressed(Mouse::Right)) {
                 if (focused_node) {
-                    Vector2f click_position = window.convertCoords(Vector2i(Mouse::getPosition(window).x, Mouse::getPosition(window).y));
+                    Vector2f click_position = window.mapPixelToCoords(Vector2i(Mouse::getPosition(window).x, Mouse::getPosition(window).y));
                     focused_node->pos(click_position.x, click_position.y);
                 }
             }
