@@ -86,7 +86,7 @@ class NodeFactory {
             if (show_index) {
                 git_index *index;
                 git_repository_index(&index, repo);
-                git_index_read(index);
+                git_index_read(index, 1);
 
                 if (git_index_entrycount(index) == 0) {
                     // happens mostly in new repositories. we need a dirty hack here:
