@@ -13,6 +13,8 @@ class NodeFactory {
             git_repository_discover(repo_path, 2000, start_path.c_str(), false, NULL);
             repository_path = repo_path;
             int ret = git_repository_open(&repo, repo_path);
+            delete []repo_path;
+
             if (ret != 0) {
                 cerr << "You don't seem to be in a Git repository.\n";
                 exit(1);
