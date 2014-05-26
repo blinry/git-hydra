@@ -16,7 +16,7 @@ class Vec2f {
         }
 
         float length() {
-            sqrt(x*x+y*y);
+            return sqrt(x*x+y*y);
         }
 
         Vec2f normal() {

@@ -340,11 +340,13 @@ class SFMLDisplay {
                 Vector2f mouse_position = window.mapPixelToCoords(Vector2i(Mouse::getPosition(window).x, Mouse::getPosition(window).y));
                 Node& n = graph.nearest_node(mouse_position.x, mouse_position.y);
 
-                if (!Mouse::isButtonPressed(Mouse::Right))
-                    if (sqrt(pow(n.pos().x-mouse_position.x,2) + pow(n.pos().y-mouse_position.y,2))<100)
+                if (!Mouse::isButtonPressed(Mouse::Right)) {
+                    if (sqrt(pow(n.pos().x-mouse_position.x,2) + pow(n.pos().y-mouse_position.y,2))<100) {
                         focused_node = &n;
-                    else
+                    } else {
                         focused_node = NULL;
+                    }
+                }
 
                 if (focused_node) {
                     if (focused_node->display_type() != HEAD && focused_node->oid().type != INDEX_ENTRY && focused_node->oid().type != REF && focused_node->display_type() != SNAKE_TAIL) {

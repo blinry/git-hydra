@@ -52,6 +52,9 @@ class NodeFactory {
                 case OBJECT:
                     build_object(node);
                     break;
+                default:
+                    // do nothing
+                    break;
             }
 
             return node;
@@ -248,7 +251,7 @@ class NodeFactory {
                 fp = popen(prog.c_str(), "r");
                 if (fp == NULL) {
                     printf("Failed to run command\n" );
-                    exit;
+                    exit(1);
                 }
 
                 while (fgets(path, sizeof(path)-1, fp) != NULL) {
