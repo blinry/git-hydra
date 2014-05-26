@@ -70,10 +70,7 @@ class NodeFactory {
                 if (git_reference_type(ref) == GIT_REF_OID) {
                     node.add_edge(Edge(NodeID(OBJECT,oidstr(git_reference_target(ref)))));
                 } else {
-                    const char *oid_str;
-                    oid_str = git_reference_name(ref);
-                    string oid_string(oid_str,strlen(oid_str));
-                    node.add_edge(Edge(NodeID(REF,oid_string)));
+                    node.add_edge(Edge(NodeID(REF,git_reference_symbolic_target(ref))));
                 }
             }
             git_reference_free(ref);
