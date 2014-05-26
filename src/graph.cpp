@@ -12,6 +12,8 @@ class Graph {
 
             left_border = 1000/3.0;
             right_border = 2000/3.0;
+
+            height = 100;
         }
 
         void update(bool initial = false) {

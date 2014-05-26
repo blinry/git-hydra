@@ -27,6 +27,7 @@ class NodeFactory {
             unfold_all = false;
 
             index_pos = 130;
+            height = 100;
         }
 
         ~NodeFactory() {
@@ -109,8 +110,12 @@ class NodeFactory {
             git_repository_index(&index, repo);
 
             const git_index_entry *entry;
-            if (git_index_entrycount(index) >= atoi(node.oid().name.c_str()))
+            if (git_index_entrycount(index) >= atoi(node.oid().name.c_str())) {
                 entry = git_index_get_byindex(index, atoi(node.oid().name.c_str()));
+            } else {
+                cerr << "Index entry does not exist\n";
+                exit(1);
+            }
 
             if (!entry) {
                 node.label("invalid");
@@ -236,7 +241,6 @@ class NodeFactory {
 
             if (all_objects) {
                 FILE *fp;
-                int status;
                 char path[1035];
 
                 string prog = assets_dir();
