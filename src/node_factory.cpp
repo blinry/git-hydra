@@ -9,18 +9,19 @@ class NodeFactory {
     public:
 
         NodeFactory(const string& start_path) {
-            char* repo_path = new char[2000];
-            git_repository_discover(repo_path, 2000, start_path.c_str(), false, NULL);
-            repository_path = repo_path;
-            int ret = git_repository_open(&repo, repo_path);
-            delete []repo_path;
+            int ret = git_repository_open_ext(&repo, start_path.c_str(), 0, NULL);
 
             if (ret != 0) {
                 cerr << "You don't seem to be in a Git repository.\n";
                 exit(1);
             }
 
-            git_odb_open(&odb, (repository_path+string("objects")).c_str());
+            ret = git_repository_odb(&odb, repo);
+
+            if (ret != 0) {
+                cerr << "Error opening ODB.\n";
+                exit(1);
+            }
 
             all_objects = false;
             all_refs = false;
@@ -134,14 +135,16 @@ class NodeFactory {
 
                 node.label(label);
                 if (show_index)
-                    node.add_edge(Edge(NodeID(OBJECT,oidstr(&entry->oid))));
+                    node.add_edge(Edge(NodeID(OBJECT,oidstr(&entry->id))));
             }
             git_index_free(index);
         }
 
         void build_object(Node& node) {
             git_oid id;
-            git_oid_fromstr(&id, node.oid().name.c_str());
+            int err = git_oid_fromstr(&id, node.oid().name.c_str());
+            if (err != 0)
+                return;
             git_object *object;
             git_object_lookup(&object, repo, &id, GIT_OBJ_ANY);
             if (object == NULL)
