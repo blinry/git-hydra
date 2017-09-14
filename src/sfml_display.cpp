@@ -157,9 +157,9 @@ class SFMLDisplay {
         void draw_menu_entry(Node n) {
             text.setString(utf8(n.label()));
             text.setPosition(n.pos().x+5, n.pos().y-10);
-            text.setColor(Color(20,20,20));
+            text.setFillColor(Color(20,20,20));
             window.draw(text);
-            text.setColor(Color(255,255,255));
+            text.setFillColor(Color(255,255,255));
         }
 
         void draw_sign(Node n) {
@@ -258,10 +258,10 @@ class SFMLDisplay {
                 text.setPosition(graph.right_border+20,50);
                 text.setString("Index");
                 text.setCharacterSize(30);
-                text.setColor(Color(20,20,20));
+                text.setFillColor(Color(20,20,20));
                 window.draw(text);
                 text.setCharacterSize(15);
-                text.setColor(Color(255,255,255));
+                text.setFillColor(Color(255,255,255));
             }
 
         }
@@ -367,7 +367,7 @@ class SFMLDisplay {
 
                         text.setString(utf8(focused_node->label()));
                         text.setPosition(focused_node->pos().x+15, focused_node->pos().y-10);
-                        text.setColor(Color::Yellow);
+                        text.setFillColor(Color::Yellow);
 
                         RectangleShape ellipse(Vector2f(text.getGlobalBounds().width+10, text.getGlobalBounds().height+5));
                         ellipse.setPosition(focused_node->pos().x+15-5, focused_node->pos().y-5-5);
@@ -375,7 +375,7 @@ class SFMLDisplay {
 
                         window.draw(ellipse);
                         window.draw(text);
-                        text.setColor(Color::White);
+                        text.setFillColor(Color::White);
                     }
                 }
             }
