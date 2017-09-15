@@ -9,10 +9,10 @@ class NodeFactory {
     public:
 
         NodeFactory(const string& start_path) {
-            int ret = git_repository_open_ext(&repo, start_path.c_str(), 0, NULL);
+            int ret = git_repository_open(&repo, start_path.c_str());
 
             if (ret != 0) {
-                cerr << "You don't seem to be in a Git repository.\n";
+                cerr << "You don't seem to be in the root of a Git repository.\n";
                 exit(1);
             }
 
@@ -91,12 +91,6 @@ class NodeFactory {
                 git_index *index;
                 git_repository_index(&index, repo);
                 git_index_read(index, 1);
-
-                if (git_index_entrycount(index) == 0) {
-                    // happens mostly in new repositories. we need a dirty hack here:
-                    git_repository_free(repo);
-                    git_repository_open(&repo, repository_path.c_str());
-                }
 
                 int start_index = (150-index_pos)/30;
                 int end_index = start_index+(height-150)/30;
